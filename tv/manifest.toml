@@ -1,8 +1,9 @@
 schema-version = 1
 
 [package]
-title = "Basic UI React Native Application for project aloud"
+title = "Aloud"
 version = "0.1.0"
+build-number = 1
 id = "com.subomiolagoke.aloud"
 
 [os.version]
@@ -25,9 +26,50 @@ id = "/com.amazon.kepler.keplerscript_4@IKeplerScript_0"
 [[needs.module]]
 id = "/com.amazon.kepler.w3cmedia_2@IW3cmedia_3"
 
+# Playing anything at all needs this. Without it the pipeline is built, the file
+# is demuxed, and then the decoder cannot attach to a buffer queue, which
+# surfaces to the app as MEDIA_ERR_SRC_NOT_SUPPORTED and reads like a codec
+# problem rather than a permission.
+[[needs.privilege]]
+id = "com.amazon.media.secureplayback"
 
+# The services below are what the media pipeline actually talks to. Adding the
+# w3cmedia dependency autolinks the module and none of these, so an app that
+# compiles, packages, installs and launches cleanly still cannot play a frame.
+# Each one here was matched to a `Binder: Unable connect to ...` line in the
+# device log; none of them are speculative.
+[wants]
+[[wants.service]]
+id = "com.amazon.media.server"
 
+[[wants.service]]
+id = "com.amazon.mediametrics.service"
 
+[[wants.service]]
+id = "com.amazon.media.playersession.service"
+
+[[wants.service]]
+id = "com.amazon.mediabuffer.service"
+
+[[wants.service]]
+id = "com.amazon.mediatransform.service"
+
+# Shared-memory transport between the app and the media services.
+[[wants.service]]
+id = "com.amazon.gipc.uuid.*"
+
+[[wants.service]]
+id = "com.amazon.audio.stream"
+
+[[wants.service]]
+id = "com.amazon.audio.control"
+
+[[wants.service]]
+id = "com.amazon.audio.system"
+
+[offers]
+[[offers.service]]
+id = "com.amazon.gipc.uuid.*"
 
 [components]
 [[components.interactive]]

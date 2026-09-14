@@ -22,6 +22,7 @@ import type {Cue} from './track';
 export class Speaker {
   private player: AudioPlayer | null = null;
   private current: Cue | null = null;
+  private ready = false;
 
   constructor() {
     try {
@@ -33,6 +34,20 @@ export class Speaker {
         AudioContentType.CONTENT_TYPE_SPEECH,
         AudioUsageType.USAGE_ACCESSIBILITY,
       );
+      // The player does nothing at all until this resolves, and it fails
+      // silently rather than throwing if you skip it: `src` is accepted, `play`
+      // returns, and no sound is produced. Initialisation happens once at
+      // startup, long before the first gap, so a cue arriving before the player
+      // is ready is dropped rather than queued. A description that turns up late
+      // is exactly the thing this system exists to prevent.
+      this.player
+        .initialize()
+        .then(() => {
+          this.ready = true;
+        })
+        .catch(() => {
+          this.player = null;
+        });
     } catch {
       // A device without a spare audio player must still play the film. The
       // description is the thing that degrades, never the content.
@@ -41,11 +56,11 @@ export class Speaker {
   }
 
   get available(): boolean {
-    return this.player !== null;
+    return this.player !== null && this.ready;
   }
 
   speak(cue: Cue): void {
-    if (!this.player || !cue.audio) return;
+    if (!this.player || !this.ready || !cue.audio) return;
     this.current = cue;
     try {
       this.player.src = cue.audio;
@@ -77,6 +92,8 @@ export class Speaker {
 
   release(): void {
     this.stop();
+    this.ready = false;
+    this.player?.deinitialize().catch(() => {});
     this.player = null;
   }
 }

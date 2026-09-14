@@ -21,11 +21,25 @@
  *    describing a moment that already happened.
  *  - Nothing fires while paused, and rate changes shrink the window, because a
  *    gap at double speed is half as long while the speech is not.
+ *
+ * A cue's window is the gap it was placed in, not the span of the speech. The
+ * backend writes `start` and `end` around the audio itself and records the gap
+ * separately, so a cue taken literally has no slack at all: arriving 40ms late
+ * to a 1.3 second description leaves 1.26 seconds for 1.3 seconds of speech and
+ * every cue in the film is refused. The gap is the real deadline, the speech
+ * length is the real cost, and normalising that here keeps both facts in the
+ * one file that reasons about them.
  */
 
 export class DescriptionScheduler {
   /**
-   * @typedef {{start:number, end:number, text:string, duration?:number, id?:string|number}} ScheduledCue
+   * @typedef {object} ScheduledCue
+   * @property {number} start        when the description should begin
+   * @property {number} end          when the speech ends, widened to the gap below
+   * @property {string} text
+   * @property {[number, number]} [gap]  the silence this cue was validated against
+   * @property {number} [duration]   measured length of the speech, defaults to end - start
+   * @property {string|number} [id]
    *
    * @param {ScheduledCue[]} cues
    * @param {object} opts
@@ -35,7 +49,18 @@ export class DescriptionScheduler {
    */
   constructor(cues = [], opts = {}) {
     this.cues = [...cues]
-      .map((c, i) => ({ ...c, id: c.id ?? i, duration: c.duration ?? (c.end - c.start) }))
+      .map((c, i) => {
+        const speech = c.duration ?? (c.end - c.start);
+        const gap = Array.isArray(c.gap) && c.gap.length === 2 ? c.gap[1] : null;
+        return {
+          ...c,
+          id: c.id ?? i,
+          duration: speech,
+          // Never shorten a window a caller stated outright, only widen it to
+          // the gap the cue was actually validated against.
+          end: gap !== null && gap > c.end ? gap : c.end,
+        };
+      })
       .sort((a, b) => a.start - b.start);
     this.onSpeak = opts.onSpeak || (() => {});
     this.onStop = opts.onStop || (() => {});
@@ -47,6 +72,11 @@ export class DescriptionScheduler {
     this.fired = new Set();
     this.lastTime = null;
     this.speaking = null;
+    // The cue whose window is still open. It outlives the speech: once a gap
+    // has been used it stays used, so a second description cannot start in the
+    // tail of the same silence.
+    this.holding = null;
+    this.speakingUntil = null;
     this.rate = 1;
   }
 
@@ -63,14 +93,21 @@ export class DescriptionScheduler {
     }
     this.lastTime = t;
 
-    if (this.speaking && t >= this.speaking.end) {
-      this.speaking = null;                       // the window closed
+    // Speech ending and the window closing are different moments, and the
+    // difference is visible: the interface claims to show what is being said
+    // right now, so it must stop claiming it the moment the audio stops.
+    if (this.speaking && this.speakingUntil !== null && t >= this.speakingUntil) {
+      this.speaking = null;
+    }
+    if (this.holding && t >= this.holding.end) {
+      this.holding = null;
     }
     if (!playing) {
       if (this.speaking) { this.onStop(); this.speaking = null; }
+      this.speakingUntil = null;
       return null;
     }
-    if (this.speaking) return null;               // one voice at a time
+    if (this.holding) return null;                // one voice at a time
 
     for (const cue of this.cues) {
       if (this.fired.has(cue.id)) continue;
@@ -88,6 +125,10 @@ export class DescriptionScheduler {
 
       this.fired.add(cue.id);
       this.speaking = cue;
+      this.holding = cue;
+      // Media time, not wall time: at double speed the film passes twice as
+      // fast underneath speech that takes exactly as long as it always did.
+      this.speakingUntil = t + cue.duration * this.rate;
       this.onSpeak(cue);
       return cue;
     }
@@ -96,6 +137,8 @@ export class DescriptionScheduler {
 
   _onSeek(t) {
     if (this.speaking) { this.onStop(); this.speaking = null; }
+    this.holding = null;
+    this.speakingUntil = null;
     // Backwards: re-arm anything now in the future, so a rewatch is described.
     // Forwards: discard anything skipped over, because describing it now would
     // describe a moment the viewer has already passed.

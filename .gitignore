@@ -29,10 +29,12 @@ build/
 .idea/
 .vscode/
 
-# local data
-data/
-out/
-tmp/
+# local data. Anchored to the repository root on purpose: an unanchored `data/`
+# also matches tv/src/data, which is where the app's description track lives,
+# and silently keeps the one file the TV app cannot run without out of the repo.
+/data/
+/out/
+/tmp/
 
 # vega / react native build output
 tv/node_modules/

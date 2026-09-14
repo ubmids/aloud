@@ -21,7 +21,20 @@ overrunning into dialogue. That scheduling problem is the difference between thi
 captioning toy.
 
 ## Demo footage
-Blender open movies (Sintel, Tears of Steel) so everything shown is freely licensed.
+
+`tv/assets/sintel-trailer.mp4` is the trailer for **Sintel**, (c) copyright
+Blender Foundation, [durian.blender.org](https://durian.blender.org), released
+under the [Creative Commons Attribution 3.0
+licence](https://creativecommons.org/licenses/by/3.0/). It is downloaded from
+[download.blender.org/durian/trailer/sintel_trailer-720p.mp4](https://download.blender.org/durian/trailer/sintel_trailer-720p.mp4)
+and re-encoded to 640x360 to bring it from 7.6MB to 1.9MB, because it is bundled
+into the app package and into this repository.
+
+It was chosen over Big Buck Bunny, the more obvious Blender film, for one
+reason: Sintel has dialogue and Big Buck Bunny has none. A film with no speech in
+it is all gap, so it would demonstrate nothing about the only hard problem here,
+which is placing a description in the silence *between lines* without landing on
+the next one. The trailer is 52 seconds and the backend finds nine gaps in it.
 
 ## Run it
 
@@ -45,7 +58,7 @@ python3 tests/test_real_audio.py    # run this one next, it uses real voices
 python3 tests/test_pipeline.py
 python3 tests/test_planning.py
 python3 tests/test_caption.py
-node app/test/schedule.test.mjs
+cd tv && node test/schedule.test.mjs
 ```
 
 ## What is built
@@ -65,6 +78,33 @@ node app/test/schedule.test.mjs
   a `timeupdate` that fires about four times a second. It refuses to start a
   description that the rest of the gap can no longer hold, handles seeking in
   both directions, and shrinks the window at faster playback rates.
+
+## The Fire TV app
+
+```bash
+cd tv
+export PATH="$HOME/vega/bin:$PATH"
+npm install --fetch-timeout=1800000 --fetch-retries=5
+npm run build
+vega virtual-device start
+vega run-app build/aarch64-release/aloud_aarch64.vpkg
+```
+
+It plays the bundled trailer through `@amazon-devices/react-native-w3cmedia` and
+speaks the four descriptions in `tv/src/data/description.json`, each from audio
+synthesised in advance and bundled beside the film. Verified on the Vega Virtual
+Device: the film runs to its end, all four cues fire exactly once, and the film
+never pauses underneath them.
+
+The track in `tv/src/data/description.json` is the real output of the backend run
+on this exact clip, and the descriptions in it read *"The scene changes to a new
+shot in the film"* because no vision endpoint was configured when it was
+generated. That is the stub describer being honest rather than a model writing
+badly, and it is left as generated. The timing around it is real: real gaps, real
+measured speech durations, real placement.
+
+Five of the nine gaps are left silent, because nothing visible had changed since
+the previous description. That is the planner working, not a shortfall.
 
 ## Architecture, and the spike that set it
 

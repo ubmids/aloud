@@ -111,6 +111,48 @@ t("at double speed a window that is now too short is skipped", () => {
   eq(spoken, []);
 });
 
+// The backend writes start and end around the speech and records the gap it
+// was placed in separately. These pin the reading of that shape, because taking
+// the cue times literally leaves no slack and silently refuses every cue.
+const FROM_BACKEND = [
+  // 1.3s of speech at the top of a 4.0s gap.
+  { id: "g", start: 2.0, end: 3.3, text: "A man crosses.", gap: [2.0, 6.0] },
+];
+
+t("a cue's window is the gap, not the span of the speech", () => {
+  const spoken = [];
+  const s = new DescriptionScheduler(FROM_BACKEND, { onSpeak: c => spoken.push(c.id) });
+  // Arriving at 2.25, a quarter second late, which is one timeupdate.
+  play(s, 2.25, 5.0);
+  eq(spoken, ["g"], "a cue was refused with 3.75s of gap left for 1.3s of speech:");
+});
+
+t("a cue is still refused when the gap itself is nearly over", () => {
+  const spoken = [];
+  const s = new DescriptionScheduler(FROM_BACKEND, { onSpeak: c => spoken.push(c.id) });
+  play(s, 5.0, 7.0);        // 1.0s of gap left, 1.3s of speech
+  eq(spoken, [], "it started a description that would have run past the gap:");
+});
+
+t("speaking clears when the speech ends, not when the gap does", () => {
+  const s = new DescriptionScheduler(FROM_BACKEND, {});
+  play(s, 0, 2.0);
+  eq(s.speaking?.id, "g");
+  play(s, 2.0, 3.5);        // speech is 1.3s, so it is over by 3.3
+  eq(s.speaking, null, "the interface would still be claiming to speak:");
+});
+
+t("a used gap is not used twice", () => {
+  const two = [
+    { id: "p", start: 2.0, end: 3.0, text: "one", gap: [2.0, 9.0] },
+    { id: "q", start: 4.0, end: 5.0, text: "two", gap: [4.0, 9.0] },
+  ];
+  const spoken = [];
+  const s = new DescriptionScheduler(two, { onSpeak: c => spoken.push(c.id) });
+  play(s, 0, 8.0);
+  eq(spoken, ["p"], "a second description started in the tail of the same silence:");
+});
+
 t("an empty track is harmless", () => {
   const s = new DescriptionScheduler([], {});
   play(s, 0, 10);
