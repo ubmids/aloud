@@ -37,7 +37,13 @@ export class DescriptionScheduler {
    * @property {number} start        when the description should begin
    * @property {number} end          when the speech ends, widened to the gap below
    * @property {string} text
-   * @property {[number, number]} [gap]  the silence this cue was validated against
+   * @property {string | null} [audio]  pre-synthesised speech, passed through
+   *   to whatever does the speaking
+   * @property {[number, number] | null} [gap]  the silence this cue was validated
+   *   against. Nullable because the backend writes `"gap": null` for a cue it
+   *   could not tie to one, and the parser keeps that rather than inventing a
+   *   range. The scheduler never reads it; it is carried so the UI can show
+   *   which silence a description was placed in.
    * @property {number} [duration]   measured length of the speech, defaults to end - start
    * @property {string|number} [id]
    *
