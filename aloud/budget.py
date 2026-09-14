@@ -1,0 +1,234 @@
+"""Fitting a description into the hole you actually have.
+
+Audio description is not a captioning problem, it is a scheduling problem. The
+gap is fixed and the sentence has to fit inside it when *spoken*, which is a
+different constraint from fitting in a character count. "17:42" is five
+characters and takes about a second to say. "a" is one character and takes a
+fifth of that.
+
+So the budget here is measured in seconds of speech, and the estimator that
+converts text to seconds is calibrated against a real synthesiser rather than a
+guessed words-per-minute constant. `calibrate.py` regenerates the coefficients.
+"""
+import re
+from dataclasses import dataclass
+
+# Calibrated, not guessed. See calibrate.py and CALIBRATION.md for the method
+# and the residuals. Duration is modelled as a fixed cost per utterance plus a
+# cost per syllable, because a five-word sentence of long words takes longer
+# than a five-word sentence of short ones and a words-per-minute model cannot
+# see the difference.
+FIXED_COST_S = 0.200
+SECONDS_PER_SYLLABLE = 0.203
+# Commas and full stops buy real pauses; the synthesiser inserts them whether
+# the budget accounted for them or not.
+PAUSE_COMMA_S = 0.12
+PAUSE_STOP_S = 0.28
+
+# Leave the edges of the gap alone. A description that begins the instant the
+# previous line ends and finishes as the next begins is technically inside the
+# gap and sounds like an interruption.
+HEADROOM = 0.85
+
+# Used only when no synthesiser is available and the estimator is all there is.
+# Calibration against a real voice left a worst-case residual of 0.62s, so an
+# estimate-only fit has to hold that much back or it will confidently schedule a
+# cue that overruns. When a synthesiser IS available the pipeline measures the
+# real duration and this margin is not applied, because there is nothing left to
+# be uncertain about.
+ESTIMATE_ERROR_S = 0.62
+
+_VOWELS = "aeiouy"
+
+
+def syllables(word: str) -> int:
+    """Cheap English syllable count. Wrong on individual words, close enough in
+    aggregate, and it has no dependencies, which matters more here than being
+    right about 'queueing'."""
+    w = re.sub(r"[^a-z]", "", word.lower())
+    if not w:
+        return 0
+    count, prev_vowel = 0, False
+    for ch in w:
+        is_vowel = ch in _VOWELS
+        if is_vowel and not prev_vowel:
+            count += 1
+        prev_vowel = is_vowel
+    if w.endswith("e") and count > 1 and not w.endswith(("le", "ee", "ye")):
+        count -= 1
+    return max(1, count)
+
+
+def speech_seconds(text: str) -> float:
+    """How long a synthesiser will take to say this."""
+    text = (text or "").strip()
+    if not text:
+        return 0.0
+    syl = sum(syllables(w) for w in re.findall(r"[A-Za-z']+", text))
+    digits = len(re.findall(r"\d", text))          # spoken one at a time, roughly
+    commas = text.count(",") + text.count(";")
+    stops = len(re.findall(r"[.!?]", text))
+    return (FIXED_COST_S + syl * SECONDS_PER_SYLLABLE
+            + digits * SECONDS_PER_SYLLABLE
+            + commas * PAUSE_COMMA_S + stops * PAUSE_STOP_S)
+
+
+def budget_for(gap_seconds: float, headroom: float = HEADROOM) -> float:
+    """Seconds of speech a gap of this length can actually carry."""
+    return max(0.0, gap_seconds * headroom)
+
+
+def words_for(gap_seconds: float, headroom: float = HEADROOM) -> int:
+    """A word target to hand the describer, so it aims at the right size rather
+    than writing whatever it likes and being truncated afterwards."""
+    budget = budget_for(gap_seconds, headroom)
+    # ~1.45 syllables per word in ordinary descriptive English.
+    usable = max(0.0, budget - FIXED_COST_S)
+    return max(0, int(usable / (SECONDS_PER_SYLLABLE * 1.45)))
+
+
+def fit_measured(text: str, gap_seconds: float, synth, *,
+                 headroom: float = HEADROOM, max_rounds: int = 6) -> "Fit":
+    """Fit by synthesising and measuring, rather than by estimating.
+
+    Trims and re-measures until it genuinely fits. Costs a few synthesiser calls
+    per cue, which is nothing next to describing the frames, and removes the
+    entire class of bug where a cue was scheduled on a prediction and clipped in
+    reality.
+    """
+    budget = budget_for(gap_seconds, headroom)
+    candidate = (text or "").strip()
+    trimmed = False
+
+    for _ in range(max_rounds):
+        if not candidate:
+            break
+        actual = synth.duration(candidate)
+        if actual <= budget:
+            return Fit(candidate, round(actual, 3), round(budget, 3), True, trimmed)
+        # Overran. Shorten by the measured overshoot rather than by one word at
+        # a time, so a badly oversized description converges in a round or two.
+        overshoot = actual - budget
+        drop = max(1, int(overshoot / (SECONDS_PER_SYLLABLE * 1.45)))
+        shorter = _shorten(candidate, drop)
+        if shorter == candidate:
+            break
+        candidate, trimmed = shorter, True
+
+    return Fit("", 0.0, round(budget, 3), False, True)
+
+
+# A description must never end on one of these. "A man in a grey." is inside
+# its budget and says nothing; the listener is left waiting for a noun that
+# never arrives, which is worse than silence because they now believe they
+# missed something. Truncation that lands here keeps backing up to the previous
+# clean boundary, and gives up rather than emit a dangling phrase.
+DANGLING = {
+    "a", "an", "the", "and", "or", "but", "as", "of", "in", "on", "at", "to",
+    "for", "with", "from", "into", "over", "under", "by", "his", "her", "its",
+    "their", "this", "that", "these", "those", "is", "was", "are", "were",
+    "then", "while", "when", "who", "which", "very", "more", "two", "three",
+}
+
+
+def _ends_cleanly(words: list[str]) -> bool:
+    if not words:
+        return False
+    last = re.sub(r"[^A-Za-z']", "", words[-1]).lower()
+    return bool(last) and last not in DANGLING
+
+
+def _shorten(text: str, words_to_drop: int) -> str:
+    """Drop a trailing clause if there is one, otherwise whole words, and never
+    stop on a word that leaves the sentence hanging."""
+    parts = re.split(r"(?<=[,;])\s+", text.strip())
+    if len(parts) > 1:
+        shorter = " ".join(parts[:-1]).rstrip(",;")
+        if _ends_cleanly(re.findall(r"\S+", shorter)):
+            return shorter + "."
+        return ""
+
+    # No word-level truncation. Cutting inside a phrase produced things like
+    # "A man in a grey." which is inside budget, grammatical enough to pass a
+    # function-word check, and says nothing: the listener waits for a noun that
+    # never comes and believes they missed it. Chasing that with a longer stop
+    # list is whack-a-mole, because the offending word is an ordinary adjective.
+    # So the rule is structural instead of lexical: cut at punctuation or not at
+    # all, and if nothing fits, say nothing. Silence is a valid description.
+    return ""
+
+
+def fit_generated(describe, gap_seconds: float, synth, *,
+                  headroom: float = HEADROOM, max_rounds: int = 3) -> "Fit":
+    """Ask for a description the right size, rather than cutting one to size.
+
+    `describe(target_words)` returns a description of roughly that length. This
+    is the path the pipeline actually takes: length is a constraint handed to the
+    writer, not damage done afterwards. Truncation still exists underneath as a
+    guard, but by the time it runs something has already gone wrong.
+    """
+    budget = budget_for(gap_seconds, headroom)
+    target = words_for(gap_seconds, headroom)
+    best = None
+
+    for _ in range(max_rounds):
+        if target < 2:
+            break
+        text = (describe(target) or "").strip()
+        if not text:
+            break
+        actual = synth.duration(text)
+        if actual <= budget:
+            return Fit(text, round(actual, 3), round(budget, 3), True,
+                       trimmed=False)
+        best = text
+        # Scale the ask by how far over we went, rather than nudging by one word.
+        target = max(2, int(target * (budget / actual) * 0.92))
+
+    # The writer could not hit the budget. Fall back to measured truncation,
+    # which is allowed to return nothing.
+    return fit_measured(best or "", gap_seconds, synth, headroom=headroom) \
+        if best else Fit("", 0.0, round(budget, 3), False, True)
+
+
+@dataclass
+class Fit:
+    text: str
+    seconds: float
+    budget: float
+    fits: bool
+    trimmed: bool = False
+
+
+def fit(text: str, gap_seconds: float, headroom: float = HEADROOM) -> Fit:
+    """Make the text fit, or report honestly that it cannot.
+
+    Trimming is by clause and then by word from the end, never mid-word. A
+    description cut mid-word is worse than no description: the listener is left
+    holding half a fact and the next line of dialogue arrives on top of it.
+    """
+    budget = budget_for(gap_seconds, headroom)
+    dur = speech_seconds(text)
+    if dur <= budget:
+        return Fit(text.strip(), round(dur, 3), round(budget, 3), True)
+
+    # Clause first: dropping a trailing subordinate clause usually keeps the
+    # sentence meaningful, where dropping words from the end rarely does.
+    parts = re.split(r"(?<=[,;])\s+", text.strip())
+    while len(parts) > 1:
+        parts.pop()
+        candidate = " ".join(parts).rstrip(",;") + "."
+        if speech_seconds(candidate) <= budget:
+            return Fit(candidate, round(speech_seconds(candidate), 3),
+                       round(budget, 3), True, trimmed=True)
+
+    words = re.findall(r"\S+", text.strip())
+    while len(words) > 2:
+        words.pop()
+        candidate = " ".join(words).rstrip(".,;") + "."
+        if speech_seconds(candidate) <= budget:
+            return Fit(candidate, round(speech_seconds(candidate), 3),
+                       round(budget, 3), True, trimmed=True)
+
+    # Nothing usable fits. Say so; do not emit a fragment.
+    return Fit("", 0.0, round(budget, 3), False, trimmed=True)
