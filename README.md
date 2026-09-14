@@ -40,7 +40,8 @@ missing key can never be mistaken for a working system. Set
 `ALOUD_LLM_BASE_URL`, `ALOUD_LLM_API_KEY` and `ALOUD_LLM_MODEL` for the real one.
 
 ```bash
-python3 tests/test_real_audio.py    # run this one first, it uses real voices
+python3 tests/test_logic.py         # the fast one, about a second, no subprocesses
+python3 tests/test_real_audio.py    # run this one next, it uses real voices
 python3 tests/test_pipeline.py
 python3 tests/test_planning.py
 python3 tests/test_caption.py
@@ -111,15 +112,65 @@ fixed path in `/tmp`, so parallel runs raced on the same file. Per-process now.
 
 Nine tests later and one bug fixed: **44% to 63%** on the timed-track module.
 
+### Round two: the modules the slow suites could not reach
+
+`budget.py` and `gaps.py` carry the safety property and had never been mutation
+tested, for a practical reason. The suites that cover them shell out to a
+synthesiser and to ffmpeg and cost about thirty seconds a run, and a mutation
+tester runs the suite once per mutant, so a single pass over `budget.py` alone
+is hours. The answer was `tests/test_logic.py`: the same logic against a stub
+synthesiser with a duration model the tests own and audio made of tones, and
+sixty five tests in about a second. The real fixtures stay exactly where they
+were, because a synthetic voice scores 0.99 on the speech band where a real one
+scores 0.55, and that margin is where two real faults once hid.
+
+It found a second real bug, in the same shape as the first: `fit()`, the
+estimate-only path for when no synthesiser is available, reported `fits=True`
+for descriptions that overran. Twice over. It never held back the 0.62s of
+calibrated estimator error the constant beside it exists for, and it truncated
+by word where the measured path had been fixed to cut only at clause
+boundaries, so it happily produced "A man in a grey coat crosses the." The
+truncation rule now lives in one place and both paths go through it.
+
+The rest were missing tests, and the ones worth naming are the safety ones. The
+opening window in the smoother could be widened until it deleted a real line of
+dialogue, joining the gaps on either side into one that a description would then
+play straight over, and nothing noticed. Neither the 2Hz nor the 8Hz end of the
+syllable-rhythm band was pinned, so the measurement that separates a voice from
+rain could drift either way. The frame-to-seconds conversion could be off by a
+tenth of a percent, which is four milliseconds in a fixture and three and a half
+seconds by the end of a feature. Every word in the dangling-word list could be
+removed one at a time without a single failure.
+
+Mutation score before and after, where before is the suite as it stood and after
+is that suite plus the new one. The slow suites cost 30 to 70 seconds a run, so
+budget, gaps and synth are measured on an evenly spaced sample of their mutants
+rather than all of them, and the sample size is given:
+
+| module | before | after | mutants |
+|---|---|---|---|
+| `budget.py` | **17%** | **83%** | 76 of 250, every third |
+| `gaps.py` | **72%** | **84%** | 25 of 293, every tenth |
+| `caption.py` | **52%** | **89%** | all 88 |
+| `synth.py` | **61%** | **72%** | 18 of 48, every other |
+
+Mutiny also reported what it should: on a loaded machine, 13% of the mutants in
+the `budget.py` run changed their verdict between runs. That is not a finding
+about the tests, it is the suites that shell out to `say` being at the mercy of
+a busy speech daemon, and it is the clearest argument for the hermetic half
+existing at all. Findings are confirmed before they are published, so none of
+those reached the table.
+
+Some survivors are equivalent mutants and are written up as such rather than
+chased: `_shorten` ignores the word count it is passed, so every mutation of
+that arithmetic is a no-op; `max(1, count)` in the syllable counter makes the
+silent-e boundary unreachable; numpy treats `reshape(-2, n)` exactly like
+`reshape(-1, n)`; and a `"Fit"` return annotation is never evaluated. The score
+is a floor, not a grade.
+
 ## Status
 
-The whole backend is built and tested. 40 tests in Python, 12 in JavaScript.
+The whole backend is built and tested. 110 tests in Python, 12 in JavaScript.
 
 Still to do: the Vega app shell around the scheduler, which needs 20GB of disk
 for the SDK, and a real vision endpoint for the describer.
-
-## Built for
-Build, Ship, Shape: Amazon Developer Hackathon 2026, Fire TV track. Deadline 23 Oct 2026.
-
-## Licence
-MIT

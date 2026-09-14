@@ -203,32 +203,39 @@ class Fit:
 def fit(text: str, gap_seconds: float, headroom: float = HEADROOM) -> Fit:
     """Make the text fit, or report honestly that it cannot.
 
-    Trimming is by clause and then by word from the end, never mid-word. A
-    description cut mid-word is worse than no description: the listener is left
-    holding half a fact and the next line of dialogue arrives on top of it.
+    This is the estimate-only path, for when there is no synthesiser to measure
+    against, and two things follow from that.
+
+    The budget holds ESTIMATE_ERROR_S back. The estimator is optimistic by up to
+    that much against the reference voice, so without it this function reports
+    fits=True for a cue that runs past the end of its gap and onto the next
+    line, and reports it confidently, because nothing measured anything. The
+    measured paths do not pay this because they have nothing left to be
+    uncertain about.
+
+    Trimming goes through the same structural rule as the measured path: drop a
+    trailing clause, never cut inside one. Cutting to budget alone produced "A
+    man in a grey coat crosses the.", which is inside budget and says nothing,
+    and the two paths disagreeing about that is how a rule quietly rots.
     """
-    budget = budget_for(gap_seconds, headroom)
+    budget = max(0.0, budget_for(gap_seconds, headroom) - ESTIMATE_ERROR_S)
     dur = speech_seconds(text)
     if dur <= budget:
         return Fit(text.strip(), round(dur, 3), round(budget, 3), True)
 
-    # Clause first: dropping a trailing subordinate clause usually keeps the
-    # sentence meaningful, where dropping words from the end rarely does.
-    parts = re.split(r"(?<=[,;])\s+", text.strip())
-    while len(parts) > 1:
-        parts.pop()
-        candidate = " ".join(parts).rstrip(",;") + "."
-        if speech_seconds(candidate) <= budget:
-            return Fit(candidate, round(speech_seconds(candidate), 3),
-                       round(budget, 3), True, trimmed=True)
-
-    words = re.findall(r"\S+", text.strip())
-    while len(words) > 2:
-        words.pop()
-        candidate = " ".join(words).rstrip(".,;") + "."
-        if speech_seconds(candidate) <= budget:
-            return Fit(candidate, round(speech_seconds(candidate), 3),
-                       round(budget, 3), True, trimmed=True)
+    # One truncation rule, shared with the measured path. Cutting inside a
+    # phrase is what produced "A man in a grey.", and a longer stop list cannot
+    # catch that because the offending word is an ordinary adjective. So the cut
+    # is structural: drop a trailing clause, or say nothing at all.
+    candidate = text.strip()
+    while True:
+        candidate = _shorten(candidate, 1)
+        if not candidate:
+            break
+        seconds = speech_seconds(candidate)
+        if seconds <= budget:
+            return Fit(candidate, round(seconds, 3), round(budget, 3), True,
+                       trimmed=True)
 
     # Nothing usable fits. Say so; do not emit a fragment.
     return Fit("", 0.0, round(budget, 3), False, trimmed=True)
