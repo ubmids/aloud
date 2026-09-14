@@ -25,11 +25,13 @@
 
 export class DescriptionScheduler {
   /**
-   * @param {Array<{start:number,end:number,text:string,duration?:number}>} cues
+   * @typedef {{start:number, end:number, text:string, duration?:number, id?:string|number}} ScheduledCue
+   *
+   * @param {ScheduledCue[]} cues
    * @param {object} opts
-   * @param {(cue:object)=>void} opts.onSpeak   start speaking a cue
-   * @param {()=>void} [opts.onStop]            stop whatever is speaking
-   * @param {number} [opts.seekThreshold]       jump size that counts as a seek
+   * @param {(cue: ScheduledCue) => void} opts.onSpeak  start speaking a cue
+   * @param {() => void} [opts.onStop]                  stop whatever is speaking
+   * @param {number} [opts.seekThreshold]               jump size that counts as a seek
    */
   constructor(cues = [], opts = {}) {
     this.cues = [...cues]

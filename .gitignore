@@ -33,3 +33,11 @@ build/
 data/
 out/
 tmp/
+
+# vega / react native build output
+tv/node_modules/
+tv/build/
+tv/buildinfo.json
+tv/dist/
+tv/.vega/
+*.vpkg

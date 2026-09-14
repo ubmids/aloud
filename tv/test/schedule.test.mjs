@@ -1,4 +1,4 @@
-import { DescriptionScheduler } from "../src/schedule.js";
+import { DescriptionScheduler } from "../src/player/schedule.js";
 
 let pass = 0, fail = 0;
 function t(name, fn) {
