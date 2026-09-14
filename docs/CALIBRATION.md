@@ -121,10 +121,14 @@ voices, rain, an orchestral bed and room tone:
 | 0.00 | 0.30 | 4.32s | 14.2s |
 | **0.20+** | **any** | **0.00s** | **6.1s** |
 
+The grid above was run on unseeded noise. The committed fixture is seeded, and
+recovers 5.2s of the 10s reproducibly; the unseeded figure swung between 4.5s
+and 6.1s from run to run, which made the suite go red on nothing having changed.
+
 Closing costs gap time, because it also joins scattered frames inside a music
-bed. 6.1s of 10s recovered instead of 9.3s. That is the right way round: three
-seconds less description is a fair price for never speaking over a line, which
-is the one thing this system must not do.
+bed. Around 5 to 6 seconds of 10 recovered instead of 9.3s. That is the right
+way round: a few seconds less description is a fair price for never speaking
+over a line, which is the one thing this system must not do.
 
 ## SPEECH_LOW = 200Hz, not 300Hz
 

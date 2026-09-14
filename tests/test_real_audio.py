@@ -29,6 +29,12 @@ from aloud.synth import Synth
 SR = 16000
 SYNTH = Synth()
 
+# Seeded. The beds are noise, and unseeded noise made the recovery figure swing
+# between 4.5s and 6.1s from run to run, so the suite went red on nothing having
+# changed. A flaky test is worse than no test: it teaches you to rerun instead
+# of to look. The voices are already deterministic.
+RNG = np.random.default_rng(20260914)
+
 
 def have_voice():
     if not SYNTH.available:
@@ -43,7 +49,7 @@ def voice(text, v=None):
 
 
 def rain(d):
-    n = np.random.randn(int(SR * d))
+    n = RNG.standard_normal(int(SR * d))
     return np.convolve(n, np.ones(9) / 9, "same") * 0.25
 
 
@@ -56,10 +62,14 @@ def orchestral(d):
 
 
 def room_tone(d):
-    return np.random.randn(int(SR * d)) * 0.003
+    return RNG.standard_normal(int(SR * d)) * 0.003
 
 
 def build():
+    # Rebuilt from the same seed every time, so a failure means the detector
+    # changed and not that the dice did.
+    global RNG
+    RNG = np.random.default_rng(20260914)
     parts = [
         ("speech", voice("A man in a grey coat crosses the empty street.", "Samantha")),
         ("rain", rain(4.0)),
@@ -149,6 +159,7 @@ def test_enough_of_the_quiet_is_still_recovered():
     quiet = sum(b - a for n, a, b in bounds if n != "speech")
     got = sum(g.duration for g in gaps)
     assert got >= quiet * 0.5, f"only {got:.1f}s of {quiet:.1f}s recovered"
+    assert got <= quiet, f"recovered {got:.1f}s of {quiet:.1f}s, which is impossible"
     print(f"PASS {got:.1f}s of {quiet:.1f}s of quiet recovered as usable gaps")
 
 
