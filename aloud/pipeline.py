@@ -53,8 +53,11 @@ def stub_captioner(frame_path: str, target_words: int) -> str:
     return " ".join(base[:n]).rstrip(",") + "."
 
 
-def describe_film(video: str, *, captioner=stub_captioner, synth=None,
+def describe_film(video: str, *, captioner=None, synth=None,
                   out_dir: str | None = None, align: str = "start") -> Result:
+    from .caption import captioner_from_env
+
+    captioner = captioner or captioner_from_env()
     synth = synth or Synth()
     out_dir = out_dir or tempfile.mkdtemp(prefix="aloud-")
     os.makedirs(out_dir, exist_ok=True)
@@ -75,8 +78,17 @@ def describe_film(video: str, *, captioner=stub_captioner, synth=None,
         frame = frame_at(video, plan.describe_at,
                          os.path.join(frames_dir, f"{plan.describe_at:.3f}.jpg"))
 
-        fitted = fit_generated(lambda n: captioner(frame, n), plan.gap.duration,
-                               synth)
+        # One bad frame must not cost the whole film. A describer that raises
+        # here is a real possibility (a rate limit, a refused image, a timeout)
+        # and the right answer is to leave that gap silent and carry on, which
+        # is exactly what a gap with nothing worth saying already gets.
+        try:
+            fitted = fit_generated(lambda n: captioner(frame, n),
+                                   plan.gap.duration, synth)
+        except Exception as e:
+            skipped.append((plan.gap, f"the describer failed: {type(e).__name__}"))
+            continue
+
         if not fitted.fits or not fitted.text:
             skipped.append((plan.gap, "nothing useful fitted in the time"))
             continue
