@@ -17,17 +17,18 @@ frame, and every distinct reason it cannot reports as the same four-word error.
 
 ---
 
-## 1. Adding the media package gets you the module and none of the services
+## 1. The manifest entries playback depends on are split across three pages that disagree
 
-**Severity: critical.** Nothing plays until it is fixed, and nothing in the
-toolchain points at it.
+**Severity: critical.** Nothing plays until it is fixed, and the page a
+developer actually lands on contains none of it.
 
 **Task attempted.** Play a bundled MP4 in a React Native app using
 `@amazon-devices/react-native-w3cmedia`.
 
 **Steps taken.** Created the project with `vega project generate`, added the
 `@amazon-devices/react-native-w3cmedia` dependency, mounted the `Video`
-component, built, installed and launched.
+component, built, installed and launched. When it failed, searched the package's
+own `README.md` and its TypeScript definitions, then read the device log.
 
 **Expected.** That a dependency whose entire purpose is media playback would
 arrive able to play media, or failing that, that the build would say what else
@@ -42,7 +43,7 @@ video sink has no window handle, the decoder cannot attach as a writer to a
 buffer queue that was never created, and playback fails.
 
 The application-visible error is `MEDIA_ERR_SRC_NOT_SUPPORTED`, which says codec.
-The cause is only in the device log, and it is unambiguous once you find it:
+The cause is only in the device log, and it is unambiguous once found:
 
 ```
 Binder: Unable connect to 'com.amazon.mediabuffer.service'.
@@ -54,33 +55,68 @@ ERROR ... Cannot connect! Failed to bind to service! IPCN returned IPCN_ERR_REMO
   server: Failed to attach as writer
 ```
 
-Nine `[[wants.service]]` entries and one `[[needs.privilege]]` are required.
-Searching the W3C media documentation, the component reference and the packaged
-`README.md` for any of the service ids turned up nothing. Where they were
-eventually found was the manifest of the sample app at
-`github.com/AmazonAppDev/vega-video-sample`, spread across the file under
-comments like `# Required for GIPC SR? it's for audio video playback`, a
-question mark included. A developer who has not thought to read another
-repository's manifest has no obvious path to this.
+**This requirement is documented, and this entry is worth more for where it is
+documented than for the fact that it exists.** It is spread across three pages,
+none of them the media player page a developer arrives at, and the three do not
+agree:
 
-**Workaround.** Read the device log, map each `Unable connect to` line back to a
-service id, and declare them. `tv/manifest.toml` now carries
+- `media-player-requirements.html` is the fullest: "To properly support media
+  playback, you must have the following entries in your manifest.toml file",
+  listing `mediametrics.service`, `media.server`, `gipc.uuid.*`,
+  `media.playersession.service`, `devconf.privilege.accessibility`,
+  `mediabuffer.service`, `mediatransform.service`, then separately the audio
+  services `audio.stream`, `audio.control`, `audio.system`.
+- `media-player-setup.html` gives a **shorter and conflicting** list. It drops
+  `audio.system` and `gipc.uuid.*` entirely, and annotates two of the others as
+  obsolete: `com.amazon.media.server  # Required for core media decode/encode.
+  Superseded by com.amazon.mediatransform.service.` A developer who reads this
+  page and not the other one ships a manifest that does not work.
+- `media-player-faq.html` is the only page carrying
+  `com.amazon.media.secureplayback`, under the question "What are the
+  permissions required for different media playback use cases?", labelled
+  `# Required for DRM video playback`. This clip has no DRM.
+- `media-player.html`, the overview page that the SDK and the search results
+  both lead to, mentions **none** of them.
+
+The FAQ page does warn, correctly, that "missing permissions can lead to
+playback not starting or display of a black screen", which is exactly what
+happened. It is on the third page, under a question about DRM.
+
+This is not a niche trap. A developer reported the same class of failure on the
+Vega community forum on 8 September 2026: `AudioPlayer` URL mode failing with
+`MEDIA_ERR_SRC_NOT_SUPPORTED` on the virtual device with the app "never
+connecting to com.amazon.media.server", noting that **both official media
+samples also fail**. The symptom is generic enough that it is being reported as
+a platform bug rather than as a manifest omission.
+
+**Workaround.** Map each `Unable connect to` line in the device log back to a
+service id and declare it. `tv/manifest.toml` now carries
 `com.amazon.media.server`, `com.amazon.mediametrics.service`,
 `com.amazon.media.playersession.service`, `com.amazon.mediabuffer.service`,
 `com.amazon.mediatransform.service`, `com.amazon.gipc.uuid.*`,
 `com.amazon.audio.stream`, `com.amazon.audio.control`, `com.amazon.audio.system`
-and the privilege `com.amazon.media.secureplayback`. With those in place the
-film plays first try.
+and the privilege `com.amazon.media.secureplayback`, matching the sample app at
+`github.com/AmazonAppDev/vega-video-sample`. With those in place the film plays
+first try.
 
-**Suggestion.** Three things, in order of value. Put the complete manifest block
-for basic playback in the W3C media documentation as a copyable snippet, before
-the API reference, because it is a precondition for every line that follows it.
-Have autolinking add these the way it already adds the module, since the
-packaging tool clearly knows how to write to the manifest. And at minimum, make
-the packaging tool warn: it already emits a warning of exactly this shape
-elsewhere, "MAY require the privilege ... but the privilege is not requested in
-the manifest", so the mechanism exists and is simply not wired to the media
-services.
+In the interest of not overclaiming: these were added as a block, so this build
+did not isolate which of them are individually necessary for undrmed local
+playback. That is itself part of the problem. `secureplayback` is documented as
+a DRM requirement and declared unconditionally by the sample, and a developer has
+no way to tell which of those two the truth is without removing entries one at a
+time and reinstalling.
+
+**Suggestion.** In order of value. Put one complete, working manifest block for
+basic playback at the top of `media-player.html`, before the API reference,
+because it is a precondition for every line that follows it, and make the other
+pages link to it rather than restate it differently. Reconcile the three lists,
+and say what "superseded" means for an app that has to run on existing devices.
+Split the FAQ's permission table by use case so a non-DRM app can see its own
+row. And have autolinking add these the way it already adds the module, since
+the packaging tool demonstrably knows how to write to the manifest, or at
+minimum warn: it already emits "MAY require the privilege ... but the privilege
+is not requested in the manifest" elsewhere, so the mechanism exists and is
+simply not wired to the media services.
 
 ---
 
@@ -154,6 +190,14 @@ keplervideosink, gstkeplervideosink.cpp, 908, gst_keplervideosink_set_window_han
 which then cascades into the decoder failing to attach to a buffer queue. It
 looks like a decoder problem. It is a layout problem.
 
+What makes this more than a docs-reading failure is that the documented example
+would not work either. The media player page's only video example passes no
+dimensions and no style to the component at all, relying on a `<View style={{
+flex: 1 }}>` wrapper, and the props interface it points at has no reference page
+of its own: it is absent from the module's interface index and the expected URL
+returns 404. Meanwhile the sibling examples on the same pages do put `style` on
+video components, which is the opposite lesson.
+
 **Workaround.** Measured the containing view with `onLayout` and passed the
 resulting pixel dimensions as numeric `width` and `height` props. See
 `measureStage` in `tv/src/App.tsx`. The layout stays declarative and the player
@@ -161,9 +205,10 @@ gets the two numbers it insists on.
 
 **Suggestion.** Either honour `style`, which is what the type signature promises
 by accepting `ViewProps`, or drop `ViewProps` from the signature and make
-`width` and `height` required so the compiler catches it. If neither, say in the
-documentation, in the first example, that these props are mandatory and that
-omitting them produces no picture and no error.
+`width` and `height` required so the compiler catches it. Publish the props
+interface, which is currently a 404. And make the example on the media player
+page one that actually renders, since a developer who copies it exactly gets a
+blank rectangle.
 
 ---
 
@@ -271,13 +316,24 @@ texture handle, anything.
 **Expected.** A clear statement either way, since it is the difference between an
 app that analyses video on device and an app that cannot.
 
-**Actual.** No statement either way. The answer has to be inferred from an
-architecture note about hardware-accelerated GStreamer decode, which describes
-the pipeline without ever drawing the conclusion that follows from it: frames go
-from the decoder to a hardware surface and never pass through JavaScript.
-Confirmed the inference the only way available, by reading every type definition
-the package ships and finding no frame access, no canvas, no
-`requestVideoFrameCallback` and no texture handle anywhere in them.
+**Actual.** No statement either way, on any page. The answer has to be assembled
+from an architecture description that never draws its own conclusion. The media
+player page says "the media player stack runs on top of the GStreamer framework
+on Vega devices for hardware-accelerated decoding and rendering", describes the
+platform core media components as "OS native APIs that allow access to
+underlying hardware processing blocks to decrypt, decode, and render audio and
+video frames", and describes the JavaScript layer purely as a control path:
+"These JavaScript bindings serve as a bridge between the app code and the
+underlying native implementation ... it routes requests through the
+KeplerW3CTurboModule to the native layer." The API reference adds that
+"KeplerVideoSurfaceView is a React Native component that renders video frames on
+the screen."
+
+Every one of those sentences is about control flowing down and pixels never
+flowing up, and not one of them says so. Confirmed the inference the only way
+available, by reading every type definition the package ships and finding no
+frame access, no canvas, no `requestVideoFrameCallback` and no texture handle
+anywhere in them.
 
 This single undocumented fact determines the entire architecture of any app
 doing visual analysis. Get it wrong and you build the wrong thing for a week.
@@ -472,6 +528,32 @@ Appstore." Then a developer knows whether to care.
 
 ---
 
+## 13. The media player page tells you to import from a package that does not exist
+
+**Severity: low**, but it is the first line of code on the page.
+
+**Task attempted.** Import the player.
+
+**Steps taken.** Copied the import from the media player documentation.
+
+**Expected.** A package name matching the one `npm install` just put in
+`node_modules`.
+
+**Actual.** The page's prose and code comments say `@amzn/react-native-w3cmedia`
+while the import statement directly beneath uses
+`@amazon-devices/react-native-w3cmedia`, which is the real published name. The
+`@amzn/` scope appears throughout that page. It is the internal name leaking
+out: the package's own bundled module manifests list its files under
+`node_modules/@amzn/react-native-w3cmedia_2/`, so both names are live inside the
+distribution and only one of them can be installed.
+
+**Workaround.** Use the name in `package.json`.
+
+**Suggestion.** Search and replace `@amzn/` on the published documentation. It is
+a one-line fix and it is currently the first thing a developer copies.
+
+---
+
 ## What went well, since a friction log that only complains is not useful
 
 - The device log is genuinely excellent. Every single failure in this document
@@ -499,8 +581,18 @@ Appstore." Then a developer knows whether to care.
   typo, and `manifest validation found 0 errors` meant the one thing that could
   have compounded the confusion in entry 1 never did.
 
-- The sample app at `github.com/AmazonAppDev/vega-video-sample` is real, complete
-  and current. It is the reason entry 1 took an afternoon instead of the whole
-  build. It deserves to be linked from the media player documentation as
-  required reading rather than as further reading, because right now it is
-  carrying load the documentation should be carrying.
+- The sample app at `github.com/AmazonAppDev/vega-video-sample` is real,
+  complete and current, and its manifest is commented line by line with what
+  each declaration is for. It is the reason entry 1 took an afternoon instead of
+  the whole build. Where the documentation pages disagree with each other, the
+  sample is the tiebreaker, and it was right. Linking it from the media player
+  page as required reading would close most of entry 1 on its own.
+
+- Being wrong in public is cheap here, which is worth saying because it changed
+  this document. The first draft of entry 1 asserted that the media service
+  declarations were undocumented, on the strength of having searched the
+  package's bundled `README.md` and its TypeScript definitions. They are
+  documented, on three separate pages. The entry is stronger for the correction
+  and so is the suggestion attached to it, and the reason the mistake was
+  catchable at all is that Amazon's documentation is public, indexed and
+  searchable rather than sitting behind a partner login. That is not nothing.
