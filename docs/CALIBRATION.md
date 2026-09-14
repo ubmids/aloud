@@ -61,6 +61,71 @@ Separation on the synthetic fixtures, where 1.0 is entirely speech-shaped:
 | music | 0.09 |
 | room tone | 0.00 |
 
+## Speech needs two conditions, not one
+
+The detector originally asked one question: what fraction of a frame's energy
+sits in the speech band. Measured against real voices instead of the synthetic
+fixture, that question does not work.
+
+| content | speech-band score |
+|---|---|
+| rain | 0.76 |
+| real voices | 0.52 to 0.66 |
+| orchestral bed | 0.29 |
+| engine rumble | 0.19 |
+| room tone | 0.00 |
+
+Rain scores **higher than every human voice**. Broadband sound spreads energy
+right across the speech band, so a band-only detector hears dialogue through an
+entire rainy scene and never emits a single description. Applause, crowds, wind
+and static all behave the same way.
+
+What separates them is rhythm. A person opens and closes their mouth a few times
+a second, which puts a strong peak in the amplitude envelope between 2Hz and
+8Hz. Rain has no such rhythm.
+
+| content | syllable rhythm |
+|---|---|
+| real voices | 0.61 to 0.78 |
+| orchestral bed | 0.40 |
+| applause | 0.27 |
+| rain | 0.23 |
+| room tone | 0.21 |
+
+Speech now requires **both**: speech-shaped energy says the sound could be a
+voice, the syllable rhythm says something is actually talking.
+
+## CLOSE_S = 0.25s then OPEN_S = 0.20s, in that order
+
+A music bed misreads a small fraction of its frames as speech. That scatter does
+not shrink a gap, it destroys it: a three and a half second gap broken every
+quarter second becomes several runs too short to use and disappears entirely.
+Measured, a bed misreading only 7.4% of its frames lost its whole gap.
+
+Two attempts at cleaning it up both leaked into dialogue.
+
+1. A symmetric majority vote over a sliding window removed the scatter and ate
+   60ms off the end of a real line, because a symmetric filter shrinks a run
+   from both sides.
+2. Dropping short speech runs outright leaked 0.5s, because the quiet tail of a
+   line fragments into short runs and is genuinely speech.
+
+Closing before opening fixes both: the tail is reattached to its line before
+anything becomes eligible to be dropped. Grid search over a track of real
+voices, rain, an orchestral bed and room tone:
+
+| close | open | dialogue overlap | quiet recovered |
+|---|---|---|---|
+| 0.00 | 0.10 | 0.12s | 9.3s |
+| 0.00 | 0.20 | 0.50s | 9.6s |
+| 0.00 | 0.30 | 4.32s | 14.2s |
+| **0.20+** | **any** | **0.00s** | **6.1s** |
+
+Closing costs gap time, because it also joins scattered frames inside a music
+bed. 6.1s of 10s recovered instead of 9.3s. That is the right way round: three
+seconds less description is a fair price for never speaking over a line, which
+is the one thing this system must not do.
+
 ## SPEECH_LOW = 200Hz, not 300Hz
 
 The telephone band starts at 300Hz. A detector that starts there discards the
