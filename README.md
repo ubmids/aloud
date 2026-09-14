@@ -87,9 +87,33 @@ half a point of margin that does not exist. Behind that margin sat two faults:
 rain scores **higher** than a human voice on speech-band energy alone, and a
 music bed misreading 7.4% of its frames destroyed a perfectly good gap.
 
+## What Mutiny found here
+
+Mutiny, a sibling project in the same sprint, breaks the source thousands of
+ways and reports which tests never notice. Pointed at this repository it showed
+that **56% of breakages went unnoticed**, and the findings were not noise.
+
+The worst was the safety check itself. `validate()` decides whether a cue sits
+inside a gap, which is the one rule this system must never break, and both its
+boundary and the direction of its tolerance were unprotected. The VTT timestamp
+formatting had no test at all, so a track could have shipped with wrong times
+and everything would still have been green.
+
+Then it showed that only one of `schedule()`'s three alignments was exercised.
+Writing the missing test found a real bug: `align="centre"` returned an end
+three seconds past a two second gap when handed a cue too long to fit, which is
+the exact overrun this project exists to prevent. It was unreachable in
+practice, because the pipeline only asks for cues that already fit. That is
+precisely why nothing caught it.
+
+It also found that this suite was not hermetic: the test film was written to a
+fixed path in `/tmp`, so parallel runs raced on the same file. Per-process now.
+
+Nine tests later and one bug fixed: **44% to 63%** on the timed-track module.
+
 ## Status
 
-The whole backend is built and tested. 27 tests in Python, 12 in JavaScript.
+The whole backend is built and tested. 40 tests in Python, 12 in JavaScript.
 
 Still to do: the Vega app shell around the scheduler, which needs 20GB of disk
 for the SDK, and a real vision endpoint for the describer.

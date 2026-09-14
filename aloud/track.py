@@ -97,12 +97,20 @@ class Track:
 
 def schedule(gap, spoken_seconds: float, align: str = "start",
              lead_in: float = 0.0) -> tuple[float, float]:
-    """Place a cue of known length inside a gap.
+    """Place a cue of known length inside a gap, and never outside it.
 
     Aligned to the start by default. A description is usually about what has
     just appeared, so saying it early gives the listener the context while the
     image is still on screen, rather than confirming afterwards what they have
     already stopped wondering about.
+
+    Every branch clamps to the gap. `centre` did not, and returned an end three
+    seconds past a two second gap when handed a cue too long to fit: the exact
+    overrun this whole system exists to prevent. It was unreachable in practice
+    because the pipeline only asks for cues that already fit, which is precisely
+    why nothing caught it. `align` is a public argument, and a safety property
+    that holds only because of how one caller happens to behave is not a safety
+    property.
     """
     if align == "end":
         end = gap.end
@@ -110,6 +118,6 @@ def schedule(gap, spoken_seconds: float, align: str = "start",
     if align == "centre":
         slack = max(0.0, gap.duration - spoken_seconds)
         start = gap.start + slack / 2
-        return start, start + spoken_seconds
+        return start, min(gap.end, start + spoken_seconds)
     start = gap.start + lead_in
     return start, min(gap.end, start + spoken_seconds)
