@@ -42,4 +42,6 @@ tv/build/
 tv/buildinfo.json
 tv/dist/
 tv/.vega/
+# Written by the Kepler eslint plugin on every lint run.
+tv/generated/
 *.vpkg

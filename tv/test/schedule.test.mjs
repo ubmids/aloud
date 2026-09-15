@@ -1,4 +1,6 @@
-import { DescriptionScheduler } from "../src/player/schedule.js";
+import {
+  DescriptionScheduler, cueWindow, fitsAt, nextCueFrom,
+} from "../src/player/schedule.js";
 
 let pass = 0, fail = 0;
 function t(name, fn) {
@@ -157,6 +159,53 @@ t("an empty track is harmless", () => {
   const s = new DescriptionScheduler([], {});
   play(s, 0, 10);
   eq(s.speaking, null);
+});
+
+// The screen draws a cue sitting inside a silence, with the quiet that is left
+// over when the voice stops. Those numbers are the same reading of a cue the
+// scheduler fires on, so they are tested here and computed once.
+
+t("a window is the silence, and the cost is the speech", () => {
+  const w = cueWindow({ start: 2.0, end: 3.3, gap: [1.8, 6.0] });
+  eq([w.opens, w.start, w.end], [1.8, 2.0, 3.3 + 2.7]);
+  eq(+w.speech.toFixed(3), 1.3);
+  eq(+w.silence.toFixed(3), 4.2);
+  eq(+w.spare.toFixed(3), 2.7, "the drawn slack disagrees with the real slack:");
+});
+
+t("a cue with no gap recorded is its own window", () => {
+  const w = cueWindow({ start: 2.0, end: 3.3, gap: null });
+  eq([w.opens, w.end, w.spare], [2.0, 3.3, 0]);
+});
+
+t("normalising a window twice changes nothing", () => {
+  const once = cueWindow({ start: 2.0, end: 3.3, gap: [2.0, 6.0] });
+  const twice = cueWindow({ start: once.start, end: once.end, duration: once.speech, gap: [2.0, 6.0] });
+  eq([twice.end, +twice.speech.toFixed(3), +twice.spare.toFixed(3)], [6.0, 1.3, 2.7]);
+});
+
+t("fit is measured against what is left of the silence", () => {
+  const cue = { start: 2.0, end: 3.3, gap: [2.0, 6.0] };
+  eq(fitsAt(cue, 2.25), true, "refused with 3.75s left for 1.3s of speech:");
+  eq(fitsAt(cue, 5.0), false, "accepted with 1.0s left for 1.3s of speech:");
+});
+
+t("fit shrinks with the playback rate", () => {
+  const cue = { start: 2.0, end: 3.3, gap: [2.0, 6.0] };
+  eq(fitsAt(cue, 4.0, 1), true);
+  eq(fitsAt(cue, 4.0, 2), false, "2.0s of gap at double speed is 1.0s of room:");
+});
+
+t("the cue to point at is the one whose silence has not closed", () => {
+  const cues = [
+    { id: "a", start: 2.0, end: 5.0 },
+    { id: "b", start: 9.0, end: 12.0 },
+  ];
+  eq(nextCueFrom(cues, 0).id, "a");
+  eq(nextCueFrom(cues, 4.9).id, "a", "it moved on while the cue was still speaking:");
+  eq(nextCueFrom(cues, 5.0).id, "b");
+  eq(nextCueFrom(cues, 99).id, "b", "the screen emptied out at the end of the film:");
+  eq(nextCueFrom([], 0), null);
 });
 
 console.log(`\n${pass} passed, ${fail} failed`);

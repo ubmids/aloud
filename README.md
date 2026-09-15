@@ -106,6 +106,33 @@ measured speech durations, real placement.
 Five of the nine gaps are left silent, because nothing visible had changed since
 the previous description. That is the planner working, not a shortfall.
 
+### What the screen shows
+
+Audio description is invisible. A still of this app playing a film is a still of
+the film, so the screen shows what the ear is getting. The picture sits beside a
+panel carrying the sentence currently being spoken, which arrives at full
+brightness and settles back once the voice stops. Underneath both of them is the
+schedule, drawn at two scales.
+
+The strip is the whole film: dialogue as a solid bar, the silences cut out of it
+as recesses, and each description sitting inside one with the gap still visible
+around it. Below the strip, the silence the playhead is in is blown up to the
+full width, because that is where the margin becomes legible. This much quiet,
+this much speech, this much still clear when the voice stops. At film scale that
+margin is four pixels. At gap scale it is the product.
+
+A sighted viewer can therefore check the claim the whole system rests on without
+being asked to trust it. Watch the playhead cross a lit block and a description
+starts. Watch it cross the space between blocks and the film talks instead.
+
+The interface also practises what the app is about. Nothing is told by colour
+alone, every tone that carries words clears 4.5:1 against what it sits on, focus
+moves rather than recolours, the settings are named in a viewer's language
+rather than the pipeline's, and the panel showing the spoken sentence is
+deliberately not an accessibility live region: a screen reader user is already
+hearing that sentence in the app's own voice, and announcing it a second time
+would talk over the film at the one moment this system exists to keep quiet.
+
 ## Architecture, and the spike that set it
 
 Vega OS does **not** expose decoded video frames to app JavaScript. Playback is

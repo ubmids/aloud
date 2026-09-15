@@ -31,6 +31,66 @@
  * one file that reasons about them.
  */
 
+/**
+ * The window a cue is judged against, and what it costs.
+ *
+ * The backend writes `start` and `end` around the speech itself and records the
+ * silence it was placed in separately, so a cue read literally has no slack at
+ * all. The gap is the real deadline and the measured speech is the real cost.
+ *
+ * `spare` is the silence still left when the voice stops. The scheduler does
+ * not need it, the screen does: showing a viewer that a description finished
+ * with half a second of quiet still to go is the difference between the safety
+ * claim being visible and it being asserted.
+ *
+ * It lives here rather than in a component because it is a timing rule. Held in
+ * a component it would be a second opinion about when a cue fits, and two
+ * opinions about that is how a schedule drifts.
+ */
+export function cueWindow(cue) {
+  const speech = cue.duration ?? (cue.end - cue.start);
+  const gap = Array.isArray(cue.gap) && cue.gap.length === 2 ? cue.gap : null;
+  // Never shorten a window a caller stated outright, only widen it to the
+  // silence the cue was actually validated against.
+  const end = gap !== null && gap[1] > cue.end ? gap[1] : cue.end;
+  const opens = gap !== null && gap[0] < cue.start ? gap[0] : cue.start;
+  return {
+    opens,                            // when the dialogue stops
+    start: cue.start,                 // when the description starts
+    end,                              // when the dialogue resumes
+    speech,
+    silence: end - opens,
+    spare: end - cue.start - speech,  // quiet still left when the voice stops
+  };
+}
+
+/**
+ * Is there enough of the window left at `t` to say the whole thing?
+ *
+ * The one rule the app exists to enforce. At faster playback the window passes
+ * sooner while the speech takes exactly as long as it always did, so what is
+ * left is discounted by the rate.
+ */
+export function fitsAt(cue, t, rate = 1) {
+  const w = cueWindow(cue);
+  return (w.end - t) / (rate > 0 ? rate : 1) >= w.speech;
+}
+
+/**
+ * The cue a viewer is either hearing or waiting for.
+ *
+ * Sorted cues, so the first whose silence has not closed is the one the screen
+ * should be pointing at. Falls back to the last cue once the film is past all
+ * of them, because an interface that empties out at the end of a film looks
+ * broken rather than finished.
+ */
+export function nextCueFrom(cues, t) {
+  for (const cue of cues) {
+    if (cueWindow(cue).end > t) return cue;
+  }
+  return cues.length > 0 ? cues[cues.length - 1] : null;
+}
+
 export class DescriptionScheduler {
   /**
    * @typedef {object} ScheduledCue
@@ -56,16 +116,8 @@ export class DescriptionScheduler {
   constructor(cues = [], opts = {}) {
     this.cues = [...cues]
       .map((c, i) => {
-        const speech = c.duration ?? (c.end - c.start);
-        const gap = Array.isArray(c.gap) && c.gap.length === 2 ? c.gap[1] : null;
-        return {
-          ...c,
-          id: c.id ?? i,
-          duration: speech,
-          // Never shorten a window a caller stated outright, only widen it to
-          // the gap the cue was actually validated against.
-          end: gap !== null && gap > c.end ? gap : c.end,
-        };
+        const w = cueWindow(c);
+        return {...c, id: c.id ?? i, duration: w.speech, end: w.end};
       })
       .sort((a, b) => a.start - b.start);
     this.onSpeak = opts.onSpeak || (() => {});
@@ -120,11 +172,8 @@ export class DescriptionScheduler {
       if (t < cue.start) break;                   // sorted: nothing earlier is due
       if (t >= cue.end) { this.fired.add(cue.id); continue; }   // missed it
 
-      // The rest of the window has to hold the rest of the description. At
-      // faster playback the window passes sooner while the speech does not, so
-      // the remaining time is discounted by the rate.
-      const remaining = (cue.end - t) / this.rate;
-      if (remaining < cue.duration) {
+      // The rest of the window has to hold the rest of the description.
+      if (!fitsAt(cue, t, this.rate)) {
         this.fired.add(cue.id);                   // too late to start safely
         continue;
       }
