@@ -24,9 +24,11 @@ import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from aloud import synth as synth_mod
-from aloud.budget import (DANGLING, ESTIMATE_ERROR_S, HEADROOM, budget_for,
-                          fit, fit_generated, fit_measured, speech_seconds,
-                          syllables, words_for)
+from aloud.budget import (DANGLING, ESTIMATE_ERROR_S, FIXED_COST_S, HEADROOM,
+                          PAUSE_COMMA_S, PAUSE_STOP_S, SECONDS_PER_SYLLABLE,
+                          budget_for, fit, fit_generated, fit_measured,
+                          speech_seconds, syllables, words_for)
+from aloud.calibrate import features
 from aloud.gaps import (MIN_GAP_S, Gap, _runs, _smooth, find_gaps, load_audio,
                         modulation, speechiness)
 from aloud.synth import Spoken, Synth
@@ -97,6 +99,31 @@ def test_the_estimate_stays_inside_the_residual_the_calibration_claims():
     assert worst <= ESTIMATE_ERROR_S, (
         f"worst residual {worst:.2f}s against a documented {ESTIMATE_ERROR_S}s")
     print(f"PASS the estimator is within {worst:.2f}s of the measured voice")
+
+
+def test_the_calibration_fits_the_model_that_ships():
+    """`calibrate.py` prints the constants at the top of budget.py, and it can
+    only do that honestly if it is fitting the same five terms the estimator is
+    made of. Change the features on one side and the fit still converges, still
+    reports a small residual, and hands over numbers for a model nobody runs.
+    Every duration in the pipeline then comes from constants calibrated against
+    the wrong thing, and the error is invisible because the arithmetic is fine
+    on both sides."""
+    weights = [FIXED_COST_S, SECONDS_PER_SYLLABLE,
+               SECONDS_PER_SYLLABLE,          # a digit is charged a syllable
+               PAUSE_COMMA_S, PAUSE_STOP_S]
+    for phrase in ("He turns.",
+                   "The clock reads 3:15.",
+                   "She waits. He does not answer.",
+                   "Snow, thick and steady; it fills the courtyard.",
+                   "The train to platform 9 is delayed by 40 minutes."):
+        row = features(phrase)
+        assert len(row) == len(weights), row
+        modelled = sum(f * w for f, w in zip(row, weights))
+        assert abs(modelled - speech_seconds(phrase)) <= 1e-9, (
+            f"{phrase!r}: the calibration would fit {modelled:.3f}s and the "
+            f"estimator charges {speech_seconds(phrase):.3f}s")
+    print("PASS the calibration fits the same five terms the estimator uses")
 
 
 def test_a_longer_sentence_costs_proportionally_more():
@@ -367,6 +394,17 @@ def test_every_fit_reports_its_length_and_its_budget_to_the_millisecond():
     ]
     for got in paths:
         assert abs(got.budget - budget_for(gap)) <= 0.0005, got
+
+    # And the length on every path that reports one, not only the first. Three
+    # of the four round their own number and only this one was ever read, so a
+    # cue could be reported a half second shorter than it is.
+    assert abs(paths[0].seconds - 1.23456) <= 0.0005, paths[0]
+    plain = fit("A man crosses.", 6.0)
+    assert abs(plain.seconds - speech_seconds(plain.text)) <= 0.0005, plain
+    trimmed = fit("Snow fills the courtyard, thick and steady, "
+                  "burying the parked cars.", 5.0)
+    assert abs(trimmed.seconds - speech_seconds(trimmed.text)) <= 0.0005, trimmed
+
     estimated = fit("A man in a grey coat crosses the empty street in snow.", gap)
     assert abs(estimated.budget
                - (budget_for(gap) - ESTIMATE_ERROR_S)) <= 0.0005, estimated
@@ -539,6 +577,13 @@ def test_the_estimate_only_path_holds_its_own_error_back():
     gap = (speech_seconds(text) + 0.05) / HEADROOM
     assert speech_seconds(text) <= budget_for(gap), "fixture is not marginal"
     assert not fit(text, gap).fits, "a cue inside the estimate alone was accepted"
+
+    # The margin is a margin and not a ban. Widen it and nothing is unsafe, it
+    # is simply that no ordinary description fits an ordinary gap any more and
+    # the estimate-only path stops being a fallback and becomes silence.
+    ordinary = "A man crosses the empty street."
+    assert fit(ordinary, 4.0).fits, (
+        f"{speech_seconds(ordinary):.2f}s of description was refused a 4s gap")
     print("PASS the estimate-only path refuses what it cannot promise")
 
 
@@ -886,6 +931,66 @@ def test_a_gap_reports_its_own_length():
     print("PASS a gap knows how long it is")
 
 
+def test_a_quietly_mixed_line_is_still_dialogue():
+    """Every fixture above is at full scale and no film is. Nothing in the
+    detector may depend on how loud the mix is, and the place that can is the
+    syllable measure, which divides one energy sum by another and guards the
+    division against zero. Move that guard anywhere off zero and a normally
+    mixed film reads as one continuous silence, which puts a description over
+    every line in it. At full scale the numbers are large enough that the guard
+    never fires, so the fixtures above cannot see it."""
+    for amp in (1.0, 0.2, 0.05):
+        track = np.concatenate([voiced(2.0) * amp, hush(3.0), voiced(2.0) * amp])
+        gaps = find_gaps(track, SR)
+        assert len(gaps) == 1, f"at {amp:.2f} of full scale the film is {gaps}"
+        assert gaps[0].start >= 2.10, (amp, gaps)
+        assert gaps[0].end <= 4.90, (amp, gaps)
+    print("PASS a line at a twentieth of full scale is still dialogue")
+
+
+def test_a_fast_talker_is_inside_the_syllable_band():
+    """The band has a top edge and the tests only ask about 4Hz in the middle of
+    it and 9Hz outside it, so the edge itself can move a whole hertz unnoticed.
+    Narrowing it to 7Hz keeps both of those answers and loses anyone speaking
+    quickly: at 7.5 syllables a second the line stops counting as speech, the
+    gaps either side of it join into one, and a description plays over the whole
+    sentence."""
+    track = np.concatenate([hush(2.0), swelling(2.0, 7.5), hush(2.0)])
+    gaps = find_gaps(track, SR)
+    assert len(gaps) == 2, f"a 7.5Hz speaker was heard as silence: {gaps}"
+    assert gaps[0].end <= 2.0 and gaps[1].start >= 4.0, gaps
+    print("PASS a voice at 7.5 syllables a second is still speech")
+
+
+def test_the_smoothing_the_film_gets_is_the_smoothing_that_was_measured():
+    """Every smoothing test above hands `_smooth` its two windows explicitly, so
+    CLOSE_S and OPEN_S, the values a film actually gets, are never exercised.
+    Either could be zeroed with the whole file still green, and each loses one
+    of the two properties they were measured for: the quiet tail of a line stays
+    part of that line, and a single misread frame inside a bed does not split a
+    usable gap into two unusable ones."""
+    # A line with a dropout in it and a 0.16s tail, which is too short to
+    # survive on its own merits. Closing reattaches the tail to the line before
+    # anything is eligible to be dropped, so the gap opens after 1.52s.
+    tail = np.concatenate([voiced(1.2), hush(0.16), voiced(0.16),
+                           hush(3.0), voiced(1.0)])
+    got = find_gaps(tail, SR)
+    assert len(got) == 1, got
+    assert got[0].start >= 1.5, (
+        f"the gap opened at {got[0].start:.2f}s, on top of a line that runs to "
+        "1.52s")
+
+    # A bed with one 0.12s misread in the middle of it. Opening removes it.
+    # Without that the gap arrives as two of 1.2s, both under the minimum, and
+    # the viewer is told nothing at all across three seconds of silence.
+    blip = np.concatenate([voiced(1.5), hush(1.5), voiced(0.12),
+                           hush(1.5), voiced(1.5)])
+    got = find_gaps(blip, SR)
+    assert len(got) == 1, f"a 0.12s misread split the gap in two: {got}"
+    assert got[0].duration >= MIN_GAP_S, got
+    print("PASS the close and open windows a film gets both do their job")
+
+
 # --- reading the film's audio ------------------------------------------------
 
 def write_wav(path, samples, sr=SR, channels=1):
@@ -1040,6 +1145,31 @@ def test_the_synthesiser_is_found_when_it_is_actually_there():
     assert Synth().available, (
         "say and ffmpeg are both on this path and the probe did not find them")
     print("PASS the synthesiser on this machine is detected")
+
+
+def test_half_a_toolchain_is_not_a_synthesiser():
+    """`say and ffmpeg`. With `or`, a machine carrying one of the two reports a
+    working voice, the pipeline stops falling back to the estimator and starts
+    scheduling real cues, and the failure arrives as a subprocess error partway
+    through a film instead of as a missing voice before it starts."""
+    class _OnlySay:
+        @staticmethod
+        def which(name):
+            return "/usr/bin/say" if name == "say" else None
+
+    class _OnlyFfmpeg:
+        @staticmethod
+        def which(name):
+            return "/usr/bin/ffmpeg" if name == "ffmpeg" else None
+
+    real = synth_mod.shutil
+    try:
+        for half in (_OnlySay, _OnlyFfmpeg):
+            synth_mod.shutil = half
+            assert not Synth().available, f"{half.__name__} reported a voice"
+    finally:
+        synth_mod.shutil = real
+    print("PASS a synthesiser needs both the voice and the converter")
 
 
 def test_a_missing_synthesiser_is_an_error_and_not_a_zero():

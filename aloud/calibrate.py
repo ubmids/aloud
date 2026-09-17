@@ -42,6 +42,22 @@ PHRASES = [
 ]
 
 
+def features(text: str) -> list[float]:
+    """The terms the duration model is made of, in the order the fit expects.
+
+    This is deliberately the only place the feature set is written down. When
+    the estimator in budget.py and the calibration disagree about what a
+    duration is made of, the fit quietly optimises a different model from the
+    one that ships, and every constant it prints is wrong in a way that looks
+    entirely reasonable.
+    """
+    return [1.0,
+            sum(syllables(w) for w in re.findall(r"[A-Za-z']+", text)),
+            len(re.findall(r"\d", text)),
+            text.count(",") + text.count(";"),
+            len(re.findall(r"[.!?]", text))]
+
+
 def measure(text: str) -> float | None:
     if not shutil.which("say"):
         return None
@@ -64,8 +80,7 @@ def main():
         if actual is None:
             print("no synthesiser available, cannot calibrate")
             return
-        syl = sum(syllables(w) for w in re.findall(r"[A-Za-z']+", p))
-        rows.append((p, syl, actual, speech_seconds(p)))
+        rows.append((p, int(features(p)[1]), actual, speech_seconds(p)))
 
     # Multivariate least squares over every feature the model actually uses.
     # Fitting syllables alone and substituting the result double-counts the
@@ -74,9 +89,8 @@ def main():
     import numpy as np
 
     A, y = [], []
-    for p, syl, actual, _model in rows:
-        A.append([1.0, syl, len(re.findall(r"\d", p)),
-                  p.count(",") + p.count(";"), len(re.findall(r"[.!?]", p))])
+    for p, _syl, actual, _model in rows:
+        A.append(features(p))
         y.append(actual)
     coef, *_ = np.linalg.lstsq(np.array(A), np.array(y), rcond=None)
     fixed, per_syl, per_digit, per_comma, per_stop = coef
@@ -95,7 +109,11 @@ def main():
     print("\ncoefficients for budget.py:")
     print(f"  FIXED_COST_S         = {fixed:.3f}   (currently {FIXED_COST_S})")
     print(f"  SECONDS_PER_SYLLABLE = {per_syl:.3f}   (currently {SECONDS_PER_SYLLABLE})")
-    print(f"  SECONDS_PER_DIGIT    = {per_digit:.3f}")
+    # budget.py has no SECONDS_PER_DIGIT: it charges a digit one syllable. If
+    # this number comes out far from the syllable cost, that shortcut is the
+    # thing to fix, so say which constant the operator is actually looking at.
+    print(f"  a digit costs        = {per_digit:.3f}   (budget.py charges a "
+          f"digit one syllable, {SECONDS_PER_SYLLABLE})")
     print(f"  PAUSE_COMMA_S        = {per_comma:.3f}")
     print(f"  PAUSE_STOP_S         = {per_stop:.3f}")
     print(f"\nSAFETY_MARGIN_S should be at least {worst_fit:.2f}s, the worst "

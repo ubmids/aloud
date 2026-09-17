@@ -33,6 +33,8 @@ class Synth:
     def __init__(self, voice: str | None = None, rate: int | None = None):
         self.voice = voice
         self.rate = rate
+        # Measured lengths, keyed by the sentence. See `duration`.
+        self._measured: dict[str, float] = {}
 
     @property
     def available(self) -> bool:
@@ -60,9 +62,23 @@ class Synth:
         os.remove(aiff)
         with wave.open(wav) as w:
             seconds = w.getnframes() / float(w.getframerate())
+        self._measured[text] = round(seconds, 3)
         return Spoken(text, wav, round(seconds, 3))
 
     def duration(self, text: str) -> float:
-        """Exact spoken length, audio discarded."""
+        """Exact spoken length, audio discarded.
+
+        Measured once per sentence. The fitting loop asks about the same
+        candidate more than once, the pipeline measures a cue and then speaks
+        it, and synthesis is by far the slowest thing here: the real-voice suite
+        alone asked for the same eight sentences fifteen times. Keeping the
+        answer is safe because a synthesiser that gave a different length for
+        the same sentence would break the schedule whether this cached it or
+        not, and it halves how hard a parallel run leans on a speech daemon that
+        is one process for the whole machine.
+        """
+        text = (text or "").strip()
+        if text in self._measured:
+            return self._measured[text]
         with tempfile.TemporaryDirectory() as d:
             return self.speak(text, out_dir=d).seconds

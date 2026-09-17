@@ -9,7 +9,8 @@ import tempfile
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from aloud.gaps import Gap
-from aloud.scenes import Shot, detect_shots, plan_descriptions
+from aloud.scenes import (Shot, detect_shots, duration_of, frame_at,
+                          plan_descriptions)
 from aloud.track import Cue, Track, schedule
 
 # Per-process, not a fixed path. A shared /tmp file makes the suite
@@ -21,20 +22,37 @@ FILM = os.path.join(tempfile.gettempdir(),
 
 
 def make_film():
-    """Three solid colours, two hard cuts at 3s and 6s."""
+    """Three solid colours, four seconds, hard cuts at 0.9s and 2.5s.
+
+    None of those numbers is a whole second, deliberately. The first version of
+    this film cut on the second, which made a shot time rounded to the nearest
+    second identical to the right answer, so every test here passed while the
+    times were being thrown away. A colour per shot matters for the same reason:
+    it is what lets a test check *which* frame came back rather than counting
+    that one did.
+    """
     if os.path.exists(FILM):
         return True
     if not shutil.which("ffmpeg"):
         return False
     subprocess.run(
         ["ffmpeg", "-v", "error", "-y",
-         "-f", "lavfi", "-i", "color=c=navy:s=320x180:d=3",
-         "-f", "lavfi", "-i", "color=c=darkgreen:s=320x180:d=3",
-         "-f", "lavfi", "-i", "color=c=maroon:s=320x180:d=3",
+         "-f", "lavfi", "-i", "color=c=navy:s=320x180:d=0.9",
+         "-f", "lavfi", "-i", "color=c=darkgreen:s=320x180:d=1.6",
+         "-f", "lavfi", "-i", "color=c=maroon:s=320x180:d=1.5",
          "-filter_complex", "[0:v][1:v][2:v]concat=n=3:v=1:a=0[v]",
          "-map", "[v]", "-pix_fmt", "yuv420p", FILM], check=True)
     atexit.register(lambda: os.path.exists(FILM) and os.remove(FILM))
     return True
+
+
+def dominant_colour(path):
+    """'r', 'g' or 'b', whichever channel this image has most of."""
+    raw = subprocess.run(
+        ["ffmpeg", "-v", "error", "-i", path, "-f", "rawvideo",
+         "-pix_fmt", "rgb24", "-"], capture_output=True, check=True).stdout
+    channels = [sum(raw[i::3]) for i in range(3)]
+    return "rgb"[channels.index(max(channels))]
 
 
 def test_scene_scores_are_read_not_assumed():
@@ -252,6 +270,101 @@ def test_the_track_serialises_everything_a_player_needs():
     assert c["audio"] == "/tmp/a.wav"
     assert c["gap"] == [2.0, 6.0]
     print("PASS the serialised track carries times, text, audio and its gap")
+
+
+# --- round two: the frame, the clock, and the window the planner searches ----
+# Everything above tests which gaps get a description. Nothing tested which
+# frame the describer is handed or what time the cut is recorded at, and those
+# are the two ways a description ends up correct about a shot nobody is
+# watching.
+
+def test_the_frame_pulled_is_the_frame_on_screen_at_that_moment():
+    """`frame_at` is the only thing that decides what the describer looks at,
+    and it had no test at all. Drop the seek, or nudge it, and every description
+    in the film is written about a shot the viewer is not on. That is worse than
+    silence: it is confident and wrong, and nothing downstream can detect it,
+    because a description of the wrong frame is a perfectly good sentence."""
+    if not make_film():
+        print("SKIP no ffmpeg")
+        return
+    out = os.path.join(tempfile.gettempdir(), f"aloud_frames_{os.getpid()}")
+    try:
+        # navy until 0.9s, darkgreen until 2.5s, maroon to the end.
+        for t, expected in ((0.0, "b"), (0.4, "b"), (1.2, "g"),
+                            (2.0, "g"), (3.0, "r")):
+            want = os.path.join(out, f"{t:.2f}.jpg")
+            got = frame_at(FILM, t, want)
+            assert got == want, f"frame_at reported {got}, wrote {want}"
+            assert os.path.exists(got), got
+            assert dominant_colour(got) == expected, (
+                f"at {t}s the describer was handed a "
+                f"{dominant_colour(got)} frame, and the film is {expected}")
+    finally:
+        shutil.rmtree(out, ignore_errors=True)
+    print("PASS the frame handed to the describer is the one on screen")
+
+
+def test_shot_times_are_reported_to_the_millisecond():
+    """The cut times were only ever checked by counting them. Rounded to the
+    nearest second, the cut at 2.5s is recorded at 3.0s and the frame chosen to
+    describe it is half a second inside a shot the viewer has not reached."""
+    if not make_film():
+        print("SKIP no ffmpeg")
+        return
+    shots = detect_shots(FILM)
+    assert len(shots) == 2, shots
+    assert abs(shots[0].at - 0.9) <= 0.05, shots[0].at
+    assert abs(shots[1].at - 2.5) <= 0.05, shots[1].at
+    print(f"PASS the cuts are recorded at {shots[0].at}s and {shots[1].at}s")
+
+
+def test_the_film_reports_its_own_length():
+    """`duration_of` is a public entry point with no test behind it, which means
+    an ffprobe invocation nobody has ever run. It breaks silently: ffmpeg
+    changes an output format, this returns something absurd or raises, and the
+    first anyone knows is a caller asking where the film ends."""
+    if not make_film():
+        print("SKIP no ffmpeg")
+        return
+    assert abs(duration_of(FILM) - 4.0) <= 0.1, duration_of(FILM)
+    print("PASS the film's length is read out of the film")
+
+
+def test_a_cut_at_the_instant_a_gap_opens_is_the_one_described():
+    """`last_said <= s.at <= window_end` has a boundary at each end and neither
+    was pinned. A cut landing exactly where a gap opens is the most describable
+    thing in a film, and outside that window the listener is either told nothing
+    or handed a shot that left the screen seconds ago."""
+    plans = plan_descriptions([Gap(3.0, 5.0)], [Shot(3.0, 0.5)])
+    assert plans[0].worth_describing, plans[0].reason
+    assert plans[0].describe_at == 3.25, (
+        f"described {plans[0].describe_at}s, which is not the cut at 3.0s")
+
+    # The other end: a cut at the exact moment the previous cue finished.
+    plans = plan_descriptions([Gap(1.0, 2.8), Gap(3.2, 5.0)],
+                              [Shot(0.0, 1.0), Shot(2.8, 0.5)])
+    assert plans[1].worth_describing, plans[1].reason
+    assert plans[1].describe_at == 3.05, plans[1].describe_at
+    print("PASS a cut on either edge of the window still gets described")
+
+
+def test_the_planner_describes_what_is_already_on_screen():
+    """`lookahead` is zero and every caller takes the default, so the window the
+    planner searches was never exercised. Widen it and a gap is described from a
+    cut that has not happened yet, so the listener is told about a shot while
+    the previous one is still in front of them. Reverse it and the cut that just
+    landed goes unmentioned."""
+    gap = [Gap(3.0, 6.0)]
+    shots = [Shot(0.0, 1.0), Shot(2.5, 0.4), Shot(4.0, 0.6)]
+    plans = plan_descriptions(gap, shots)
+    assert plans[0].describe_at == 2.75, (
+        f"described {plans[0].describe_at}s, not the cut at 2.5s that is on "
+        "screen when the gap opens")
+
+    # Asked to look ahead, and only then, the cut inside the gap wins.
+    ahead = plan_descriptions(gap, shots, lookahead=1.5)
+    assert ahead[0].describe_at == 4.25, ahead[0].describe_at
+    print("PASS the frame described is on screen when the gap opens")
 
 
 def test_overlapping_cues_are_caught():

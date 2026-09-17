@@ -58,6 +58,7 @@ python3 tests/test_real_audio.py    # run this one next, it uses real voices
 python3 tests/test_pipeline.py
 python3 tests/test_planning.py
 python3 tests/test_caption.py
+python3 tests/test_film.py          # the whole pipeline, on a film it builds
 cd tv && node test/schedule.test.mjs
 ```
 
@@ -235,9 +236,115 @@ silent-e boundary unreachable; numpy treats `reshape(-2, n)` exactly like
 `reshape(-1, n)`; and a `"Fit"` return annotation is never evaluated. The score
 is a floor, not a grade.
 
+### Round three: the modules nothing had pointed at
+
+`pipeline.py` is the file that runs the other five in order, and no suite
+imported it. Mutiny scored it at **3%**, which is the score an untested module
+gets: the order of the stages, what happens when the describer fails partway
+through a film, and the whole mix were resting on nothing. `tests/test_film.py`
+is the answer, a film built out of colour and tones with a stub describer and a
+stub voice, so the end to end path runs with no key, no network and no speech
+daemon.
+
+The one that would have been worst in front of a viewer was in the mix rather
+than the track. Each cue is placed into the finished film by a delay written in
+milliseconds, and that delay had no test, so a description could play at
+entirely the wrong moment with the track still validating perfectly. Nothing in
+a timed track describes the mix. The only way to know is to listen to the
+output, which the suite now does: it measures the mixed audio in the cue's own
+window and finds speech there and quiet after it.
+
+`scenes.py` was at **45%** and the gap was the frame. `frame_at` decides what
+the describer looks at and had no test of any kind, so a dropped or nudged seek
+would have every description in the film written about a shot the viewer is not
+on, which is worse than silence because it is confident and wrong and reads as a
+perfectly good sentence. The test film is three flat colours precisely so a test
+can say which frame came back. Its cuts were also moved off whole seconds,
+because the old film cut at 3s and 6s and a shot time rounded to the nearest
+second was therefore identical to the right answer.
+
+In `gaps.py` the findings were about what the fixtures never varied.
+
+Every smoothing test hands `_smooth` its two windows explicitly, so `CLOSE_S`
+and `OPEN_S`, the values a real film is actually processed with, were never
+exercised at all and either could be zeroed with the file still green. They are
+the two properties the detector was measured for: the quiet tail of a line stays
+part of the line, and one misread frame in a music bed does not split a usable
+gap into two unusable ones.
+
+Every fixture was also at full scale, and no film is. The syllable measure
+divides one energy sum by another and guards the division against zero, and
+moving that guard anywhere off zero reads a normally mixed film as one
+continuous silence, which puts a description over every line in it. At full
+scale the numbers involved are large enough that the guard never fires. A line
+at a fifth and a twentieth of full scale now has to be dialogue too.
+
+The top of the syllable band had the same shape of hole. The tests asked about
+4Hz in the middle of it and 9Hz outside it, so the edge itself could move a
+whole hertz unnoticed, and at 7Hz anyone speaking quickly stops counting as
+speech: the gaps either side of them join and the description plays over the
+sentence.
+
+`synth.py` reported a working voice on a machine with `say` and no ffmpeg, or
+ffmpeg and no `say`, and the failure would arrive as a subprocess error in the
+middle of a film instead of a missing voice before it starts. Its measured
+duration, the one number the whole schedule is built on, could also be rounded
+to the nearest second with nothing noticing: a 2.4s description handed a 2.0s
+window is a voice still going when the next line starts.
+
+`calibrate.py` prints the constants at the top of `budget.py`, and it can only
+do that honestly if it fits the same five terms the estimator is made of. The
+features are now written down once and the test says so, because a fit against
+a different model still converges, still reports a small residual, and hands
+over numbers for a model nobody runs. It was also telling the operator to set a
+`SECONDS_PER_DIGIT` that `budget.py` does not have, since a digit there is
+charged as a syllable. That line now says which constant it means.
+
+| module | before | after | mutants | suite |
+|---|---|---|---|---|
+| `pipeline.py` | **3%** | **54%** | 151 | `test_film.py`, new |
+| `scenes.py` | **45%** | **71%** | 104 | `test_planning.py` |
+| `gaps.py` | **73%** | **76%** | 293 | `test_logic.py` |
+| `budget.py` | **81%** | **84%** | 248 | `test_logic.py` |
+| `synth.py` | **60%** | **67%** | 48, then 54 | logic + pipeline |
+| `caption.py` | **88%** | **88%** | 86 | `test_caption.py` |
+| `calibrate.py` | **0%** | **8%** | 115 | `test_logic.py` |
+
+Every row is every mutant in the file, not a sample, which is why some of them
+sit below the sampled numbers in the table above: the hermetic suite made the
+full runs affordable.
+
+Mutiny reported the real-voice suite as **not deterministic**, six mutants in
+forty two changing their answer between runs, and that outranks everything else
+here. The flips land on mutations that cannot change behaviour, a temp
+directory prefix and a filename stem, which is the signature of the suite
+failing for its own reasons rather than the mutant's. Two things were wrong. One
+fixture built its room tone from an unseeded generator, so the suite could
+answer differently on different runs by construction; it is seeded now. And the
+suite asked `say` for the same eight sentences fifteen times, because a sentence
+is measured, then measured again, then spoken. macOS has one speech daemon for
+the whole machine, and a mutation run drives several hundred copies of a suite
+through it. Measured lengths are cached per voice now, which halves how hard a
+parallel run leans on it, and is worth having anyway: synthesis is the slowest
+thing in this pipeline.
+
+Not chased, and why. `caption.py` at 88% has ten survivors and all of them are a
+timeout constant, an error message, a temperature or a default model name;
+`rstrip("/")` survives only because httpx normalises the double slash before the
+request leaves. A wider closing window in `gaps.py` loses gaps rather than
+placing a cue wrongly, and is bounded by the minimum gap length regardless.
+Moving either edge of the speech band by one hertz cannot change which FFT bins
+are selected. The near-silence guard in `speechiness` is unreachable behind the
+absolute floor above it, since any frame quiet enough to trip it has already
+been zeroed. The right channel of the mix delay is a no-op because the cue audio
+is mono. Dropping the `-v` and `-r` flags gives you the machine's default voice,
+which is a wrong voice rather than a wrong schedule, since the schedule is
+measured from whatever voice actually spoke. And most of `calibrate.py` is a table of phrases and a print loop for a
+human to read, which is why it stays at 8% rather than being dressed up.
+
 ## Status
 
-The whole backend is built and tested. 110 tests in Python, 12 in JavaScript.
+The whole backend is built and tested. 128 tests in Python, 12 in JavaScript.
 
 Still to do: the Vega app shell around the scheduler, which needs 20GB of disk
 for the SDK, and a real vision endpoint for the describer.

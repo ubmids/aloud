@@ -5,6 +5,7 @@ ever landing on top of a line.
 """
 import os
 import sys
+import wave
 
 import numpy as np
 
@@ -12,6 +13,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from aloud.budget import DANGLING, fit_generated, fit_measured, words_for
 from aloud.gaps import find_gaps, speechiness
+from aloud import synth as synth_mod
 from aloud.synth import Synth
 
 SR = 16000
@@ -31,7 +33,11 @@ def music(dur):
 
 
 def quiet(dur):
-    return (np.random.randn(int(SR * dur)) * 0.0015).astype(np.float32)
+    # Seeded. An unseeded fixture makes the suite answer differently on
+    # different runs, and a mutation tester reads that as a finding about the
+    # code rather than about the noise it was handed.
+    return (np.random.default_rng(31).standard_normal(int(SR * dur))
+            * 0.0015).astype(np.float32)
 
 
 def test_loud_music_is_a_gap_not_dialogue():
@@ -141,6 +147,59 @@ def test_a_gap_too_small_to_fill_is_not_reported():
     track = np.concatenate([speech(2.0), quiet(2.2), speech(2.0)])
     assert len(find_gaps(track, SR)) == 1
     print("PASS gaps too small to fill are not reported")
+
+
+def test_the_measured_duration_is_the_length_of_the_audio():
+    """The whole schedule is built on this one number and nothing checks it
+    afterwards. Rounded to the nearest second, a 2.4s description is handed a
+    2.0s window: the voice is still going when the window closes, and what
+    closes it is the next line of dialogue. Every stage after this believes the
+    duration it was given, so there is nothing downstream that could notice."""
+    s = Synth()
+    if not s.available:
+        print("SKIP no synthesiser on this machine")
+        return
+    spoken = s.speak("A man in a grey coat crosses the empty street.")
+    try:
+        with wave.open(spoken.path) as w:
+            exact = w.getnframes() / float(w.getframerate())
+        assert abs(exact - round(exact)) > 0.01, (
+            f"this voice landed on {exact}s, a whole second, so this test "
+            "cannot tell a rounded duration from a real one")
+        assert abs(spoken.seconds - exact) <= 0.0005, (spoken.seconds, exact)
+    finally:
+        os.path.exists(spoken.path) and os.remove(spoken.path)
+    print(f"PASS the cue is measured at {spoken.seconds}s, the length of its audio")
+
+
+def test_the_same_sentence_is_only_ever_measured_once():
+    """The fitting loop asks about the same candidate more than once and a cue
+    is measured before it is spoken, so a sentence is synthesised repeatedly to
+    answer a question that cannot have changed. The length that comes back the
+    second time still has to be the one that was measured, because that number
+    is what the cue is scheduled against."""
+    s = Synth()
+    if not s.available:
+        print("SKIP no synthesiser on this machine")
+        return
+    text = "A man crosses the empty street."
+    measured = s.duration(text)
+    assert measured > 0.0, measured
+
+    # Take the voice away. A second ask still has to answer, and answer the
+    # same, which it can only do from what it measured the first time.
+    class _NoTools:
+        @staticmethod
+        def which(_name):
+            return None
+
+    real = synth_mod.shutil
+    synth_mod.shutil = _NoTools
+    try:
+        assert s.duration(text) == measured, "the second answer was a new one"
+    finally:
+        synth_mod.shutil = real
+    print(f"PASS {text!r} is measured once, at {measured}s")
 
 
 def test_word_target_shrinks_with_the_gap():
