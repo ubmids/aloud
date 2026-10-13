@@ -18,10 +18,11 @@ a second voice, ducking the film a little while it speaks.
 
 Audio description, the narration track that makes a film followable without
 the picture, exists for a small slice of what is on television, because a
-human describer writes it by hand, title by title. In the US the broadcast
-rules only require it from the largest networks, for a fixed number of hours a
-quarter. Streaming catalogues, FAST channels, independent and archive film
-mostly have none.
+human describer writes it by hand, title by title. In the US the rule
+(47 CFR §79.3) asks the big four networks' stations in the largest markets, and
+the top five cable networks, for **87.5 hours of description a quarter**: about
+4% of a channel's airtime. Everything else is voluntary, so streaming
+catalogues, FAST channels, independent and archive film mostly have none.
 
 That matters first to blind and partially sighted viewers (the WHO counts at
 least 2.2 billion people with some form of vision impairment). It also matters
@@ -41,7 +42,9 @@ in their second language. aloud is a way of watching with your ears.
 3. **Missed something? Press Menu.** The film pauses, aloud says the last
    description again, and the film carries on. It works with narration off
    too, so one viewer on the sofa hears the film as it was made and another
-   asks what is on screen when they need to, with one button.
+   asks what is on screen when they need to, with one button. On the lighter
+   "only what changed most" setting, two presses in two minutes tell aloud it
+   is leaving out too much: it goes back to saying everything, and says so.
 4. **Remote and voice do the rest.** Narration on or off, voice level (the film
    dips further under the voice as you turn it up), how much is said,
    play/pause, ten-second skips, and Back to the shelf on the same title.

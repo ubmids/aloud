@@ -37,7 +37,9 @@ little under the voice so every word is clear.
 
 Missed a description, or watching with narration off beside someone who does
 not need it? Press **Menu**: the film pauses, aloud says what is on screen, and
-the film carries on. Narration on or off, voice level, how much is said,
+the film carries on. On the lighter "only what changed most" setting, two
+presses in two minutes tell aloud it is leaving out too much, and it goes back
+to saying everything and says why. Narration on or off, voice level, how much is said,
 play/pause, skips and Back are all on the remote, and transport goes through
 Vega's media controls so Alexa voice commands reach the same player. One voice speaks the menu and the
 film, so a viewer who cannot see the screen gets one continuous experience
@@ -46,7 +48,10 @@ rather than a menu and then a film.
 ### Who it is for
 
 Audio description exists for a small slice of television because a person
-writes it by hand, title by title. It matters most to blind and partially
+writes it by hand, title by title. The US rule (47 CFR §79.3) requires 87.5
+hours a quarter from the big four networks' stations in the largest markets and
+the top five cable networks, about 4% of a channel's airtime; everything else,
+including most streaming, is voluntary. It matters most to blind and partially
 sighted viewers, and to a much larger audience watching without looking: the
 cook, the parent half-watching, the older viewer whose eyesight is going, the
 viewer following a film in a second language. aloud is aimed at the titles
