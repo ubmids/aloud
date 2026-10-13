@@ -10,7 +10,7 @@ The descriptions are written **ahead of time**, per title, and shipped as a time
 track; nothing is generated while the film plays. And the Vega app is built: it
 was verified on the Vega Virtual Device on 17 September, and the remote-driven
 catalogue was added on the first-place branch (see MAC_CHECKLIST.md for what is
-still to be checked on the Mac).
+still to be checked on the Vega Virtual Device).
 
 ## The hard part
 Gap detection and budget-constrained description. You have to find the silence windows,

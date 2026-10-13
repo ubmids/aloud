@@ -5,13 +5,15 @@
 Pick a film with the remote and aloud reads each title to you as you move
 across the shelf. Press play, and in every silence between the lines a voice
 tells you what is on screen: *"Through a circular viewport, a large, steampunk-style airship hovers above a cityscape."*
-Never over a line of dialogue. Close your eyes and you can still follow the
-film.
+Never over a captioned line: on Tears of Steel the whole track overlaps
+dialogue by 0.9 seconds in 12 minutes, measured against the film's production
+stems. Close your eyes and you can still follow the film.
 
 aloud is a Vega OS app (React Native for Vega) with a computer-vision pipeline
-behind it. Before a film is ever played, a vision-language model watches each
-new shot, a scheduler finds the silences in the dialogue and measures what fits
-in them, and the result ships as a timed description track. The app plays it as
+behind it. Before a film is ever played, a scheduler finds the silences in the
+dialogue, a vision-language model looks at each silence where the picture has
+changed and writes a sentence sized to it, each sentence is spoken and measured
+into its gap, and the result ships as a timed description track. The app plays it as
 a second voice, ducking the film a little while it speaks.
 
 ## Who it is for
@@ -48,8 +50,9 @@ in their second language. aloud is a way of watching with your ears.
 4. **Remote and voice do the rest.** Narration on or off, voice level (the film
    dips further under the voice as you turn it up), how much is said,
    play/pause, ten-second skips, and Back to the shelf on the same title.
-   Transport goes through Vega's media controls, so Alexa voice commands reach
-   the same player.
+   The player also asks Vega for media-control focus so that Alexa transport
+   commands can reach it; that has not been seen working on a device yet, so
+   treat voice transport as untested.
 
 Four open films from the Blender Foundation are on the shelf: **Tears of
 Steel** (12 min, 46 descriptions), **Sintel** (15 min, 49 descriptions), the
@@ -60,8 +63,9 @@ dialogue, so aloud narrates over the score) and the Sintel trailer.
 
 - **Real descriptions of real frames.** Every track on the shelf was written by
   Qwen3-VL 4B, an open vision-language model, running on a CPU through
-  llama.cpp, with no key and no GPU. The same pipeline takes Gemini or any
-  OpenAI-compatible model with one environment variable
+  llama.cpp, with no key and no GPU. The same pipeline can take Gemini or any
+  OpenAI-compatible model with one environment variable (both are unit-tested
+  against mocked APIs; no shipped track was written by them)
   ([docs/DESCRIBERS.md](docs/DESCRIBERS.md)). The describer sees two frames of
   each shot so it can describe action, and what it said last so it says what
   is new; on-screen text is read out ("On screen: 40 YEARS LATER.").
@@ -72,11 +76,13 @@ dialogue, so aloud narrates over the score) and the Sintel trailer.
   stems, the hand-built detector alone left **27.4 seconds** of dialogue inside
   its "gaps"; all three together leave **0.9 seconds**
   ([docs/EVALUATION.md](docs/EVALUATION.md)).
-- **It never talks over a line.** Each description is synthesised and measured
-  before it is placed, and the track refuses to be written if any cue would
-  leave its gap. Measured the same way, the shipped Tears of Steel track speaks
-  **0.9 seconds** over dialogue in 2.9 minutes of narration, in five touches of
-  under 0.4 s, none of them on a captioned line.
+- **It stays out of the dialogue, and measures how well.** Each description
+  is synthesised and measured before it is placed, and the track refuses to be
+  written if any cue would leave its gap. Measured against the production
+  stems, the shipped Tears of Steel track touches dialogue for **0.9 seconds**
+  in 2.9 minutes of narration: five touches of under 0.4 s each, none of them
+  on a captioned line. Two fall in the battle with no caption near them
+  (uncaptioned shouts, or effects the two masters mix differently).
 
   ![Tears of Steel in four-minute rows: blue blocks are dialogue as the film's
   production stems hear it, orange blocks are aloud's descriptions, and no
@@ -117,8 +123,9 @@ the television nothing to play. That makes two paths to viewers:
   with `USAGE_ACCESSIBILITY` for the voice), `TVFocusGuideView` and
   `useTVEventHandler` for the remote, Kepler media controls for voice
   transport, `BackHandler`, `AccessibilityInfo` for VoiceView.
-- **Vision**: Qwen3-VL 4B on llama.cpp (CPU), or Gemini, or any
-  OpenAI-compatible endpoint.
+- **Vision**: Qwen3-VL 4B on llama.cpp (CPU) wrote every shipped track.
+  Gemini and OpenAI-compatible endpoints are supported in code, untested
+  against the live services.
 - **Voice**: Kokoro 82M on CPU (macOS `say` also supported).
 - **Listening**: a hand-built speech-band and syllable-rhythm detector, Silero
   VAD, caption files.
@@ -128,7 +135,7 @@ the television nothing to play. That makes two paths to viewers:
 ## Run it
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements.txt               # includes httpx, which the describers use
 export ALOUD_LOCAL_VLM_URL=http://127.0.0.1:8181/v1   # or GEMINI_API_KEY=..., see docs/DESCRIBERS.md
 python3 -m aloud film.mp4 --captions film.srt --out out/
 ```
@@ -153,7 +160,7 @@ Tests: `for t in tests/test_*.py; do python3 $t; done`, and in `tv/`,
 - [docs/DESCRIBERS.md](docs/DESCRIBERS.md): providers, the local model, regenerating
 - [docs/FRICTION_LOG.md](docs/FRICTION_LOG.md): building a media app on Vega OS
 - [docs/ENGINEERING.md](docs/ENGINEERING.md): the build notebook, calibration, mutation testing
-- [docs/MAC_CHECKLIST.md](docs/MAC_CHECKLIST.md): building and checking on the Vega Virtual Device
+- [docs/MAC_CHECKLIST.md](docs/MAC_CHECKLIST.md): building and checking on the Vega Virtual Device (macOS or Ubuntu)
 
 ## Credits
 

@@ -24,7 +24,6 @@ This is the better architecture regardless of the frame question:
 - It is cacheable. Describe a title once, serve it to everyone.
 - It splits the two risks apart. The hard problem lives in a backend that can be built and
   tested today with no Vega SDK, and the app becomes a thin, well-synchronised player.
-- Live still works. For unseen content the backend runs ahead of playback in real time.
 
 ## The hard part, unchanged
 

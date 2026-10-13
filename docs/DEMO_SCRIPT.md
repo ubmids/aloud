@@ -5,7 +5,7 @@ tutorial; lead with the problem; make the required tool impossible to miss.
 The required tool is **Vega OS on Fire TV**: it is named on screen in the first
 20 seconds and the whole middle of the video is the Vega Virtual Device.
 
-**The hero lands at 0:08**: a black screen, the film's own sound, and then
+**The hero lands at 0:05**: a black screen, the film's own sound, and then
 aloud's voice describing what you cannot see. The picture comes up at 0:12 on
 the Vega Virtual Device with that description lit on screen.
 
@@ -21,7 +21,7 @@ is the shipped track, not a re-record.
 | 0:00 | Black. White caption, small, bottom left: *"Tears of Steel, as a blind viewer hears it."* | `without.mp4`, first 5 seconds: the film's score and effects, no words. A blind viewer has no idea what is happening. |
 | 0:05 | Still black. Caption changes to: *"Now with aloud."* | `hero.mp4` from its start: the same moment, and aloud's voice at 0:05: *"A grey-haired person reads a newspaper while a soldier aims a rifle nearby."* |
 | 0:12 | Still black for one beat, then the picture fades up as aloud says: *"Through a circular viewport, a large, steampunk-style airship hovers above a cityscape."* The airship is there, in its circular viewport, exactly as described. | The description ends; the film carries on. |
-| 0:16 | Cut to the **Vega Virtual Device**, Tears of Steel playing in aloud at about 1:48, the same description lit in the voice panel and sitting in a gap on the schedule strip. Title card over it: **aloud: films that describe themselves.** Under it: *Fire TV · Vega OS*. | At 0:21 the next line, *"Shouldn't you be down there?"*, lands after the description has finished: aloud never talks over it. |
+| 0:16 | Cut to the **Vega Virtual Device**, Tears of Steel playing in aloud at about 1:48, the same description lit in the voice panel and sitting in a gap on the schedule strip. Title card over it: **aloud: films that describe themselves.** Under it: *Fire TV · Vega OS*. | At 0:21 the next line, *"Shouldn't you be down there?"*, lands after the description has finished: the description fits the silence before it. |
 
 Both clips are already cut, from the pipeline's own output (the voice in them is
 the voice in the app):
@@ -72,10 +72,11 @@ then the shelf being navigated with the screen covered.
 
 Over the player, with the schedule strip visible:
 
-"A vision model watched every shot of this film, ahead of time, not live. It
-saw two frames of each shot and what it had already said, and wrote one
-sentence sized to the silence it had to fit in. These were written by an open
-model running on an ordinary CPU; Gemini or any hosted model is one setting.
+"Ahead of time, not live, a vision model looked at every silence in this
+film where the picture had changed. It saw two frames of the shot and what it
+had already said, and wrote one sentence sized to the silence it had to fit
+in. These were written by an open
+model running on an ordinary CPU; a hosted model is one setting.
 Each sentence is spoken and measured before it is placed, and the track refuses
 to be written if any of them would leave its gap."
 
@@ -99,8 +100,8 @@ viewer whose eyesight is going."
 ## 2:20 to 2:45: close
 
 Back to black, with a description playing over it (any vivid cue from Sintel).
-Then: "Close your eyes. aloud tells you what you are missing, and never talks
-over anyone." End card: **aloud** · Fire TV · Vega OS · github.com/ubmids/aloud.
+Then: "Close your eyes. aloud tells you what you are missing, in the
+silences between the lines." End card: **aloud** · Fire TV · Vega OS · github.com/ubmids/aloud.
 
 Credits on the end card and in the YouTube description: *Tears of Steel*,
 (CC) Blender Foundation, mango.blender.org; *Sintel*, (c) copyright Blender

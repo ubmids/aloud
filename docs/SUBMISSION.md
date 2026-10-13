@@ -6,8 +6,11 @@ amazonappdev2026. Paste the sections below into the matching Devpost fields.
 Judged on four equal criteria (Tech Implementation, Design, Potential Impact,
 Quality of the Idea; ties go to Tech), plus up to 10% for the friction log
 (`docs/FRICTION_LOG.md`, 18 entries). Stage One: runs on Fire OS or Vega OS and
-is shown on a Fire TV or the Vega simulator. aloud runs on the Vega Virtual
-Device; no developer account or Appstore listing is required by the rules.
+is shown on a Fire TV or the Vega simulator. The September version of aloud
+(the single-film player, friction log entries 1 to 13) ran on the Vega Virtual
+Device; **the current app has not yet been run on one** (PENDING: Subomi's VVD
+run, see "Needs Subomi" below). No developer account or Appstore listing is
+required by the rules.
 
 Category fit, in the track's own words: **AI-enhanced viewing**, **computer
 vision**, and **multi-modal UX combining voice, D-pad and visual in a single
@@ -21,9 +24,9 @@ aloud
 
 ## Elevator pitch (200 characters)
 
-Films that describe themselves on Fire TV. A vision model watches every shot,
-and in each silence between lines a voice tells you what's on screen. Never
-over dialogue. Watch with your ears.
+Films that describe themselves on Fire TV. In each silence between lines, a
+voice tells you what a vision model saw on screen, measured to fit the gap.
+Watch with your ears.
 
 ## Text description
 
@@ -32,16 +35,19 @@ over dialogue. Watch with your ears.
 aloud is a Fire TV app, built on Vega OS, that lets you watch a film with your
 ears. The shelf reads each title aloud as the remote moves across it. Press
 play and, in every silence between the lines, a voice tells you what is on
-screen: *"Through a circular viewport, a large, steampunk-style airship hovers above a cityscape."* It never speaks over dialogue, and the film dips a
-little under the voice so every word is clear.
+screen: *"Through a circular viewport, a large, steampunk-style airship hovers above a cityscape."* Each description is measured into a silence (on
+*Tears of Steel*, 0.9 seconds of overlap with dialogue in 12 minutes, none on a
+captioned line), and the film dips a little under the voice so every word is
+clear.
 
 Missed a description, or watching with narration off beside someone who does
 not need it? Press **Menu**: the film pauses, aloud says what is on screen, and
 the film carries on. On the lighter "only what changed most" setting, two
 presses in two minutes tell aloud it is leaving out too much, and it goes back
 to saying everything and says why. Narration on or off, voice level, how much is said,
-play/pause, skips and Back are all on the remote, and transport goes through
-Vega's media controls so Alexa voice commands reach the same player. One voice speaks the menu and the
+play/pause, skips and Back are all on the remote. (The player also requests
+Vega media-control focus for Alexa transport; that is untested on a device, so
+it is not shown.) One voice speaks the menu and the
 film, so a viewer who cannot see the screen gets one continuous experience
 rather than a menu and then a film.
 
@@ -119,7 +125,7 @@ voices and languages per viewer.
 ## Built with
 
 vega-os, react-native-for-vega, react-native-kepler, react-native-w3cmedia,
-typescript, python, llama.cpp, qwen3-vl, gemini-api, kokoro-tts, silero-vad,
+typescript, python, llama.cpp, qwen3-vl, kokoro-tts, silero-vad,
 ffmpeg, numpy, jest
 
 ## Try it out

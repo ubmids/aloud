@@ -1,7 +1,10 @@
-# On the Mac: build, install, and check the Fire TV app
+# On the Vega Virtual Device: build, install, and check the Fire TV app
 
-The Vega SDK and the Vega Virtual Device run on the Mac. Everything else was
-built and checked on Linux: the TypeScript compiles, the Jest suites pass, and
+The Vega SDK and the Vega Virtual Device run on macOS **or Ubuntu** (x86_64;
+Amazon in forum thread 45517: "VVD is only supported on native mac or
+ubuntu"). On Ubuntu the virtual device needs KVM, so the user running it must
+be in the `kvm` group. Everything else was built and checked on Linux without
+the SDK: the TypeScript compiles, the Jest suites pass, and
 `react-native build-vega` gets as far as the Hermes bundle before stopping at
 "Vega CLI was not found", which is the native packaging step and the only one
 that needs the SDK. So the code is known to compile; what is listed here is
