@@ -133,6 +133,27 @@ ffmpeg, numpy, jest
 - Repository: https://github.com/ubmids/aloud (branch `first-place` until merged)
 - Video: (YouTube link)
 
+## Testing instructions (for judges)
+
+The trailer plays straight from a clone. The three full films are too large
+for git and are fetched from the Blender Foundation's mirror first; without
+that step their tiles say "The film could not be played."
+
+```bash
+git clone https://github.com/ubmids/aloud && cd aloud
+pip install -r requirements.txt
+python3 -m aloud.films fetch          # Tears of Steel, Sintel, Big Buck Bunny (~15 min)
+cd tv && npm ci && npm run build      # needs the Vega SDK on macOS or Ubuntu
+vega virtual-device start
+vega run-app build/<arch>-release/aloud_<arch>.vpkg   # x86_64 on an Intel/AMD host, aarch64 on Apple silicon
+```
+
+On the shelf, left/right moves between films (each is read aloud), down
+reaches the settings (each says its name and value), select plays. In the
+player: Menu repeats the last description; "Picture" switches to full screen.
+Tests: `for t in tests/test_*.py; do python3 $t; done`, and in `tv/`,
+`npx jest && node test/schedule.test.mjs`.
+
 ## Credits and licences (put in the video description too)
 
 *Tears of Steel*, (CC) Blender Foundation, mango.blender.org. *Sintel* and its
@@ -247,25 +268,25 @@ tell me why it was not doing them.
 
 ---
 
-## Feature requests (optional field, priority in brackets)
+## Feature requests (optional field; priority as Devpost asks: Critical / Important / Nice-to-have)
 
 1. **[Critical] Put a reason string on media errors.** One change, and it
    collapses eight of my eighteen friction entries. Nothing else on this list
    is close in value.
-2. **[High] Consolidate the playback manifest documentation into one page** and
+2. **[Important] Consolidate the playback manifest documentation into one page** and
    retire or redirect the two that disagree with it.
-3. **[High] State plainly that decoded frames are not available to app
+3. **[Important] State plainly that decoded frames are not available to app
    JavaScript.** It is an architectural constraint and it belongs in the
    overview, not in a type definition.
-4. **[High] Do not let `vega project generate` overwrite an existing
+4. **[Important] Do not let `vega project generate` overwrite an existing
    `.gitignore`.** Merge, or refuse and warn.
-5. **[Medium] Make `AudioPlayer` throw if used before `initialize()`** rather
+5. **[Important] Make `AudioPlayer` throw if used before `initialize()`** rather
    than failing silently.
-6. **[Medium] Give `Video` a sane default size** instead of NaN, or throw.
-7. **[Medium] Document `setMediaControlFocus`** and un-hide it, so apps know
+6. **[Nice-to-have] Give `Video` a sane default size** instead of NaN, or throw.
+7. **[Important] Document `setMediaControlFocus`** and un-hide it, so apps know
    how to receive voice transport commands.
-8. **[Medium] An SDK-free `build-vega --js-only`** for CI on Linux runners.
-9. **[Low] Document enum member names in prose**, not only in the types.
+8. **[Nice-to-have] An SDK-free `build-vega --js-only`** for CI on Linux runners.
+9. **[Nice-to-have] Document enum member names in prose**, not only in the types.
 
 ---
 
@@ -280,8 +301,25 @@ tell me why it was not doing them.
 - [ ] Video under 3:00 per `docs/DEMO_SCRIPT.md`, public on YouTube, showing
       the Vega Virtual Device, hero inside the first 20 seconds.
 - [ ] Blender credits in the video and its description (above).
-- [ ] Merge `first-place` into `master`, or point the Devpost link at the branch.
-- [ ] Repository public with the MIT licence visible, or shared with
-      testing@devpost.com. Run a secret sweep first.
+- [ ] Merge `first-place` into `master` (the default branch still has the
+      September README, which says "live"), or point the Devpost link at the
+      branch.
+- [ ] Repository public with the MIT licence visible, **or** private and shared
+      with testing@devpost.com **and all six Amazon reviewers** listed in the
+      rules and FAQ: `chris-trag`, `knmeiss`, `giolaq`, `anishamalde`,
+      `mosesroth`, `emersonsklar`. Invitations expire after 7 days, so send
+      them no earlier than 16 October. Run a secret sweep first.
+      ```bash
+      for u in chris-trag knmeiss giolaq anishamalde mosesroth emersonsklar; do
+        gh api -X PUT repos/ubmids/aloud/collaborators/$u -f permission=pull
+      done
+      # testing@devpost.com: Settings > Collaborators > Add people, by email
+      ```
+- [ ] About text and topics: `gh repo edit ubmids/aloud --description "Films
+      that describe themselves, on Fire TV (Vega OS)" --add-topic fire-tv
+      --add-topic vega-os --add-topic audio-description --add-topic accessibility`
+- [ ] The footage question answered by the hackathon team (the FAQ asks
+      entrants to check how much Creative Commons footage a video may use
+      before finalising it), and the reply kept.
 - [ ] Product Feedback and feature requests pasted (above); friction log linked.
 - [ ] Submitted before 23 October, 12:00 PDT (19:00 UTC).
