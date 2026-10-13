@@ -191,8 +191,20 @@ def modulation(audio: np.ndarray, sr: int, frame_ms: float = FRAME_MS,
     return out
 
 
+# How much the envelope has to move before its rhythm means anything. The index
+# below is a RATIO, the share of the envelope's fluctuation that sits at
+# syllable rate, so a steady sound with a one percent ripple can score as highly
+# as a voice: a held orchestral chord did exactly that, read as speech, and
+# cost a three and a half second gap. A mouth opening and closing moves the
+# envelope by well over half its mean; a sustained note moves it by almost
+# nothing. Below this depth there are no syllables, whatever their spectrum.
+MOD_DEPTH_FLOOR = 0.15
+
+
 def _mod_index(env: np.ndarray, band=None, hann=None) -> float:
     if len(env) < 8 or env.mean() <= 1e-9:
+        return 0.0
+    if env.std() / env.mean() < MOD_DEPTH_FLOOR:
         return 0.0
     if band is None:
         freqs = np.fft.rfftfreq(len(env), FRAME_MS / 1000.0)
@@ -258,12 +270,22 @@ def find_gaps(audio: np.ndarray, sr: int, *, threshold: float = 0.45,
               mod_threshold: float = 0.50, close_s: float = CLOSE_S,
               open_s: float = OPEN_S,
               min_gap: float = MIN_GAP_S, frame_ms: float = FRAME_MS,
-              pad: float = 0.15) -> list[Gap]:
+              pad: float = 0.15, vad: bool | None = None,
+              also_speech=None) -> list[Gap]:
     """Windows with no speech in them, long enough to be worth using.
 
     `pad` is trimmed off each end. Dialogue does not stop cleanly on a frame
     boundary, and a description that begins the instant a line ends sounds like
     an interruption even when it technically is not.
+
+    `vad` adds the neural voice detector in vad.py as a second ear: a frame is
+    speech if either detector hears it. None means "if it is installed", which
+    it is wherever onnxruntime is, because the model ships in the repository.
+
+    `also_speech` is a list of (start, end) seconds that are speech whatever the
+    audio says, which is how the title's own caption file is applied. Captions
+    are written by people who heard every line, so they catch the dialogue a
+    detector misses under a loud score, and they only ever remove gap time.
     """
     sp = speechiness(audio, sr, frame_ms)
     if len(sp) == 0:
@@ -272,9 +294,17 @@ def find_gaps(audio: np.ndarray, sr: int, *, threshold: float = 0.45,
     # a voice; the syllable rhythm says something is actually talking. Rain
     # passes the first and fails the second, which is the whole point.
     mod = modulation(audio, sr, frame_ms)
-    speaking = _smooth((sp >= threshold) & (mod >= mod_threshold),
-                       frame_ms, close_s, open_s)
+    heard = (sp >= threshold) & (mod >= mod_threshold)
+    if vad is None:
+        from . import vad as _vad
+        vad = _vad.available()
+    if vad:
+        from . import vad as _vad
+        heard = heard | _vad.speech_frames(audio, sr, frame_ms, len(heard))
+    speaking = _smooth(heard, frame_ms, close_s, open_s)
     step = frame_ms / 1000.0
+    for a, b in (also_speech or ()):
+        speaking[max(0, int(a / step)):max(0, int(np.ceil(b / step)))] = True
 
     gaps, run_start = [], None
     for i, talking in enumerate(speaking):

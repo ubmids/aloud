@@ -1,1 +1,4 @@
 numpy>=1.26
+onnxruntime>=1.18  # the voice detector in aloud/vad.py; optional, detection falls back to the hand-built ear alone
+kokoro-onnx>=0.4  # the neural voice on machines without macOS say; optional
+soundfile>=0.12

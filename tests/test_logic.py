@@ -1112,12 +1112,25 @@ class _NoTools:
 
 
 def without_a_synthesiser(fn):
+    """No `say`, no ffmpeg, and no Kokoro model where the voice would look for
+    one. Hiding only the binaries passed on a Mac and failed on a Linux box
+    with the neural voice installed, which then reported, correctly, that it
+    could speak."""
     real = synth_mod.shutil
+    saved = {k: os.environ.get(k) for k in ("ALOUD_KOKORO_DIR", "ALOUD_TTS")}
     synth_mod.shutil = _NoTools
+    os.environ["ALOUD_KOKORO_DIR"] = os.path.join(
+        tempfile.gettempdir(), f"aloud-no-voice-{os.getpid()}")
+    os.environ.pop("ALOUD_TTS", None)
     try:
         return fn()
     finally:
         synth_mod.shutil = real
+        for k, v in saved.items():
+            if v is None:
+                os.environ.pop(k, None)
+            else:
+                os.environ[k] = v
 
 
 def test_an_empty_description_never_reaches_the_synthesiser():
@@ -1139,12 +1152,17 @@ def test_the_synthesiser_is_found_when_it_is_actually_there():
     and pass, so a broken probe reads as a green run on a machine that could
     have spoken perfectly well."""
     have = bool(shutil.which("say") and shutil.which("ffmpeg"))
-    if not have:
-        print("SKIP no synthesiser on this machine")
+    if have:
+        assert Synth().available, (
+            "say and ffmpeg are both on this path and the probe did not find them")
+        print("PASS the synthesiser on this machine is detected")
         return
-    assert Synth().available, (
-        "say and ffmpeg are both on this path and the probe did not find them")
-    print("PASS the synthesiser on this machine is detected")
+    if synth_mod.kokoro_ready():
+        assert Synth().available and Synth().backend == "kokoro", (
+            "the Kokoro model is installed and the probe did not pick it")
+        print("PASS the neural voice on this machine is detected")
+        return
+    print("SKIP no synthesiser on this machine")
 
 
 def test_half_a_toolchain_is_not_a_synthesiser():
@@ -1162,13 +1180,15 @@ def test_half_a_toolchain_is_not_a_synthesiser():
         def which(name):
             return "/usr/bin/ffmpeg" if name == "ffmpeg" else None
 
-    real = synth_mod.shutil
-    try:
-        for half in (_OnlySay, _OnlyFfmpeg):
-            synth_mod.shutil = half
-            assert not Synth().available, f"{half.__name__} reported a voice"
-    finally:
-        synth_mod.shutil = real
+    def check():
+        real = synth_mod.shutil
+        try:
+            for half in (_OnlySay, _OnlyFfmpeg):
+                synth_mod.shutil = half
+                assert not Synth().available, f"{half.__name__} reported a voice"
+        finally:
+            synth_mod.shutil = real
+    without_a_synthesiser(check)
     print("PASS a synthesiser needs both the voice and the converter")
 
 
