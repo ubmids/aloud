@@ -172,20 +172,65 @@ _OPENERS = {
 }
 
 
+# What follows a verb in -ing when it opens a clause: "holding a rifle",
+# "running toward the door". An -ing word followed by anything else is usually
+# an adjective: "a shattered, glowing window".
+_AFTER_VERB = {
+    "a", "an", "the", "his", "her", "its", "their", "this", "that", "these",
+    "those", "him", "them", "it", "into", "onto", "through", "toward",
+    "towards", "across", "along", "past", "over", "under", "up", "down", "out",
+    "away", "back", "around", "at", "on", "in", "from", "with", "to", "off",
+}
+_DETERMINERS = {
+    "a", "an", "the", "his", "her", "its", "their", "this", "that", "these",
+    "those", "some", "two", "three", "four", "several", "many", "each",
+}
+# Words ending in -ed or -ing that are things.
+_ED_ING_NOUNS = {
+    "bed", "shed", "sled", "seed", "reed", "steed", "speed", "feed", "weed",
+    "building", "ceiling", "painting", "clearing", "opening", "landing",
+    "railing", "wedding", "evening", "morning", "ring", "king", "thing",
+    "string", "wing", "spring", "swing", "sibling", "dwelling", "crossing",
+    "gathering", "meeting", "recording", "drawing", "clothing", "housing",
+    "wiring", "piping", "scaffolding", "plating", "lining", "setting",
+    "ending", "lightning", "footing", "sling", "ping", "awning", "carving",
+}
+
+
+def _bare(word: str) -> str:
+    return re.sub(r"[^A-Za-z'-]", "", word).lower()
+
+
 def _opens_clause(piece: str) -> bool:
-    first = re.sub(r"[^A-Za-z'-]", "", (piece.split() or [""])[0]).lower()
-    return first in _OPENERS or (first.endswith("ing") and "-" not in first)
+    words = [_bare(w) for w in piece.split()]
+    if not words:
+        return False
+    first = words[0]
+    if first in _OPENERS:
+        return True
+    return (first.endswith("ing") and "-" not in first and len(words) >= 3
+            and words[1] in _AFTER_VERB)
 
 
 def _ends_on_modifier(words: list[str]) -> bool:
     if not words:
         return False
-    last = re.sub(r"[^A-Za-z'-]", "", words[-1]).lower()
+    last = _bare(words[-1])
     if last in MODIFIERS:
         return True
-    if last in _Y_NOUNS or "-" in last:
-        return "-" in last and last.endswith(("ed", "ing", "like"))
-    return bool(_MODIFIER_SUFFIX.search(last))
+    if last in _Y_NOUNS or last in _ED_ING_NOUNS:
+        return False
+    if "-" in last:
+        return last.endswith(("ed", "ing", "like"))
+    if _MODIFIER_SUFFIX.search(last):
+        return True
+    # "through a shattered," and "beside a glowing,": a participle straight
+    # after a determiner, or after another adjective, is describing a noun
+    # that the cut has just removed.
+    if last.endswith(("ed", "ing")) and len(words) >= 2:
+        before = _bare(words[-2])
+        return before in _DETERMINERS or _ends_on_modifier(words[:-1])
+    return False
 
 
 def _ends_cleanly(words: list[str]) -> bool:

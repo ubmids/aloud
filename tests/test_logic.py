@@ -282,13 +282,22 @@ def test_a_comma_between_adjectives_is_not_a_clause_boundary():
     for text in ("A massive mechanical structure looms over a misty, "
                  "smoke-filled cityscape.",
                  "A woman walks through a long, narrow corridor.",
-                 "Two soldiers cross a dark, flooded street."):
+                 "Two soldiers cross a dark, flooded street.",
+                 # Also from Tears of Steel: shipped as "...leaps through a
+                 # shattered." before participles were caught.
+                 "A figure in a dark, glowing suit leaps through a shattered, "
+                 "sunlit industrial ruin.",
+                 "A robot steps through a shattered, glowing window."):
         for gap in (1.5, 2.0, 2.6, 3.0):
             f = fit_measured(text, gap, s)
             assert f.text in ("", text), (gap, f.text)
     # A real clause boundary still cuts.
     f = fit_measured("Snow fills the courtyard, thick and steady.", 2.5, s)
     assert f.text == "Snow fills the courtyard.", f.text
+    f = fit_measured("A woman stands in the open doorway, holding a lantern.", 4.0, s)
+    assert f.text == "A woman stands in the open doorway.", f.text
+    f = fit_measured("A soldier waits beside the building, rifle raised.", 3.6, s)
+    assert f.text == "A soldier waits beside the building.", f.text
     print("PASS a comma between two adjectives is never cut at")
 
 
