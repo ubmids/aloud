@@ -1,115 +1,135 @@
-# Submission copy, Aloud — Amazon Developer Hackathon, Fire TV track
+# Submission copy: aloud, Amazon "Build, Ship, Shape", Fire TV track
 
-Deadline **Friday 23 October 2026, 12:00 PDT**. Devpost: amazonappdev2026.
+Deadline **Friday 23 October 2026, 12:00 PDT (19:00 UTC)**. Devpost:
+amazonappdev2026. Paste the sections below into the matching Devpost fields.
 
-Four equally weighted criteria at 25% each: Tech Implementation, Design,
-Potential Impact, Quality of the Idea. Up to 10% bonus for a friction log,
-which `docs/FRICTION_LOG.md` already is, with 13 entries.
+Judged on four equal criteria (Tech Implementation, Design, Potential Impact,
+Quality of the Idea; ties go to Tech), plus up to 10% for the friction log
+(`docs/FRICTION_LOG.md`, 17 entries). Stage One: runs on Fire OS or Vega OS and
+is shown on a Fire TV or the Vega simulator. aloud runs on the Vega Virtual
+Device; no developer account or Appstore listing is required by the rules.
 
-**Stage One gate, confirmed met:** the track requires only that the project
-runs on Fire OS or Vega OS, any framework. The demo video must show it running
-"on an actual Fire TV device or the Fire TV/Vega simulator". The Vega simulator
-boots locally with no Amazon developer account, and Aloud installs and runs on
-it, verified 17 September. The rules do not require a deployed or published
-app, so the account is not on the critical path.
+Category fit, in the track's own words: **AI-enhanced viewing**, **computer
+vision**, and **multi-modal UX combining voice, D-pad and visual in a single
+flow**.
 
 ---
 
+## Project name
+
+aloud
+
 ## Elevator pitch (200 characters)
 
-Audio description exists for a tiny fraction of content because making it is
-manual and expensive. Aloud is a Fire TV app that generates it live and speaks
-it into the gaps between dialogue, never over it.
+Films that describe themselves on Fire TV. A vision model watches every shot,
+and in each silence between lines a voice tells you what's on screen. Never
+over dialogue. Watch with your ears.
 
 ## Text description
 
-Audio description, the narration track that lets blind and low vision people
-follow what is happening on screen, exists for a tiny fraction of content,
-because producing it is manual and expensive. Meanwhile every streaming app
-assumes a viewer who can see it.
+### What it does
 
-Aloud is a Fire TV app for Vega OS that generates audio description live and
-speaks it into the gaps between dialogue. A vision model reads frames on a
-lookahead buffer, a compression step writes a description sized to fit the
-silence actually available, and the speech lands in the window before the next
-line of dialogue.
+aloud is a Fire TV app, built on Vega OS, that lets you watch a film with your
+ears. The shelf reads each title aloud as the remote moves across it. Press
+play and, in every silence between the lines, a voice tells you what is on
+screen: *"{{HERO_CUE}}"* It never speaks over dialogue, and the film dips a
+little under the voice so every word is clear.
 
-Close your eyes. The television tells you what you are missing, without ever
-talking over anyone.
+Narration on or off, voice level, how much is said, play/pause, skips and Back
+are all on the remote, and transport goes through Vega's media controls so
+Alexa voice commands reach the same player. One voice speaks the menu and the
+film, so a viewer who cannot see the screen gets one continuous experience
+rather than a menu and then a film.
 
-## The hard part, and why it is the whole project
+### Who it is for
 
-Anyone can caption a frame. The difficulty is scheduling.
+Audio description exists for a small slice of television because a person
+writes it by hand, title by title. It matters most to blind and partially
+sighted viewers, and to a much larger audience watching without looking: the
+cook, the parent half-watching, the older viewer whose eyesight is going, the
+viewer following a film in a second language. aloud is aimed at the titles
+nobody will pay a describer for: FAST channels, archives, independent film, and
+the long tail of every catalogue.
 
-You have to find the silence windows, predict how long each one is, and
-generate a description that fits without clipping or overrunning into dialogue.
-Landing a description on top of a line of dialogue is this product's one
-unforgivable failure: it does not degrade the experience, it destroys it, and
-it destroys it for the exact viewer who has no other way to follow the film.
-That scheduling problem is the difference between this and a captioning toy.
+### How it is different from Prime Video's AI
 
-Four decisions follow from taking it seriously.
+Prime Video uses AI to find the gaps in the dialogue so its production teams
+can write description scripts faster, for its own catalogue. A person still
+writes every line. aloud writes the description itself, places it, measures it
+and plays it on the device. The track is made **ahead of time, not live**, as a
+standard WebVTT/JSON file, so a person can still review it before it airs, and
+the television does no inference at all.
 
-**Gap detection finds the absence of speech, not the absence of sound.** A loud
-musical passage is correctly a place a description can go. A quiet pause
-between two halves of a sentence is correctly not.
+### How it works
 
-**Descriptions are fitted by measurement, not estimation.** The pipeline
-synthesises the candidate and measures how long it actually takes to say.
-Estimating from word count carried 0.62 seconds of error against gaps of a
-second and a half, which is the difference between fitting and talking over the
-next line.
+1. **Listen for speech, three ways.** A hand-built speech-band and
+   syllable-rhythm detector, the Silero neural voice detector, and the title's
+   own caption file. A gap must be clear of all three. On *Tears of Steel*,
+   measured against a dialogue map built from the film's production stems, the
+   hand-built detector alone left 27.4 seconds of dialogue inside its gaps; all
+   three together leave 0.9.
+2. **Describe what changed.** For each gap where the picture has changed, a
+   vision-language model is shown two frames of the shot and the last three
+   things said, and asked for one present-tense sentence of about the number of
+   words the gap can hold. On-screen text is read out. Long action sequences
+   are split at hard cuts. Black frames, and sentences about the film rather
+   than of it, are refused.
+3. **Measure, then place.** Each description is synthesised and measured, never
+   estimated, and placed inside its gap. The track refuses to be written if any
+   cue would leave its gap.
+4. **Play it on Fire TV.** The Vega app plays the film through `w3cmedia`'s
+   `Video`, fires each pre-synthesised cue through an `AudioPlayer` classified
+   as accessibility speech, and decides from `currentTime` alone whether the
+   rest of the gap can still hold it.
 
-**The planner describes visual change, not the frame.** A gap with nothing new
-behind it gets no cue at all, because a voice restating the same room every few
-seconds is worse than silence. On the 52 second demo clip the backend finds
-nine gaps and deliberately leaves five of them silent. That is the planner
-working, not a shortfall.
+The tracks on the shelf were written by **Qwen3-VL 8B**, an open model, on a
+CPU via llama.cpp, with no key and no GPU; the same pipeline takes Gemini or any
+OpenAI-compatible model with one environment variable. *Tears of Steel* carries
+{{TOS_CUES}} descriptions ({{TOS_SPOKEN}} minutes of narration), of which
+{{TOS_OVER}} seconds overlap dialogue, measured against the production stems.
 
-**The timed track refuses to be written if any cue would land on dialogue.** The
-safety property is enforced at the point of writing rather than checked
-afterwards, so a bad track cannot exist to be shipped by accident.
+### Challenges
 
-That last one came with a lesson worth putting in the submission rather than
-hiding. The track being correct and the *film* being correct are two different
-claims, and only one of them was tested. Each description is placed into the
-exported mix by a single delay in milliseconds, and nothing checked it, so a
-description could play at the wrong moment in the finished film while the track
-validated perfectly, because nothing in a timed track describes the mix. The
-suite now measures the mixed audio inside each cue's own window. It was found
-by mutation testing the pipeline, which turned out to sit at 3% because no test
-had ever imported it.
+- **Silence is not the absence of sound.** A film's quiet parts are full of
+  score and rain; its loud parts are sometimes where the lines are. The detector
+  that never failed on recorded voices over rain and music failed 30 times on a
+  real film, which is why it now has two more ears.
+- **Vega gives an app the time, four times a second, and nothing else.** No
+  frames, no frame callbacks. So vision runs ahead of time and the player's
+  scheduler refuses to start a description the rest of the gap can no longer
+  hold.
+- **Models write about the film instead of in it.** "Screen is completely
+  black." "Text appears on screen." Both now leave the gap silent.
 
-## The player side
+### What's next
 
-Vega OS exposes `currentTime` and a `timeupdate` that fires about four times a
-second, and that is all you get. The scheduler built on top of it refuses to
-start a description that the rest of the gap can no longer hold, handles
-seeking in both directions, and shrinks its window at faster playback rates.
+A describer review screen for human sign-off; tracks served per title from a
+catalogue service rather than bundled; describing a household's own library;
+voices and languages per viewer.
 
-The app plays the bundled trailer through
-`@amazon-devices/react-native-w3cmedia` and speaks its descriptions from audio
-synthesised in advance and bundled beside the film. Verified on the Vega Virtual
-Device: the film runs to its end, every cue fires exactly once, and the film
-never pauses underneath them.
+## Built with
 
-## Demo footage and licensing
+vega-os, react-native-for-vega, react-native-kepler, react-native-w3cmedia,
+typescript, python, llama.cpp, qwen3-vl, gemini-api, kokoro-tts, silero-vad,
+ffmpeg, numpy, jest
 
-`tv/assets/sintel-trailer.mp4` is the trailer for **Sintel**, copyright Blender
-Foundation, durian.blender.org, released under CC BY 3.0, re-encoded to 640x360
-to bring it from 7.6MB to 1.9MB because it is bundled into the app package.
+## Try it out
 
-It was chosen over Big Buck Bunny, the more obvious Blender film, for one
-reason: Sintel has dialogue and Big Buck Bunny has none. A film with no speech
-in it is all gap, so it would demonstrate nothing about the only hard problem
-here.
+- Repository: https://github.com/ubmids/aloud (branch `first-place` until merged)
+- Video: (YouTube link)
+
+## Credits and licences (put in the video description too)
+
+*Tears of Steel*, (CC) Blender Foundation, mango.blender.org. *Sintel* and its
+trailer, (c) copyright Blender Foundation, durian.blender.org. Both CC BY 3.0,
+from download.blender.org, re-encoded; descriptions are a separate track.
 
 ---
 
 ## Product Feedback (REQUIRED FIELD)
 
 > Every claim below is drawn from `docs/FRICTION_LOG.md`, which has full
-> reproduction steps, severity and a suggested fix for each of its 13 entries.
+> reproduction steps, severity and a suggested fix for each of its 17 entries.
 
 ### Which developer tools, APIs and SDKs did you use, and for what?
 
@@ -121,9 +141,16 @@ here.
   `AudioPlayer` for speaking the description cues.
 - **Vega Virtual Device** for verification, since it is what the rules accept
   in place of hardware.
-- Python 3.14 for the backend pipeline: gap detection, fitting, planning,
-  track writing and mixing. 128 tests, mutation tested with a sibling tool from
-  the same sprint.
+- **`TVFocusGuideView`, `useTVEventHandler`, `BackHandler`,
+  `AccessibilityInfo`** (all from `react-native-kepler`) for the remote-driven
+  shelf and player, and Kepler media controls (`setMediaControlFocus`) for voice
+  transport.
+- The Kepler Jest preset with `@testing-library/react-native` for focus-state
+  tests, and `react-native build-vega` on Linux for the JavaScript and Hermes
+  stages.
+- Python 3.12+ for the pipeline: gap detection, description, fitting, planning,
+  track writing, mixing and evaluation, with Qwen3-VL 8B on llama.cpp (CPU),
+  Kokoro 82M and Silero VAD.
 
 ### What worked well
 
@@ -139,7 +166,7 @@ produced a working `.vpkg` first time, for both aarch64 and armv7.
 
 ### What needs improvement
 
-Thirteen entries, two of them critical. In rough order of cost:
+Seventeen entries, two of them critical. In rough order of cost:
 
 1. **The manifest entries playback depends on are split across three pages that
    disagree with each other.** Severity critical. Nothing plays until it is
@@ -174,13 +201,21 @@ Thirteen entries, two of them critical. In rough order of cost:
 12. The `build_number is 0` warning does not say what it should be.
 13. The media player documentation's first line of code imports from a package
     that does not exist.
+14. `build-vega` builds the whole JavaScript and Hermes bundle before saying
+    the SDK is missing, with no way to stop after the SDK-free stages for CI.
+15. The method that routes Alexa and remote transport commands to a player,
+    `setMediaControlFocus`, is marked `@hidden` in its own type definitions.
+16. The remote event's doc comment and its type disagree on the key-state
+    field name.
+17. The Jest preset's animation timers print an `act()` warning on every focus
+    test.
 
 ### How was the onboarding experience?
 
 Mixed, and sharply so. The distance from zero to a running app on the virtual
 device is short and well served. The distance from a running app to a *playing
 video* is long, undocumented in places, actively contradictory in others, and
-almost entirely undiagnosable because of entry 2. Eight of the thirteen entries
+almost entirely undiagnosable because of entry 2. Eight of the seventeen entries
 would have collapsed into minutes rather than hours if media errors carried a
 reason string.
 
@@ -197,7 +232,7 @@ tell me why it was not doing them.
 ## Feature requests (optional field, priority in brackets)
 
 1. **[Critical] Put a reason string on media errors.** One change, and it
-   collapses eight of my thirteen friction entries. Nothing else on this list
+   collapses eight of my seventeen friction entries. Nothing else on this list
    is close in value.
 2. **[High] Consolidate the playback manifest documentation into one page** and
    retire or redirect the two that disagree with it.
@@ -209,87 +244,26 @@ tell me why it was not doing them.
 5. **[Medium] Make `AudioPlayer` throw if used before `initialize()`** rather
    than failing silently.
 6. **[Medium] Give `Video` a sane default size** instead of NaN, or throw.
-7. **[Low] Document enum member names in prose**, not only in the types.
-
----
-
-## Demo video script
-
-Under 3 minutes, YouTube or Vimeo, public. Must show the project running on a
-Fire TV device or the Vega simulator. Screen capture the Vega Virtual Device
-window.
-
-> **Do this first.** Regenerate the track with a real vision endpoint before
-> filming. The bundled `tv/src/data/description.json` currently reads "The
-> scene changes to a new shot in the film" because no vision endpoint was
-> configured when it was generated. That is the stub describer being honest,
-> and it is the right default, but it is a flat demo. With
-> `ALOUD_LLM_BASE_URL`, `ALOUD_LLM_API_KEY` and `ALOUD_LLM_MODEL` set, rerun
-> `python3 -m aloud tv/assets/sintel-trailer.mp4 --out out/`, copy the track
-> back into `tv/src/data/`, rebuild and reinstall. This single step is the
-> largest available improvement to this submission.
-
-**0:00 to 0:15, close your eyes.** On screen: the trailer playing, picture
-visible. Then the picture goes black while the audio continues. Say nothing for
-five seconds. Let the judge experience a film they cannot follow.
-
-**0:15 to 0:35, the problem.** Say: "Audio description is the narration track
-that lets blind and low vision people follow what is on screen. It exists for a
-tiny fraction of content, because making it is manual and expensive. Every
-streaming app assumes a viewer who can see it."
-
-**0:35 to 1:10, the same clip, described.** Play it again on the Vega device
-with Aloud running. The descriptions land in the gaps. Say: "Same clip. The
-television is describing itself, live, on a Fire TV."
-
-**1:10 to 1:50, the hard part.** On screen: the gap timeline, nine gaps, four
-used and five deliberately left silent. Say: "Anyone can caption a frame. The
-difficulty is scheduling. You have to find the silence, predict how long it is,
-and write something that fits. Landing on top of dialogue is the one
-unforgivable failure, so the track refuses to be written at all if any cue
-would." Then: "Five of these nine gaps get no description, because nothing
-visible had changed. A voice restating the same room every few seconds is worse
-than silence."
-
-**1:50 to 2:15, measurement not estimation.** Say: "Descriptions are fitted by
-synthesising them and measuring them, not by counting words. Estimating carried
-0.62 seconds of error against gaps of a second and a half, which is exactly the
-difference between fitting and talking over the next line."
-
-**2:15 to 2:40, the player.** Say: "Vega gives you `currentTime` and a
-`timeupdate` that fires four times a second. That is all. So the scheduler
-refuses to start a description the rest of the gap can no longer hold, handles
-seeking in both directions, and shrinks its window when you speed the film up."
-Show a seek, and a rate change.
-
-**2:40 to 2:55, close.** Back to the black screen with description playing.
-Say: "Close your eyes. The television tells you what you are missing, without
-ever talking over anyone."
-
-### Shot list
-
-1. Trailer playing with picture, then picture black, audio only, five seconds.
-2. The same clip on the Vega device with Aloud running and describing.
-3. The gap timeline, nine gaps, five deliberately silent.
-4. A cue being synthesised and measured.
-5. A seek backwards and forwards, and a playback rate change.
-6. Black screen, description playing, close.
+7. **[Medium] Document `setMediaControlFocus`** and un-hide it, so apps know
+   how to receive voice transport commands.
+8. **[Medium] An SDK-free `build-vega --js-only`** for CI on Linux runners.
+9. **[Low] Document enum member names in prose**, not only in the types.
 
 ---
 
 ## Before submitting, the checklist
 
-- [ ] **Regenerate the description track with a real vision endpoint**, then
-      rebuild and reinstall. Biggest single improvement available.
-- [ ] Demo video under 3 minutes, on YouTube or Vimeo, publicly visible,
-      showing it running on the Vega simulator
-- [ ] Sintel attribution visible in the video or its description, CC BY 3.0
-- [ ] Repository public with licence visible in About, or shared with
-      testing@devpost.com
-- [ ] Product Feedback field filled in, above
-- [ ] Friction log attached, `docs/FRICTION_LOG.md`, 13 entries, for the bonus
-- [ ] Feature requests submitted with priorities
-- [ ] Run the device `--no-gui` for any scripted verification, it seizes the
-      Mac's audio device otherwise, and clear orphaned crashpad handlers after
-- [ ] Secret sweep before flipping the repo public
-- [ ] Submitted before 23 October, 12:00 PDT
+- [ ] Optional but strong: `export GEMINI_API_KEY=...` and
+      `python3 -m aloud.films build` to regenerate every track with a hosted
+      model, then compare a few cues against the shipped ones and keep the
+      better set. The shipped tracks are already real (Qwen3-VL on CPU).
+- [ ] `python3 -m aloud.films fetch`, build, install, and walk
+      `docs/MAC_CHECKLIST.md` on the Vega Virtual Device.
+- [ ] Video under 3:00 per `docs/DEMO_SCRIPT.md`, public on YouTube, showing
+      the Vega Virtual Device, hero inside the first 20 seconds.
+- [ ] Blender credits in the video and its description (above).
+- [ ] Merge `first-place` into `master`, or point the Devpost link at the branch.
+- [ ] Repository public with the MIT licence visible, or shared with
+      testing@devpost.com. Run a secret sweep first.
+- [ ] Product Feedback and feature requests pasted (above); friction log linked.
+- [ ] Submitted before 23 October, 12:00 PDT (19:00 UTC).

@@ -28,7 +28,7 @@ from dataclasses import dataclass
 from .budget import fit_generated, words_for
 from .gaps import find_gaps, load_audio
 from .scenes import (detect_shots, first_lit_frame, frame_at, next_cut_after,
-                     plan_one, split_long_gaps, with_opening)
+                     changed_since, plan_one, split_long_gaps, with_opening)
 from .synth import Synth
 from .track import Cue, Track, schedule
 
@@ -148,12 +148,14 @@ def describe_film(video: str, *, captioner=None, synth=None,
     _log(quiet, f"{len(shots)} shot changes")
     windows = split_long_gaps(gaps, shots) if split else gaps
     shots_open = with_opening(shots)
-    last_said = 0.0
+    last_said, described_at = 0.0, None
 
     track, skipped, said = Track(source=video), [], []
     failures = 0
     for i, window in enumerate(windows, 1):
         plan = plan_one(window, shots_open, last_said)
+        if not plan.worth_describing:
+            plan = changed_since(video, described_at, window) or plan
         if not plan.worth_describing:
             skipped.append((plan.gap, plan.reason))
             continue
@@ -241,7 +243,7 @@ def describe_film(video: str, *, captioner=None, synth=None,
                               audio=spoken.path,
                               gap=(plan.gap.start, plan.gap.end)))
         said.append(fitted.text)
-        last_said = plan.gap.end
+        last_said, described_at = plan.gap.end, plan.describe_at
         _log(quiet, f"[{i}/{len(windows)}] {start:7.2f}s  {fitted.text}")
 
     track.describer = label

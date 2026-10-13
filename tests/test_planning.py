@@ -437,6 +437,35 @@ def test_a_gap_left_silent_does_not_count_as_said():
     print("PASS a skipped gap does not stop the next one being described")
 
 
+def test_a_dissolve_counts_as_a_change():
+    """Cut detection misses a slow cross-fade, so the Sintel trailer's second
+    half registered no change at all. The picture in a gap is now also compared
+    with the last picture described."""
+    if not shutil.which("ffmpeg"):
+        print("SKIP no ffmpeg")
+        return
+    from aloud.scenes import changed_since, picture_change
+    d = tempfile.mkdtemp(prefix="aloud_fade_")
+    film = os.path.join(d, "dissolve.mp4")
+    try:
+        subprocess.run(
+            ["ffmpeg", "-v", "error", "-y",
+             "-f", "lavfi", "-i", "color=c=white:s=160x90:d=6",
+             "-f", "lavfi", "-i", "color=c=black:s=160x90:d=6",
+             "-filter_complex", "[0:v][1:v]xfade=transition=fade:duration=4:offset=1[v]",
+             "-map", "[v]", "-pix_fmt", "yuv420p", film], check=True)
+        cuts = [s for s in detect_shots(film) if s.score >= 0.1]
+        assert not cuts, f"the dissolve registered as a cut after all: {cuts}"
+        assert picture_change(film, 0.5, 6.5) > 100
+        plan = changed_since(film, 0.5, Gap(6.0, 8.0))
+        assert plan is not None and plan.worth_describing, plan
+        assert changed_since(film, 6.5, Gap(7.0, 9.0)) is None
+        assert changed_since(film, None, Gap(6.0, 8.0)) is None
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+    print("PASS a dissolve with no cut in it still counts as a change")
+
+
 if __name__ == "__main__":
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for fn in fns:

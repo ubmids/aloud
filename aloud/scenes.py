@@ -239,3 +239,46 @@ def first_lit_frame(video: str, start: float, end: float, out_dir: str,
             return t, path
         t += step
     return None
+
+
+# Mean absolute difference between two 64x36 greyscale thumbnails, 0..255,
+# above which the picture counts as changed. Measured on the Sintel trailer and
+# Tears of Steel: the same shot a few seconds apart scores 3 to 25, a different
+# scene 50 to 110.
+LOOKS_DIFFERENT = 40.0
+
+
+def _thumb(video: str, t: float):
+    import numpy as np
+    raw = subprocess.run(
+        ["ffmpeg", "-v", "error", "-ss", f"{max(0.0, t):.3f}", "-i", video,
+         "-frames:v", "1", "-vf", "scale=64:36,format=gray", "-f", "rawvideo",
+         "-"], capture_output=True, check=True).stdout
+    return np.frombuffer(raw, np.uint8).astype(np.float32)
+
+
+def picture_change(video: str, a: float, b: float) -> float:
+    """How different the picture at `b` is from the picture at `a`."""
+    x, y = _thumb(video, a), _thumb(video, b)
+    n = min(len(x), len(y))
+    return float(abs(x[:n] - y[:n]).mean()) if n else 0.0
+
+
+def changed_since(video: str, described_at: float | None, gap,
+                  settle: float = 0.25) -> Plan | None:
+    """A second test for change, for what cut detection cannot see.
+
+    Cut detection scores each frame against the one before it, so a slow
+    dissolve, a fade through black or a long camera move changes the whole
+    picture without any single frame scoring as a cut. The Sintel trailer is
+    almost all dissolves, and after its first half nothing in it registered as
+    a change: four gaps over entirely new scenes were left silent. So when no
+    cut is found, the picture in the gap is compared with the last picture that
+    was actually described, and a big enough difference counts.
+    """
+    if described_at is None:
+        return None
+    at = round(gap.start + settle, 3)
+    if picture_change(video, described_at, at) >= LOOKS_DIFFERENT:
+        return Plan(gap, at, "the picture has changed since the last cue")
+    return None
