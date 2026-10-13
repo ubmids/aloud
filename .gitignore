@@ -45,3 +45,8 @@ tv/.vega/
 # Written by the Kepler eslint plugin on every lint run.
 tv/generated/
 *.vpkg
+
+# The full-length films are fetched and encoded by `python3 -m aloud.films
+# fetch`; only the trailer is small enough to live in the repository.
+tv/assets/films/*/film.mp4
+!tv/assets/films/sintel-trailer/film.mp4
