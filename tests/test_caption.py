@@ -15,7 +15,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from aloud.caption import (GeminiCaptioner, LocalCaptioner, VisionCaptioner,
-                           captioner_from_env, clean)
+                           captioner_from_env, clean, vacuous)
 
 STATE = {"reply": "A man crosses the empty street.", "status": 200, "req": None,
          "path": None, "headers": None}
@@ -385,6 +385,19 @@ def test_a_second_sentence_is_dropped():
     assert clean("A man runs. He stops at the door.") == "A man runs."
     assert clean("Mr. Smith waits") == "Mr. Smith waits."
     print("PASS one sentence was asked for and one is kept")
+
+
+def test_a_sentence_about_the_film_is_not_a_description():
+    for said in ("Text appears on screen.", "Screen is completely black.",
+                 "The scene changes.", "The image fades to black.",
+                 "Words appear.", "Credits are displayed"):
+        assert vacuous(said), said
+    for said in ("A woman reads the text on a screen.",
+                 "Text on a wall reads Leave now.",
+                 "The screen of a laptop glows in the dark room.",
+                 "Two engines fire."):
+        assert not vacuous(said), said
+    print("PASS sentences about the film are refused, sentences of it are not")
 
 
 if __name__ == "__main__":

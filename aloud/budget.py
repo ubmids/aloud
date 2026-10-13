@@ -131,6 +131,9 @@ DANGLING = {
 }
 
 
+MIN_CLAUSE_WORDS = 4
+
+
 def _ends_cleanly(words: list[str]) -> bool:
     if not words:
         return False
@@ -144,7 +147,16 @@ def _shorten(text: str, words_to_drop: int) -> str:
     parts = re.split(r"(?<=[,;])\s+", text.strip())
     if len(parts) > 1:
         shorter = " ".join(parts[:-1]).rstrip(",;")
-        if _ends_cleanly(re.findall(r"\S+", shorter)):
+        words = re.findall(r"\S+", shorter)
+        # Not every comma ends a clause. "A large, dark hall looms." cut at
+        # its comma gave "A large, dark." on the first full film: inside
+        # budget, ends on an ordinary adjective, says nothing. A clause worth
+        # keeping has a subject and a verb, so it runs to at least four words,
+        # and no piece of it between commas is a lone word, which is what an
+        # adjective list looks like.
+        pieces = [p for p in re.split(r"[,;]", shorter) if p.strip()]
+        if (_ends_cleanly(words) and len(words) >= MIN_CLAUSE_WORDS
+                and all(len(p.split()) >= 2 for p in pieces)):
             return shorter + "."
         return ""
 
@@ -159,7 +171,7 @@ def _shorten(text: str, words_to_drop: int) -> str:
 
 
 def fit_generated(describe, gap_seconds: float, synth, *,
-                  headroom: float = HEADROOM, max_rounds: int = 3) -> "Fit":
+                  headroom: float = HEADROOM, max_rounds: int = 4) -> "Fit":
     """Ask for a description the right size, rather than cutting one to size.
 
     `describe(target_words)` returns a description of roughly that length. This

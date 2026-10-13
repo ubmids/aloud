@@ -42,7 +42,11 @@ SYSTEM = (
     "is visible in this frame. Use the present tense. Do not interpret, "
     "explain, or name emotions. Do not describe anything that can be heard. Do "
     "not name characters. Put the most important new information first, because "
-    "the description may be cut short. Write one sentence and no more. Reply "
+    "the description may be cut short. Describe people by what can be seen "
+    "of them: age, hair, clothing. If there is legible text on screen and it "
+    "fits the length, read it out exactly; otherwise describe the picture. "
+    "Never say only that text appears or that the scene changes. Write one "
+    "sentence and no more. Reply "
     "with the sentence alone, no preamble and no quotation marks."
 )
 
@@ -88,6 +92,30 @@ def clean(text: str) -> str:
     if t and not t.endswith((".", "!", "?")):
         t += "."
     return (t[:1].upper() + t[1:]) if t else ""
+
+
+# Sentences that are about the film rather than of it. Each one here was
+# produced by a real model on a real frame, and each one spends a gap telling
+# the listener nothing: "Text appears on screen." while the screen read "This
+# film is supported by the Netherlands Film Fund". Better silent.
+VACUOUS = re.compile(
+    r"^(?:the )?(?:text|words|a title|credits|captions?|subtitles?|an? image|"
+    r"the image|the scene|the screen|the frame|a scene|it)\s+"
+    r"(?:appears?|is shown|is displayed|are displayed|are shown|changes?|cuts?|"
+    r"fades?|shows?|is black|goes black|is dark)\b[^.]*\.?$|^(?:the )?screen is "
+    r"(?:completely )?(?:black|dark)\b", re.IGNORECASE)
+
+
+def vacuous(text: str) -> bool:
+    """True for a description that only says the film is a film."""
+    return bool(VACUOUS.search((text or "").strip()))
+
+
+def brief_version() -> str:
+    """Changes whenever the brief does, so remembered answers to an older
+    brief are not reused for a newer one."""
+    import hashlib
+    return hashlib.sha256((SYSTEM + MOTION + CONTEXT).encode()).hexdigest()[:8]
 
 
 def _ask(n: int, frames: int, context: str | None) -> tuple[str, str]:

@@ -121,7 +121,7 @@ def describe_film(video: str, *, captioner=None, synth=None,
     `memory` is how many earlier descriptions the describer is shown, so it
     says what is new instead of reintroducing the same man every cue.
     """
-    from .caption import captioner_from_env
+    from .caption import brief_version, captioner_from_env, vacuous
 
     captioner = captioner or captioner_from_env()
     synth = synth or Synth()
@@ -132,6 +132,7 @@ def describe_film(video: str, *, captioner=None, synth=None,
     label = getattr(captioner, "label", getattr(captioner, "__name__", "describer"))
     remembered = _Remembered(os.path.join(out_dir, "described.cache.json")
                              if label != "stub_captioner" else None)
+    is_stub = captioner is stub_captioner
     with_context = _takes(captioner, "context")
     with_frames = _takes(captioner, "frames")
 
@@ -182,7 +183,8 @@ def describe_film(video: str, *, captioner=None, synth=None,
 
         def describe(n, frame=frame, extra=extra, context=context,
                      at=plan.describe_at):
-            key = _Remembered.key(label, round(at, 3), n, len(extra), context)
+            key = _Remembered.key(label, brief_version(), round(at, 3), n,
+                                  len(extra), context)
             got = remembered.get(key)
             if got is None:
                 kw = {}
@@ -192,7 +194,12 @@ def describe_film(video: str, *, captioner=None, synth=None,
                     kw["context"] = context
                 got = captioner(frame, n, **kw)
                 remembered.put(key, got)
-            return got
+            # A sentence about the film instead of what is in it ("Text appears
+            # on screen.") is treated as nothing written, so the gap is left
+            # silent rather than spent on it.
+            # The stub is exempt: it is obvious on purpose, so the plumbing
+            # around it can be tested end to end with no model at all.
+            return "" if (vacuous(got) and not is_stub) else got
 
         # One bad frame must not cost the whole film. A describer that raises
         # here is a real possibility (a rate limit, a refused image, a timeout)

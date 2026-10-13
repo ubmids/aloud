@@ -176,7 +176,10 @@ def test_a_describer_that_fails_costs_that_gap_and_not_the_film():
         calls.append(frame)
         if len(calls) == 1:
             raise RuntimeError("429 slow down")
-        return stub_captioner(frame, words)
+        # Not the stub's words: the pipeline refuses a sentence about the film
+        # ("The scene changes...") from anything but the stub itself.
+        return " ".join("Snow drifts across an empty courtyard toward a tall "
+                        "iron gate".split()[:max(2, words)]) + "."
 
     result, out = described(captioner=flaky)
     try:

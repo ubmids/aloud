@@ -1207,6 +1207,19 @@ def test_a_missing_synthesiser_is_an_error_and_not_a_zero():
     print("PASS a missing synthesiser raises rather than reporting zero")
 
 
+def test_an_adjective_list_is_not_a_clause():
+    """The first full film produced "A large, dark." by cutting at a comma that
+    separated two adjectives. A kept clause needs four words and no lone word
+    between commas."""
+    from aloud.budget import _shorten
+    assert _shorten("A large, dark hall looms over the river.", 3) == ""
+    assert _shorten("A large, dark, cavernous hall looms, its lights out.", 3) == ""
+    assert _shorten("Snow fills the courtyard, drifting past the gate.", 3) == \
+        "Snow fills the courtyard."
+    assert _shorten("A man runs, then stops.", 2) == ""
+    print("PASS a comma inside an adjective list is never a place to cut")
+
+
 if __name__ == "__main__":
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for fn in fns:
