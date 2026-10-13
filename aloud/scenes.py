@@ -282,3 +282,21 @@ def changed_since(video: str, described_at: float | None, gap,
     if picture_change(video, described_at, at) >= LOOKS_DIFFERENT:
         return Plan(gap, at, "the picture has changed since the last cue")
     return None
+
+
+def cut_inside(gap, shots, *, room: float = 1.35, hard_cut: float = 0.25,
+               settle: float = 0.25) -> Plan | None:
+    """A hard cut partway through a gap, with room after it to say something.
+
+    The planner looks for change up to the moment a gap opens, so a cut that
+    lands a second into the gap was invisible to it, and the new shot went
+    undescribed. The description starts at the cut instead of the gap's
+    start, which keeps it inside the gap and puts it on the picture it is
+    about.
+    """
+    late = sorted(s.at for s in shots
+                  if s.score >= hard_cut and gap.start < s.at <= gap.end - room)
+    if not late:
+        return None
+    return Plan(type(gap)(round(late[0], 3), gap.end), round(late[0] + settle, 3),
+                "a cut inside the gap")

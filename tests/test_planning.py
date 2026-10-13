@@ -466,6 +466,17 @@ def test_a_dissolve_counts_as_a_change():
     print("PASS a dissolve with no cut in it still counts as a change")
 
 
+def test_a_cut_inside_a_gap_is_described_from_the_cut():
+    from aloud.scenes import cut_inside
+    gap = Gap(15.57, 18.35)
+    plan = cut_inside(gap, [Shot(16.5, 1.0), Shot(17.5, 0.37)])
+    assert plan is not None and plan.gap.start == 16.5 and plan.gap.end == 18.35
+    assert plan.describe_at == 16.75
+    assert cut_inside(gap, [Shot(17.5, 0.9)]) is None, "no room left after it"
+    assert cut_inside(gap, [Shot(16.0, 0.12)]) is None, "not a hard cut"
+    print("PASS a cut inside a gap is described from the cut, if there is room")
+
+
 if __name__ == "__main__":
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for fn in fns:

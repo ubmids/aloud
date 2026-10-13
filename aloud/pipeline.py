@@ -28,7 +28,8 @@ from dataclasses import dataclass
 from .budget import fit_generated, words_for
 from .gaps import find_gaps, load_audio
 from .scenes import (detect_shots, first_lit_frame, frame_at, next_cut_after,
-                     changed_since, plan_one, split_long_gaps, with_opening)
+                     changed_since, cut_inside, plan_one, split_long_gaps,
+                     with_opening)
 from .synth import Synth
 from .track import Cue, Track, schedule
 
@@ -155,7 +156,8 @@ def describe_film(video: str, *, captioner=None, synth=None,
     for i, window in enumerate(windows, 1):
         plan = plan_one(window, shots_open, last_said)
         if not plan.worth_describing:
-            plan = changed_since(video, described_at, window) or plan
+            plan = (cut_inside(window, shots)
+                    or changed_since(video, described_at, window) or plan)
         if not plan.worth_describing:
             skipped.append((plan.gap, plan.reason))
             continue
