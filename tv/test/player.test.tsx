@@ -156,3 +156,11 @@ test('two Menu presses on the lighter setting turn description back up, and say 
   fireEvent.press(getByTestId('toggle-density'));
   expect(queryByText(/You asked twice/)).toBeNull();
 });
+
+test('the on-screen tally claims only what was measured: each cue sits in a gap', () => {
+  const {getByText, queryByText} = open(true);
+  // "none of them over a line" was on screen, and the evaluation measures
+  // 0.9 s of overlap on uncaptioned lines. The screen says what is true.
+  expect(queryByText(/none of them over a line/)).toBeNull();
+  expect(getByText(/spoken so far, each inside a measured gap/)).toBeTruthy();
+});

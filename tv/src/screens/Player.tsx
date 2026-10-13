@@ -425,15 +425,15 @@ export const Player = ({
           accessible
           accessibilityLabel={
             `This film: ${cues.length} descriptions, ${secs(spoken)} of speech ` +
-            `in total. ${spokenCount} spoken so far, each one inside a measured ` +
-            'silence.'
+            `in total. ${spokenCount} spoken so far, each inside a measured gap ` +
+            'in the dialogue.'
           }>
           <Text style={styles.evidenceLabel}>THIS FILM</Text>
           <Text style={styles.evidenceValue}>
             {cues.length} descriptions, {secs(spoken)} of speech
           </Text>
           <Text style={styles.evidenceNote}>
-            {spokenCount} spoken so far, none of them over a line
+            {spokenCount} spoken so far, each inside a measured gap
           </Text>
         </View>
       </TVFocusGuideView>
