@@ -1,0 +1,52 @@
+{
+  "id": "sintel-trailer",
+  "title": "Sintel: the trailer",
+  "source": "sintel_trailer-720p.mp4",
+  "describer": "qwen3-vl-4b (local, llama.cpp on CPU)",
+  "voice": "Kokoro 82M (af_heart)",
+  "announcement": "Sintel: the trailer. Trailer, 2010, 1 minute. 4 descriptions.",
+  "credit": "(c) copyright Blender Foundation | durian.blender.org",
+  "licence": "Creative Commons Attribution 3.0",
+  "cues": [
+    {
+      "start": 5.77,
+      "end": 9.897,
+      "text": "Snow-covered mountain peaks loom in a foggy, desolate, gray landscape.",
+      "audio": "cue-001.m4a",
+      "gap": [
+        5.77,
+        11.87
+      ]
+    },
+    {
+      "start": 16.5,
+      "end": 17.57,
+      "text": "A figure in snow.",
+      "audio": "cue-002.m4a",
+      "gap": [
+        16.5,
+        18.35
+      ]
+    },
+    {
+      "start": 25.17,
+      "end": 32.321,
+      "text": "A lone figure stands on crumbling stone ruins as red-winged creatures fly overhead against a golden sunset sky.",
+      "audio": "cue-003.m4a",
+      "gap": [
+        25.17,
+        35.17
+      ]
+    },
+    {
+      "start": 38.43,
+      "end": 41.161,
+      "text": "A lone figure walks across vast golden dunes.",
+      "audio": "cue-004.m4a",
+      "gap": [
+        38.43,
+        41.77
+      ]
+    }
+  ]
+}

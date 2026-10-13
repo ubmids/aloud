@@ -1,0 +1,482 @@
+{
+  "id": "sintel",
+  "title": "Sintel",
+  "source": "Sintel.2010.720p.mkv",
+  "describer": "qwen3-vl-4b (local, llama.cpp on CPU)",
+  "voice": "Kokoro 82M (af_heart)",
+  "announcement": "Sintel. Fantasy, 2010, 15 minutes. 47 descriptions.",
+  "credit": "(c) copyright Blender Foundation | durian.blender.org",
+  "licence": "Creative Commons Attribution 3.0",
+  "cues": [
+    {
+      "start": 3.5,
+      "end": 12.533,
+      "text": "The Blender Foundation Presents logo appears centered on a dark, snowy, mountainous landscape with blurred, shadowy rock formations in the foreground.",
+      "audio": "cue-001.m4a",
+      "gap": [
+        3.5,
+        18.93
+      ]
+    },
+    {
+      "start": 22.25,
+      "end": 26.14,
+      "text": "Snow-covered mountains loom, with a distant, icy structure visible.",
+      "audio": "cue-002.m4a",
+      "gap": [
+        22.25,
+        27.03
+      ]
+    },
+    {
+      "start": 31.67,
+      "end": 40.181,
+      "text": "A figure in a hooded, brown outfit stands on snow, gripping a long, curved staff, with misty, snow-capped mountains looming behind them.",
+      "audio": "cue-003.m4a",
+      "gap": [
+        31.67,
+        44.57
+      ]
+    },
+    {
+      "start": 46.63,
+      "end": 48.323,
+      "text": "A hooded figure lunges forward.",
+      "audio": "cue-004.m4a",
+      "gap": [
+        46.63,
+        49.01
+      ]
+    },
+    {
+      "start": 53.958,
+      "end": 55.832,
+      "text": "Hooded figure extends hand forward.",
+      "audio": "cue-005.m4a",
+      "gap": [
+        53.958,
+        57.29
+      ]
+    },
+    {
+      "start": 61.41,
+      "end": 63.764,
+      "text": "A bald man in dark armor draws a knife.",
+      "audio": "cue-006.m4a",
+      "gap": [
+        61.41,
+        64.73
+      ]
+    },
+    {
+      "start": 65.39,
+      "end": 71.895,
+      "text": "Bald man in dark armor raises a knife, gripping a staff as a red-haired figure bends forward in the snow.",
+      "audio": "cue-007.m4a",
+      "gap": [
+        65.39,
+        74.042
+      ]
+    },
+    {
+      "start": 74.042,
+      "end": 79.46,
+      "text": "Red-haired figure lies motionless in snow, knife resting beside them, hand clutching coat.",
+      "audio": "cue-008.m4a",
+      "gap": [
+        74.042,
+        81.458
+      ]
+    },
+    {
+      "start": 81.458,
+      "end": 85.018,
+      "text": "Snow-covered mountains loom over a distant, warmly lit shelter.",
+      "audio": "cue-009.m4a",
+      "gap": [
+        81.458,
+        86.79
+      ]
+    },
+    {
+      "start": 88.542,
+      "end": 95.849,
+      "text": "A red-haired figure stands in the snow, holding a staff, with towering, snow-laden mountains looming in the misty background.",
+      "audio": "cue-010.m4a",
+      "gap": [
+        88.542,
+        101.208
+      ]
+    },
+    {
+      "start": 145.41,
+      "end": 146.873,
+      "text": "Red-haired figure looks down.",
+      "audio": "cue-011.m4a",
+      "gap": [
+        145.41,
+        148.29
+      ]
+    },
+    {
+      "start": 156.27,
+      "end": 158.865,
+      "text": "Red-haired figure stands in rubble-strewn alley.",
+      "audio": "cue-012.m4a",
+      "gap": [
+        156.27,
+        159.37
+      ]
+    },
+    {
+      "start": 162.083,
+      "end": 171.022,
+      "text": "A red-haired figure grips a heavy, dark object, her arm extended as she stands in a sunlit, rubble-strewn alley with weathered buildings behind her.",
+      "audio": "cue-013.m4a",
+      "gap": [
+        162.083,
+        174.93
+      ]
+    },
+    {
+      "start": 180.083,
+      "end": 183.362,
+      "text": "Red-haired figure stands on a broken roof, gripping a knife.",
+      "audio": "cue-014.m4a",
+      "gap": [
+        180.083,
+        184.375
+      ]
+    },
+    {
+      "start": 184.375,
+      "end": 185.989,
+      "text": "Red-haired figure lowers knife.",
+      "audio": "cue-015.m4a",
+      "gap": [
+        184.375,
+        189.792
+      ]
+    },
+    {
+      "start": 189.792,
+      "end": 193.484,
+      "text": "Red-haired figure looks up with wide eyes, her mouth slightly open.",
+      "audio": "cue-016.m4a",
+      "gap": [
+        189.792,
+        194.625
+      ]
+    },
+    {
+      "start": 194.625,
+      "end": 202.943,
+      "text": "A small, scaled creature with wide eyes lies on a tiled roof, its body stained with blood, as a human hand reaches down toward it.",
+      "audio": "cue-017.m4a",
+      "gap": [
+        194.625,
+        205.47
+      ]
+    },
+    {
+      "start": 218.37,
+      "end": 225.078,
+      "text": "Red-haired figure gently holds the small scaled creature, her gaze soft as a gloved hand rests near its head.",
+      "audio": "cue-018.m4a",
+      "gap": [
+        218.37,
+        227.69
+      ]
+    },
+    {
+      "start": 259.95,
+      "end": 263.486,
+      "text": "Red-haired figure stands in alleyway, apples scattered at her feet.",
+      "audio": "cue-019.m4a",
+      "gap": [
+        259.95,
+        264.69
+      ]
+    },
+    {
+      "start": 269.69,
+      "end": 274.529,
+      "text": "Red-haired figure stands in alleyway, facing another person whose back is to camera.",
+      "audio": "cue-020.m4a",
+      "gap": [
+        269.69,
+        275.625
+      ]
+    },
+    {
+      "start": 275.625,
+      "end": 281.26,
+      "text": "Red-haired figure stares forward, her expression startled, as a gloved hand hovers near her head.",
+      "audio": "cue-021.m4a",
+      "gap": [
+        275.625,
+        283.57
+      ]
+    },
+    {
+      "start": 300.39,
+      "end": 302.476,
+      "text": "Red-haired figure stands atop ruins.",
+      "audio": "cue-022.m4a",
+      "gap": [
+        300.39,
+        303.07
+      ]
+    },
+    {
+      "start": 307.91,
+      "end": 312.213,
+      "text": "Red-haired figure stands atop ruins, hands clasped, smiling at camera.",
+      "audio": "cue-023.m4a",
+      "gap": [
+        307.91,
+        313.11
+      ]
+    },
+    {
+      "start": 322.93,
+      "end": 327.252,
+      "text": "Red-haired figure stands atop ruins as a large dragon flies past.",
+      "audio": "cue-024.m4a",
+      "gap": [
+        322.93,
+        328.167
+      ]
+    },
+    {
+      "start": 328.167,
+      "end": 332.131,
+      "text": "A small, horned dragon with open mouth flies past a reaching hand.",
+      "audio": "cue-025.m4a",
+      "gap": [
+        328.167,
+        333.55
+      ]
+    },
+    {
+      "start": 342.41,
+      "end": 348.404,
+      "text": "Red-haired figure stands atop ruins, eyes wide, mouth agape, revealing a surprised expression.",
+      "audio": "cue-026.m4a",
+      "gap": [
+        342.41,
+        349.75
+      ]
+    },
+    {
+      "start": 349.75,
+      "end": 356.652,
+      "text": "A blur of motion shows the red-haired figure\u2019s boots pounding across the dusty ground as they sprint away from the ruins.",
+      "audio": "cue-027.m4a",
+      "gap": [
+        349.75,
+        361.23
+      ]
+    },
+    {
+      "start": 390.29,
+      "end": 393.197,
+      "text": "A red-haired figure crouches behind bamboo stalks.",
+      "audio": "cue-028.m4a",
+      "gap": [
+        390.29,
+        394.01
+      ]
+    },
+    {
+      "start": 396.875,
+      "end": 399.106,
+      "text": "A figure with dark hair and a staff turns.",
+      "audio": "cue-029.m4a",
+      "gap": [
+        396.875,
+        400.75
+      ]
+    },
+    {
+      "start": 421.19,
+      "end": 428.696,
+      "text": "The red-haired figure lies motionless in the snow, their head and staff visible above the white surface, shadows cast behind them.",
+      "audio": "cue-030.m4a",
+      "gap": [
+        421.19,
+        431.583
+      ]
+    },
+    {
+      "start": 431.583,
+      "end": 439.151,
+      "text": "The red-haired figure stands in a snowy, jagged landscape, their fur-lined coat and staff visible, with mist swirling around them.",
+      "audio": "cue-031.m4a",
+      "gap": [
+        431.583,
+        445.29
+      ]
+    },
+    {
+      "start": 464.41,
+      "end": 474.029,
+      "text": "The red-haired figure, previously lying still, now sits upright in a dimly lit, shadowed interior, their shoulder and staff visible as light catches their cheek.",
+      "audio": "cue-032.m4a",
+      "gap": [
+        464.41,
+        483.708
+      ]
+    },
+    {
+      "start": 483.708,
+      "end": 493.082,
+      "text": "A small, dark figure stands on a rocky ledge within a vast, shadowy cave, silhouetted against a bright, full moon visible through the cavern\u2019s arched opening.",
+      "audio": "cue-033.m4a",
+      "gap": [
+        483.708,
+        502.51
+      ]
+    },
+    {
+      "start": 519.458,
+      "end": 528.976,
+      "text": "A large, spiky, armored creature lies motionless on rocky ground within a dark, cavernous space, its form partially obscured by shadow and stone.",
+      "audio": "cue-034.m4a",
+      "gap": [
+        519.458,
+        536.333
+      ]
+    },
+    {
+      "start": 536.333,
+      "end": 539.215,
+      "text": "A small, dark figure approaches the sleeping dragon.",
+      "audio": "cue-035.m4a",
+      "gap": [
+        536.333,
+        541.083
+      ]
+    },
+    {
+      "start": 541.083,
+      "end": 545.12,
+      "text": "The small figure ignites the dragon\u2019s head with a bright, fiery explosion.",
+      "audio": "cue-036.m4a",
+      "gap": [
+        541.083,
+        547.083
+      ]
+    },
+    {
+      "start": 547.083,
+      "end": 555.092,
+      "text": "The dragon\u2019s head erupts in bright flame as the small figure retreats, leaving glowing embers and smoke rising from the cavern floor.",
+      "audio": "cue-037.m4a",
+      "gap": [
+        547.083,
+        557.05
+      ]
+    },
+    {
+      "start": 567.29,
+      "end": 569.89,
+      "text": "The red-haired figure draws a spear from the ground.",
+      "audio": "cue-038.m4a",
+      "gap": [
+        567.29,
+        571.15
+      ]
+    },
+    {
+      "start": 582.05,
+      "end": 590.941,
+      "text": "The red-haired figure leaps forward, spear drawn, as the dragon\u2019s head explodes in fiery light, sending embers and smoke swirling through the cavern.",
+      "audio": "cue-039.m4a",
+      "gap": [
+        582.05,
+        595.55
+      ]
+    },
+    {
+      "start": 605.29,
+      "end": 609.266,
+      "text": "The dragon lies motionless on the dark cavern floor, its body still.",
+      "audio": "cue-040.m4a",
+      "gap": [
+        605.29,
+        611.875
+      ]
+    },
+    {
+      "start": 611.875,
+      "end": 619.318,
+      "text": "The red-haired figure stands in the dark cavern, gripping the spear, her expression one of stunned stillness after the dragon\u2019s defeat.",
+      "audio": "cue-041.m4a",
+      "gap": [
+        611.875,
+        621.05
+      ]
+    },
+    {
+      "start": 630.21,
+      "end": 638.743,
+      "text": "The dragon lies motionless on the dark cavern floor, its scaled body still, with glowing red eyes and jagged teeth visible in the dim light.",
+      "audio": "cue-042.m4a",
+      "gap": [
+        630.21,
+        646.25
+      ]
+    },
+    {
+      "start": 655.09,
+      "end": 656.719,
+      "text": "The red-haired figure stands still.",
+      "audio": "cue-043.m4a",
+      "gap": [
+        655.09,
+        659.61
+      ]
+    },
+    {
+      "start": 662.542,
+      "end": 672.103,
+      "text": "The dragon\u2019s head rests motionless on the cavern floor, its textured scales and glowing red eye visible in the dim light, with faint particles drifting through the air.",
+      "audio": "cue-044.m4a",
+      "gap": [
+        662.542,
+        684.417
+      ]
+    },
+    {
+      "start": 684.417,
+      "end": 695.103,
+      "text": "A lone figure sits atop a rugged hill, dwarfed by a colossal, gnarled tree root system in the foreground, with misty, sunlit mountains receding into the hazy horizon.",
+      "audio": "cue-045.m4a",
+      "gap": [
+        684.417,
+        702.05
+      ]
+    },
+    {
+      "start": 702.65,
+      "end": 707.525,
+      "text": "The red-haired figure\u2019s eyes close as they remain still, their shoulder bearing a fresh wound.",
+      "audio": "cue-046.m4a",
+      "gap": [
+        702.65,
+        710.042
+      ]
+    },
+    {
+      "start": 710.042,
+      "end": 718.165,
+      "text": "The camera focuses on a vast, uneven expanse of rough, cracked earth with deep grooves and scattered pebbles under dim, muted lighting.",
+      "audio": "cue-047.m4a",
+      "gap": [
+        710.042,
+        721.09
+      ]
+    }
+  ]
+}

@@ -1,0 +1,352 @@
+{
+  "id": "tears-of-steel",
+  "title": "Tears of Steel",
+  "source": "tears_of_steel_720p.mov",
+  "describer": "qwen3-vl-4b (local, llama.cpp on CPU)",
+  "voice": "Kokoro 82M (af_heart)",
+  "announcement": "Tears of Steel. Science fiction, 2012, 12 minutes. 34 descriptions.",
+  "credit": "(CC) Blender Foundation | mango.blender.org",
+  "licence": "Creative Commons Attribution 3.0",
+  "cues": [
+    {
+      "start": 11.55,
+      "end": 16.677,
+      "text": "Rocket engines ignite, blasting bright white flames and pinkish plumes from their nozzles.",
+      "audio": "cue-001.m4a",
+      "gap": [
+        11.55,
+        18.417
+      ]
+    },
+    {
+      "start": 18.417,
+      "end": 21.485,
+      "text": "A rocket launches from a sprawling industrial complex.",
+      "audio": "cue-002.m4a",
+      "gap": [
+        18.417,
+        22.45
+      ]
+    },
+    {
+      "start": 45.41,
+      "end": 47.231,
+      "text": "On screen: 40 YEARS LATER.",
+      "audio": "cue-003.m4a",
+      "gap": [
+        45.41,
+        49.45
+      ]
+    },
+    {
+      "start": 53.91,
+      "end": 58.401,
+      "text": "Two figures work at a cluttered console, surrounded by glowing digital overlays.",
+      "audio": "cue-004.m4a",
+      "gap": [
+        53.91,
+        60.45
+      ]
+    },
+    {
+      "start": 74.083,
+      "end": 77.495,
+      "text": "Through a shadowed doorway, two figures work at a cluttered console.",
+      "audio": "cue-005.m4a",
+      "gap": [
+        74.083,
+        79.375
+      ]
+    },
+    {
+      "start": 79.375,
+      "end": 82.752,
+      "text": "An elderly person reads a newspaper with bold headlines.",
+      "audio": "cue-006.m4a",
+      "gap": [
+        79.375,
+        83.93
+      ]
+    },
+    {
+      "start": 101.53,
+      "end": 105.985,
+      "text": "A grey-haired person reads a newspaper while a soldier aims a rifle nearby.",
+      "audio": "cue-007.m4a",
+      "gap": [
+        101.53,
+        107.93
+      ]
+    },
+    {
+      "start": 108.53,
+      "end": 113.523,
+      "text": "Through a circular viewport, a large, steampunk-style airship hovers above a cityscape.",
+      "audio": "cue-008.m4a",
+      "gap": [
+        108.53,
+        114.43
+      ]
+    },
+    {
+      "start": 138.41,
+      "end": 144.745,
+      "text": "A grey-haired man sits on a wooden platform, hands resting on his knees, in a dimly lit, cluttered room.",
+      "audio": "cue-009.m4a",
+      "gap": [
+        138.41,
+        145.93
+      ]
+    },
+    {
+      "start": 163.57,
+      "end": 168.198,
+      "text": "The grey-haired man\u2019s boots grip a thick rope coiled on a weathered, dark stone floor.",
+      "audio": "cue-010.m4a",
+      "gap": [
+        163.57,
+        172.43
+      ]
+    },
+    {
+      "start": 257.917,
+      "end": 262.26,
+      "text": "Through a blurred foreground, a street scene with buildings and green trees is visible.",
+      "audio": "cue-011.m4a",
+      "gap": [
+        257.917,
+        263.67
+      ]
+    },
+    {
+      "start": 264.75,
+      "end": 268.135,
+      "text": "A young man walks down a cobblestone street, looking at his phone.",
+      "audio": "cue-012.m4a",
+      "gap": [
+        264.75,
+        268.75
+      ]
+    },
+    {
+      "start": 274.27,
+      "end": 277.13,
+      "text": "The young man stands by a bridge railing, looking ahead.",
+      "audio": "cue-013.m4a",
+      "gap": [
+        274.27,
+        278.49
+      ]
+    },
+    {
+      "start": 305.41,
+      "end": 309.788,
+      "text": "A man with glasses adjusts his neck while neon screens glow behind him.",
+      "audio": "cue-014.m4a",
+      "gap": [
+        305.41,
+        310.583
+      ]
+    },
+    {
+      "start": 310.583,
+      "end": 313.959,
+      "text": "A young man in a jacket looks at a woman with her back to the camera.",
+      "audio": "cue-015.m4a",
+      "gap": [
+        310.583,
+        315.45
+      ]
+    },
+    {
+      "start": 328.41,
+      "end": 332.235,
+      "text": "The young man with dark hair looks off-camera, his expression neutral.",
+      "audio": "cue-016.m4a",
+      "gap": [
+        328.41,
+        333.31
+      ]
+    },
+    {
+      "start": 350.41,
+      "end": 353.598,
+      "text": "Neon lights pulse over a control booth with three figures.",
+      "audio": "cue-017.m4a",
+      "gap": [
+        350.41,
+        354.17
+      ]
+    },
+    {
+      "start": 397.75,
+      "end": 403.371,
+      "text": "A young man with dark hair closes his eyes as a mechanical device rests against his mouth.",
+      "audio": "cue-018.m4a",
+      "gap": [
+        397.75,
+        406.45
+      ]
+    },
+    {
+      "start": 411.41,
+      "end": 417.319,
+      "text": "A middle-aged man with a mechanical eye points forward, while a young woman stands behind him, watching.",
+      "audio": "cue-019.m4a",
+      "gap": [
+        411.41,
+        418.45
+      ]
+    },
+    {
+      "start": 423.41,
+      "end": 426.234,
+      "text": "The young man grimaces as he grips a control panel.",
+      "audio": "cue-020.m4a",
+      "gap": [
+        423.41,
+        427.45
+      ]
+    },
+    {
+      "start": 431.77,
+      "end": 435.789,
+      "text": "A person in a heavy coat aims a large weapon from behind a structure.",
+      "audio": "cue-021.m4a",
+      "gap": [
+        431.77,
+        436.67
+      ]
+    },
+    {
+      "start": 444.79,
+      "end": 452.925,
+      "text": "A hand in a translucent glove pulls a glowing, cylindrical object from a mechanical chamber, its motion blurred by rapid movement.",
+      "audio": "cue-022.m4a",
+      "gap": [
+        444.79,
+        461.792
+      ]
+    },
+    {
+      "start": 461.792,
+      "end": 466.503,
+      "text": "Four people in white suits crouch in a sunlit, overgrown, industrial ruin.",
+      "audio": "cue-023.m4a",
+      "gap": [
+        461.792,
+        468.333
+      ]
+    },
+    {
+      "start": 468.333,
+      "end": 477.242,
+      "text": "A young man in a white jacket grips a complex mechanical device, his gaze fixed forward, while a bearded man in glasses observes behind him.",
+      "audio": "cue-024.m4a",
+      "gap": [
+        468.333,
+        478.958
+      ]
+    },
+    {
+      "start": 478.958,
+      "end": 484.45,
+      "text": "A young man in a patterned jacket lies prone, gripping a rifle, his eyes wide and focused.",
+      "audio": "cue-025.m4a",
+      "gap": [
+        478.958,
+        485.43
+      ]
+    },
+    {
+      "start": 487.85,
+      "end": 490.662,
+      "text": "The young man in the patterned jacket leaps through the air.",
+      "audio": "cue-026.m4a",
+      "gap": [
+        487.85,
+        492.45
+      ]
+    },
+    {
+      "start": 527.69,
+      "end": 532.397,
+      "text": "A massive, dark, mechanical structure looms, lit by glowing circular lights.",
+      "audio": "cue-027.m4a",
+      "gap": [
+        527.69,
+        533.45
+      ]
+    },
+    {
+      "start": 542.57,
+      "end": 551.353,
+      "text": "A man with curly hair and glasses sits before glowing computer screens, his expression tense as he works in a cluttered, neon-lit tech lab.",
+      "audio": "cue-028.m4a",
+      "gap": [
+        542.57,
+        554.59
+      ]
+    },
+    {
+      "start": 567.41,
+      "end": 570.045,
+      "text": "A man with a prosthetic eye sits at a cluttered desk.",
+      "audio": "cue-029.m4a",
+      "gap": [
+        567.41,
+        573.13
+      ]
+    },
+    {
+      "start": 580.63,
+      "end": 587.727,
+      "text": "A grey-haired man in a dark coat gestures toward a massive, dark mechanical structure amidst rubble and wires.",
+      "audio": "cue-030.m4a",
+      "gap": [
+        580.63,
+        590.61
+      ]
+    },
+    {
+      "start": 596.03,
+      "end": 598.433,
+      "text": "On screen: Produced by TON ROOSENDAAL.",
+      "audio": "cue-031.m4a",
+      "gap": [
+        596.03,
+        599.87
+      ]
+    },
+    {
+      "start": 601.083,
+      "end": 602.925,
+      "text": "A white mech glows with blue energy.",
+      "audio": "cue-032.m4a",
+      "gap": [
+        601.083,
+        605.73
+      ]
+    },
+    {
+      "start": 629.27,
+      "end": 638.311,
+      "text": "A glowing blue mechanical structure dominates the frame, its intricate design highlighted against a dark background with orange sparks and debris.",
+      "audio": "cue-033.m4a",
+      "gap": [
+        629.27,
+        643.29
+      ]
+    },
+    {
+      "start": 711.59,
+      "end": 713.12,
+      "text": "A pile of broken mechs.",
+      "audio": "cue-034.m4a",
+      "gap": [
+        711.59,
+        713.69
+      ]
+    }
+  ]
+}
