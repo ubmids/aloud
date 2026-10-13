@@ -272,6 +272,26 @@ def test_a_measured_fit_cuts_at_the_clause_and_marks_itself_trimmed():
     print("PASS a cut description says it was cut, an untouched one does not")
 
 
+def test_a_comma_between_adjectives_is_not_a_clause_boundary():
+    """From the first Tears of Steel run: "A massive mechanical structure
+    looms over a misty, smoke-filled cityscape." was cut at its comma to
+    "...looms over a misty." The comma sat between two adjectives, and the
+    word left at the end was not on the dangling list. It must not be cut
+    there; the honest outcomes are the whole sentence or nothing."""
+    s = FakeSynth()
+    for text in ("A massive mechanical structure looms over a misty, "
+                 "smoke-filled cityscape.",
+                 "A woman walks through a long, narrow corridor.",
+                 "Two soldiers cross a dark, flooded street."):
+        for gap in (1.5, 2.0, 2.6, 3.0):
+            f = fit_measured(text, gap, s)
+            assert f.text in ("", text), (gap, f.text)
+    # A real clause boundary still cuts.
+    f = fit_measured("Snow fills the courtyard, thick and steady.", 2.5, s)
+    assert f.text == "Snow fills the courtyard.", f.text
+    print("PASS a comma between two adjectives is never cut at")
+
+
 def test_no_description_ever_ends_on_a_dangling_word():
     """"A man in a grey coat crosses the." is inside budget and leaves the
     listener waiting for a noun that never arrives, which is worse than silence

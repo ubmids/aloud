@@ -133,6 +133,60 @@ DANGLING = {
 
 MIN_CLAUSE_WORDS = 4
 
+# A comma after a word like these is usually between two adjectives, not
+# between two clauses. "A massive mechanical structure looms over a misty,
+# smoke-filled cityscape." cut at its comma gave "...looms over a misty." on
+# Tears of Steel: inside budget, ends on a word that is not in the dangling
+# list, and leaves the listener waiting for the noun. There is no tagger here,
+# so the test is the word's shape: a list of the adjectives describers reach
+# for, and the suffixes adjectives wear. It refuses some honest cuts ("over a
+# city,") and that is the right way round: a refused cut is a re-ask or a
+# silent gap, a wrong one is a broken sentence read aloud.
+MODIFIERS = {
+    "large", "small", "big", "huge", "vast", "tall", "short", "long", "wide",
+    "narrow", "thick", "thin", "dark", "dim", "bright", "pale", "old", "young",
+    "new", "white", "black", "red", "blue", "green", "grey", "gray", "brown",
+    "golden", "silver", "orange", "yellow", "purple", "pink", "empty", "distant",
+    "broken", "ruined", "wet", "cold", "warm", "hot", "heavy", "light", "deep",
+    "high", "low", "open", "closed", "bare", "faint", "sharp", "soft", "hard",
+}
+# Words ending in -y that are things, not qualities.
+_Y_NOUNS = {
+    "sky", "city", "body", "factory", "gallery", "balcony", "army", "party",
+    "family", "lady", "baby", "story", "ceremony", "laboratory", "territory",
+    "debris", "country", "boy", "doorway", "hallway", "alley", "valley",
+    "highway", "stairway", "galaxy", "facility", "jetty", "embassy", "agency",
+    "enemy", "energy", "memory", "battery", "machinery", "scenery", "academy",
+}
+_MODIFIER_SUFFIX = re.compile(r"(?:ive|ous|ful|ish|less|ic|[^aeiouy]y)$")
+
+
+# Words that open a clause or a phrase of its own. A comma before one of these
+# is a real boundary whatever came before it: "thick and steady, burying the
+# parked cars" can lose its second half even though "steady" is an adjective.
+_OPENERS = {
+    "with", "while", "as", "and", "but", "which", "who", "whose", "where",
+    "its", "his", "her", "their", "each", "both", "one", "then", "now", "near",
+    "beside", "behind", "under", "over", "through", "against", "before",
+    "after", "surrounded", "dressed", "framed", "lit",
+}
+
+
+def _opens_clause(piece: str) -> bool:
+    first = re.sub(r"[^A-Za-z'-]", "", (piece.split() or [""])[0]).lower()
+    return first in _OPENERS or (first.endswith("ing") and "-" not in first)
+
+
+def _ends_on_modifier(words: list[str]) -> bool:
+    if not words:
+        return False
+    last = re.sub(r"[^A-Za-z'-]", "", words[-1]).lower()
+    if last in MODIFIERS:
+        return True
+    if last in _Y_NOUNS or "-" in last:
+        return "-" in last and last.endswith(("ed", "ing", "like"))
+    return bool(_MODIFIER_SUFFIX.search(last))
+
 
 def _ends_cleanly(words: list[str]) -> bool:
     if not words:
@@ -156,6 +210,7 @@ def _shorten(text: str, words_to_drop: int) -> str:
         # adjective list looks like.
         pieces = [p for p in re.split(r"[,;]", shorter) if p.strip()]
         if (_ends_cleanly(words) and len(words) >= MIN_CLAUSE_WORDS
+                and (_opens_clause(parts[-1]) or not _ends_on_modifier(words))
                 and all(len(p.split()) >= 2 for p in pieces)):
             return shorter + "."
         return ""
