@@ -20,27 +20,34 @@ swapped for something else.
 
 ## What shipped in the app, and how it was made
 
-The tracks in `tv/src/data/films/` were written by **Qwen3-VL 8B Instruct**
-(Q4_K_M GGUF) running on a CPU through llama.cpp, on a shared 24-core Linux box
-with no GPU: about 5 to 10 seconds per description. Every track file names its
-describer and its voice, and the app shows both on the title's panel.
+The tracks in `tv/src/data/films/` were written by **Qwen3-VL 4B Instruct**
+(Q4_K_M GGUF, about 3 GB with its vision projector) running on a CPU through
+llama.cpp, on a shared 24-core Linux box with no GPU: about 7 seconds per
+description. Every track file names its describer and its voice, and the app
+shows both on the title's panel.
 
 ```bash
-# the model (about 5.8GB) and its vision projector
-huggingface-cli download Qwen/Qwen3-VL-8B-Instruct-GGUF \
-  Qwen3VL-8B-Instruct-Q4_K_M.gguf mmproj-Qwen3VL-8B-Instruct-Q8_0.gguf --local-dir models
+# the model (about 2.5GB) and its vision projector (about 0.45GB)
+huggingface-cli download Qwen/Qwen3-VL-4B-Instruct-GGUF \
+  Qwen3VL-4B-Instruct-Q4_K_M.gguf mmproj-Qwen3VL-4B-Instruct-Q8_0.gguf --local-dir models
 
 # llama.cpp's CPU build, from github.com/ggml-org/llama.cpp/releases
-llama-server -m models/Qwen3VL-8B-Instruct-Q4_K_M.gguf \
-  --mmproj models/mmproj-Qwen3VL-8B-Instruct-Q8_0.gguf \
-  --port 8181 -t 10 -c 4096 -np 1 -ngl 0 --alias qwen3-vl-8b
+llama-server -m models/Qwen3VL-4B-Instruct-Q4_K_M.gguf \
+  --mmproj models/mmproj-Qwen3VL-4B-Instruct-Q8_0.gguf \
+  --port 8181 -t 10 -c 4096 -np 1 -ngl 0 -lm none --image-max-tokens 1024 \
+  --alias qwen3-vl-4b
 
 export ALOUD_LOCAL_VLM_URL=http://127.0.0.1:8181/v1
 ```
 
-One slot and a 4k context are deliberate. The default of four slots at 8k
-reserved several gigabytes of KV cache on a box that was already swapping, and
-the server was killed partway through the first full film.
+The 8B model (`Qwen/Qwen3-VL-8B-Instruct-GGUF`, `--alias qwen3-vl-8b`, and
+`ALOUD_LOCAL_VLM_MODEL=qwen3-vl-8b`) writes slightly richer sentences and was
+used for the first runs, but at about 6 GB resident it was more than this
+shared machine could spare while other jobs ran, and a run was killed partway
+through the first full film. The 4B model fits comfortably.
+
+One slot and a 4k context are deliberate for the same reason: the default of
+four slots at 8k reserves several gigabytes of KV cache.
 
 ## Regenerating everything with a hosted model
 

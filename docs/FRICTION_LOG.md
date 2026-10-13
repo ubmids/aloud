@@ -2,7 +2,7 @@
 
 Recorded while building aloud, a Fire TV app that speaks audio description into
 the gaps between dialogue, between 14 September and submission. Entries 1 to 13
-are from the first build (14 to 17 September); 14 to 17 are from adding the
+are from the first build (14 to 17 September); 14 to 18 are from adding the
 remote-driven shelf and player in October. Every entry is
 something that actually cost time on this build, in the format the hackathon
 rules ask for: task attempted, steps taken, expected versus actual, severity,
@@ -662,6 +662,42 @@ in a Vega app will do this.
 
 **Suggestion.** Have the preset's Animated mock settle synchronously inside
 `act`, as React Native's own preset does for `useNativeDriver` animations.
+
+---
+
+## 18. Partially mocking `react-native-kepler` in Jest crashes with "Platform is not defined"
+
+**Severity: low**, but it blocks the obvious way to test remote handling.
+
+**Task attempted.** Test the player's remote handling: press Menu and check
+the film pauses and the last description is spoken again.
+
+**Steps taken.** The standard Jest partial mock, so that `useTVEventHandler`
+can be captured and every other export stays real:
+
+```ts
+jest.mock('@amazon-devices/react-native-kepler', () => ({
+  ...jest.requireActual('@amazon-devices/react-native-kepler'),
+  useTVEventHandler: (fn) => { mockRemote = fn; },
+}));
+```
+
+**Expected.** The suite runs with one hook replaced, as it does for
+`react-native` itself.
+
+**Actual.** `ReferenceError: Platform is not defined`, raised from the mock
+factory before any test runs. The package's exports are lazy getters, and
+spreading them evaluates every one at once, including some that only work
+after the preset's setup has run.
+
+**Workaround.** Return a `Proxy` over the real module that answers for the
+hooks being replaced and forwards everything else (see
+`tv/test/player.test.tsx`).
+
+**Suggestion.** Ship a mock for `useTVEventHandler` in the Jest preset that
+lets a test dispatch remote events (React Native's `TVEventHandler` test
+utilities are the model), and document how to drive the remote from a test.
+Remote handling is the core of a TV app and the hardest part to test today.
 
 ---
 

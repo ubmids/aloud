@@ -75,6 +75,14 @@ If the package is rejected for size, drop the trailer from `FILMS` in
 - [ ] "Narration" Off silences descriptions immediately; On resumes from the
       next gap without repeating the ones already said.
 - [ ] Play/pause on the remote pauses film and description together.
+- [ ] **Menu (the ≡ button) says the last description again.** The film
+      pauses, the voice panel lights the repeated sentence, and the film resumes
+      on its own about half a second after the voice stops. Try it with
+      Narration Off as well: it must still speak. Try it while paused: it speaks
+      and the film stays paused. If nothing happens, add
+      `console.log(e.eventType)` at the top of `remote` in `Player.tsx`, press
+      the button, and put whatever name the device reports next to `'menu'` in
+      the `switch`.
 - [ ] Rewind / fast-forward (or skip) moves 10 seconds; a description that
       was skipped over does not fire late, and one rewound past fires again.
 - [ ] **Back returns to the shelf with the same title focused**, and nothing

@@ -19,7 +19,7 @@ comparison is made on speech-band energy (250 to 3500 Hz) in 10 ms frames: the
 full mix sits a roughly constant few dB above the music-and-effects mix
 everywhere, and rises well clear of that wherever dialogue is added. Frames
 3.5 dB above the film's own median difference are dialogue; syllables of one
-line are joined across 0.3 s. That gives **{{REF_S}} seconds of dialogue** in
+line are joined across 0.3 s. That gives **105.5 seconds of dialogue** in
 the 12 minute film, including shouted and background lines the English
 subtitle file does not carry.
 
@@ -33,7 +33,9 @@ python3 -m aloud.evaluate tears_of_steel_720p.mov \
 
 | listening with | gaps | seconds of gap | gaps touching dialogue | dialogue inside gaps |
 |---|---|---|---|---|
-{{DETECTOR_ROWS}}
+| hand-built ear only | 94 | 475.7 | 30 | 27.4 s |
+| hand-built ear + Silero VAD | 89 | 444.8 | 20 | 15.4 s |
+| both ears + the caption file | 76 | 373.9 | 4 | 0.9 s |
 
 The hand-built detector (speech-band energy plus a 2 to 8 Hz syllable rhythm)
 was built and tuned on recorded voices over rain, an orchestral bed and room
@@ -57,7 +59,7 @@ matters.
 
 ## The shipped track
 
-{{TRACK_RESULT}}
+34 descriptions, 153.5 seconds of speech. Measured against the stems, 3 of them touch dialogue, for **0.61 seconds** in total (0.02 s at 54 s; 0.22 s at 432 s; 0.37 s at 479 s). Two of the three are the tail of a line, a few tenths of a second past where the caption file says it ends. The third, 0.37 s at 479 s in the middle of the battle, has no caption near it: either an uncaptioned shout, or an effect the two masters mix differently. Nothing in the track lands on a captioned line.
 
 ## Reproducing
 

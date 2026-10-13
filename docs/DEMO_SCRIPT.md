@@ -18,29 +18,39 @@ is the shipped track, not a re-record.
 
 | time | picture | sound |
 |---|---|---|
-| 0:00 | Black. White caption, small, bottom left: *"Tears of Steel, as a blind viewer hears it."* | The film's own sound only: {{OPEN_SOUND}} |
-| 0:05 | Still black. Caption changes to: *"Now with aloud."* | The same seconds again, and aloud's voice: *"{{HERO_CUE}}"* |
-| 0:12 | The picture fades up: the **Vega Virtual Device** playing Tears of Steel in aloud, the description lit in the voice panel, the schedule strip showing it sitting in a gap. | Film continues; the next line of dialogue lands after the description ends. |
-| 0:16 | Title card over the picture: **aloud: films that describe themselves.** Under it: *Fire TV · Vega OS*. | |
+| 0:00 | Black. White caption, small, bottom left: *"Tears of Steel, as a blind viewer hears it."* | `without.mp4`, first 5 seconds: the film's score and effects, no words. A blind viewer has no idea what is happening. |
+| 0:05 | Still black. Caption changes to: *"Now with aloud."* | `hero.mp4` from its start: the same moment, and aloud's voice at 0:05: *"A grey-haired person reads a newspaper while a soldier aims a rifle nearby."* |
+| 0:12 | Still black for one beat, then the picture fades up as aloud says: *"Through a circular viewport, a large, steampunk-style airship hovers above a cityscape."* The airship is there, in its circular viewport, exactly as described. | The description ends; the film carries on. |
+| 0:16 | Cut to the **Vega Virtual Device**, Tears of Steel playing in aloud at about 1:48, the same description lit in the voice panel and sitting in a gap on the schedule strip. Title card over it: **aloud: films that describe themselves.** Under it: *Fire TV · Vega OS*. | At 0:21 the next line, *"Shouldn't you be down there?"*, lands after the description has finished: aloud never talks over it. |
 
-Ready-made cut of the first two rows, from the pipeline's own output:
-`python3 -m aloud.clip FILM OUT --at {{HERO_AT}} --length 16 --reveal 8`
-writes `without.mp4` (black, film sound) and `hero.mp4` (black, described,
-picture fading in). The 0:12 shot must be the Virtual Device itself.
+Both clips are already cut, from the pipeline's own output (the voice in them is
+the voice in the app):
+
+```bash
+python3 -m aloud.clip tears_of_steel_720p.mov out/ --at 101 --length 19 --reveal 8 --dest video/
+```
+
+writes `video/without.mp4` (black, film sound, 1:41 to 2:00 of the film) and
+`video/hero.mp4` (black, described, the picture fading up at 1:49). The 0:16
+shot must be the Virtual Device itself, so Stage One sees Vega OS inside the
+first 20 seconds.
 
 ## 0:20 to 0:50: remote, voice and narration in one flow
 
 Press Back to the shelf. On screen: the shelf on the Vega Virtual Device.
 
-- Press **right**: *"Sintel. Fantasy, 2010, 15 minutes. {{SINTEL_CUES}} descriptions."* is
+- Press **right**: *"Sintel. Fantasy, 2010, 15 minutes. 47 descriptions."* is
   heard. Press **left**: *"Tears of Steel..."*. Each press cuts off the last.
 - Say (voiceover, short): "Every title is read out as you reach it, in the same
   voice that will describe the film. If VoiceView is on, aloud steps aside."
 - Press **down** to *Voice level*, select twice: Normal, Loud. Up, select Tears
   of Steel.
-- In the player: show a description at Loud with the film dipping under it,
-  then press play/pause, then skip back ten seconds and let a description fire
-  again.
+- In the player: show a description at Loud with the film dipping under it.
+- Turn **Narration off**, let a few seconds of film play, then press **Menu**:
+  the film pauses, aloud says what is on screen, the film carries on. Voiceover
+  (short): "Narration off for whoever doesn't need it. One button for whoever
+  does." This is the multi-modal beat: remote, voice and picture in one flow.
+- Narration back on, skip back ten seconds and let a description fire again.
 - If "Alexa, pause" worked on the Virtual Device (see MAC_CHECKLIST), do it
   here. If not, do not show it.
 
@@ -66,7 +76,7 @@ to be written if any of them would leave its gap."
 
 On screen briefly: `docs/EVALUATION.md`'s table: 27.4 s of dialogue inside the
 hand-built detector's gaps, 0.9 s with all three ears, and the shipped track's
-{{TOS_OVER}} s, measured against the film's own production stems.
+0.6 s, measured against the film's own production stems.
 
 ## 1:50 to 2:20: why this, and why not Prime Video's
 
@@ -96,7 +106,8 @@ Foundation, durian.blender.org; both CC BY 3.0.
 
 1. Cold open: `without.mp4`, then `hero.mp4` (or re-record the same seconds on
    the Virtual Device with the window covered).
-2. Virtual Device, Tears of Steel in the player at {{HERO_AT}} s, description lit.
+2. Virtual Device, Tears of Steel in the player at 1:48 (seek there with the
+   skip buttons, or play from 1:38), the airship description lit.
 3. Shelf: right, left, settings, select. Audio on.
 4. Player: Loud level dip, play/pause, skip back, Back to shelf.
 5. The person.

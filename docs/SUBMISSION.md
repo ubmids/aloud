@@ -5,7 +5,7 @@ amazonappdev2026. Paste the sections below into the matching Devpost fields.
 
 Judged on four equal criteria (Tech Implementation, Design, Potential Impact,
 Quality of the Idea; ties go to Tech), plus up to 10% for the friction log
-(`docs/FRICTION_LOG.md`, 17 entries). Stage One: runs on Fire OS or Vega OS and
+(`docs/FRICTION_LOG.md`, 18 entries). Stage One: runs on Fire OS or Vega OS and
 is shown on a Fire TV or the Vega simulator. aloud runs on the Vega Virtual
 Device; no developer account or Appstore listing is required by the rules.
 
@@ -32,12 +32,14 @@ over dialogue. Watch with your ears.
 aloud is a Fire TV app, built on Vega OS, that lets you watch a film with your
 ears. The shelf reads each title aloud as the remote moves across it. Press
 play and, in every silence between the lines, a voice tells you what is on
-screen: *"{{HERO_CUE}}"* It never speaks over dialogue, and the film dips a
+screen: *"Through a circular viewport, a large, steampunk-style airship hovers above a cityscape."* It never speaks over dialogue, and the film dips a
 little under the voice so every word is clear.
 
-Narration on or off, voice level, how much is said, play/pause, skips and Back
-are all on the remote, and transport goes through Vega's media controls so
-Alexa voice commands reach the same player. One voice speaks the menu and the
+Missed a description, or watching with narration off beside someone who does
+not need it? Press **Menu**: the film pauses, aloud says what is on screen, and
+the film carries on. Narration on or off, voice level, how much is said,
+play/pause, skips and Back are all on the remote, and transport goes through
+Vega's media controls so Alexa voice commands reach the same player. One voice speaks the menu and the
 film, so a viewer who cannot see the screen gets one continuous experience
 rather than a menu and then a film.
 
@@ -82,11 +84,11 @@ the television does no inference at all.
    as accessibility speech, and decides from `currentTime` alone whether the
    rest of the gap can still hold it.
 
-The tracks on the shelf were written by **Qwen3-VL 8B**, an open model, on a
+The tracks on the shelf were written by **Qwen3-VL 4B**, an open model, on a
 CPU via llama.cpp, with no key and no GPU; the same pipeline takes Gemini or any
 OpenAI-compatible model with one environment variable. *Tears of Steel* carries
-{{TOS_CUES}} descriptions ({{TOS_SPOKEN}} minutes of narration), of which
-{{TOS_OVER}} seconds overlap dialogue, measured against the production stems.
+34 descriptions (2.6 minutes of narration), of which
+0.6 seconds overlap dialogue, measured against the production stems.
 
 ### Challenges
 
@@ -129,7 +131,7 @@ from download.blender.org, re-encoded; descriptions are a separate track.
 ## Product Feedback (REQUIRED FIELD)
 
 > Every claim below is drawn from `docs/FRICTION_LOG.md`, which has full
-> reproduction steps, severity and a suggested fix for each of its 17 entries.
+> reproduction steps, severity and a suggested fix for each of its 18 entries.
 
 ### Which developer tools, APIs and SDKs did you use, and for what?
 
@@ -149,7 +151,7 @@ from download.blender.org, re-encoded; descriptions are a separate track.
   tests, and `react-native build-vega` on Linux for the JavaScript and Hermes
   stages.
 - Python 3.12+ for the pipeline: gap detection, description, fitting, planning,
-  track writing, mixing and evaluation, with Qwen3-VL 8B on llama.cpp (CPU),
+  track writing, mixing and evaluation, with Qwen3-VL 4B on llama.cpp (CPU),
   Kokoro 82M and Silero VAD.
 
 ### What worked well
@@ -166,7 +168,7 @@ produced a working `.vpkg` first time, for both aarch64 and armv7.
 
 ### What needs improvement
 
-Seventeen entries, two of them critical. In rough order of cost:
+Eighteen entries, two of them critical. In rough order of cost:
 
 1. **The manifest entries playback depends on are split across three pages that
    disagree with each other.** Severity critical. Nothing plays until it is
@@ -209,13 +211,15 @@ Seventeen entries, two of them critical. In rough order of cost:
     field name.
 17. The Jest preset's animation timers print an `act()` warning on every focus
     test.
+18. Partially mocking `react-native-kepler` in Jest crashes, so remote handling
+    cannot be tested the obvious way.
 
 ### How was the onboarding experience?
 
 Mixed, and sharply so. The distance from zero to a running app on the virtual
 device is short and well served. The distance from a running app to a *playing
 video* is long, undocumented in places, actively contradictory in others, and
-almost entirely undiagnosable because of entry 2. Eight of the seventeen entries
+almost entirely undiagnosable because of entry 2. Eight of the eighteen entries
 would have collapsed into minutes rather than hours if media errors carried a
 reason string.
 
@@ -232,7 +236,7 @@ tell me why it was not doing them.
 ## Feature requests (optional field, priority in brackets)
 
 1. **[Critical] Put a reason string on media errors.** One change, and it
-   collapses eight of my seventeen friction entries. Nothing else on this list
+   collapses eight of my eighteen friction entries. Nothing else on this list
    is close in value.
 2. **[High] Consolidate the playback manifest documentation into one page** and
    retire or redirect the two that disagree with it.
