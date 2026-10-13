@@ -158,7 +158,7 @@ def ask_version(n: int) -> str:
     """The brief's version as it applies to an ask of `n` words. Short asks
     have their own wording, so their remembered answers are kept apart and a
     change to it re-asks only them."""
-    return brief_version() + ("-short1" if n <= SHORT_WORDS else "")
+    return brief_version() + ("-short2" if n <= SHORT_WORDS else "")
 
 
 def brief_version() -> str:
@@ -172,7 +172,10 @@ def brief_version() -> str:
 # an example. Most of the silent gaps in the first Tears of Steel tracks were
 # a second and a half to two and a half seconds long, room for three to five
 # words, and a 4B model asked for "about 4 words" wrote eight, then eight
-# again. Shown the shape of a short description, it writes one.
+# again. Shown the shape of a short description, it writes one. The examples
+# must not come from any film on the shelf: the first ones did ("A clock tower
+# shatters." is a Tears of Steel description), and the model began finding
+# clock towers in shots that had none.
 SHORT_WORDS = 6
 
 
@@ -182,7 +185,7 @@ def _ask(n: int, frames: int, context: str | None) -> tuple[str, str]:
     system = SYSTEM + (MOTION if frames > 1 else "") + (CONTEXT if context else "")
     if n <= SHORT_WORDS:
         user = (f"Describe this frame in {n} words or fewer: who or what, and "
-                f"what they do, like \"A clock tower shatters.\" or \"The "
+                f"what they do, like \"Two men shake hands.\" or \"The "
                 f"woman runs.\" The gap is short; a longer sentence will not "
                 f"be heard at all.")
     else:

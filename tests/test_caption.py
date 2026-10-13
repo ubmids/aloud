@@ -422,7 +422,7 @@ def test_a_sentence_already_said_is_not_said_again():
 def test_a_short_gap_asks_for_at_most_its_words_with_an_example():
     from aloud.caption import SHORT_WORDS, _ask, ask_version
     _, short = _ask(4, 1, None)
-    assert "4 words or fewer" in short and "A clock tower shatters." in short
+    assert "4 words or fewer" in short and "Two men shake hands." in short
     _, long = _ask(12, 1, None)
     assert "about 12 words" in long and "or fewer" not in long
     # Remembered answers to the old short wording are not reused; long ones are.
