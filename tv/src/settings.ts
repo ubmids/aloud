@@ -45,6 +45,16 @@ export type Settings = {
   level: VoiceLevel;
   /** Speak the catalogue as focus moves, in the describer's own voice. */
   speakMenus: boolean;
+  /**
+   * How the film is shown. 'panel' puts the film beside the voice panel and
+   * the schedule, which is what makes description visible to whoever is
+   * watching. 'full' is a television player: the film fills the screen and
+   * each description shows as a caption over it, for the sighted people on
+   * the same sofa who came to watch a film, not a dashboard.
+   */
+  picture: 'panel' | 'full';
 };
 
-export const DEFAULTS: Settings = {narration: true, level: 'normal', speakMenus: true};
+export const DEFAULTS: Settings = {
+  narration: true, level: 'normal', speakMenus: true, picture: 'panel',
+};

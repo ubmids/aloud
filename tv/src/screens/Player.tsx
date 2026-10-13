@@ -15,6 +15,7 @@ import {Timeline} from '../components/Timeline';
 import {Toggle} from '../components/Toggle';
 import {Voice} from '../components/Voice';
 import {secs} from '../format';
+import {uiUri, useScreenReader} from '../menuVoice';
 import {remember, SAID_MORE, shouldSayMore} from '../player/adapt';
 import {cueAudioUri, filmUri} from '../player/assets';
 import {lastDescribed, nextCueFrom} from '../player/schedule.js';
@@ -26,6 +27,9 @@ import {palette, size, u} from '../theme';
 
 /** How far the remote's skip buttons move the film. */
 const SKIP_S = 10;
+
+/** In full screen, how long the controls stay up after the last key press. */
+export const CHROME_MS = 5000;
 
 /**
  * The player: one film, described.
@@ -46,6 +50,12 @@ const SKIP_S = 10;
  * width, is the evidence. The controls are last because they are used once.
  * Read top to bottom it is: here is the film, here is what was said, here is
  * where it was said, here is how to change it.
+ *
+ * That layout is for showing what description is. For watching a film it is
+ * a dashboard, so "Picture: Full screen" turns it into a television player:
+ * the film fills the screen, the description being spoken shows as a caption
+ * over it, and the controls fade after a few seconds and come back on any
+ * key. Nothing about what is heard changes.
  */
 export const Player = ({
   film: title, settings, onSettings, speaker: shared,
@@ -84,6 +94,39 @@ export const Player = ({
 
   const speaker = useRef<Speaker>(shared);
   speaker.current = shared;
+
+  // The controls say their name and value when they take focus and when
+  // select changes them, in the description voice, unless VoiceView is
+  // reading them or the viewer turned the menu voice off on the shelf.
+  const screenReader = useScreenReader();
+  const settingsRef = useRef(settings);
+  settingsRef.current = settings;
+  const say = useCallback((uri: string) => {
+    if (!settingsRef.current.speakMenus || screenReader) return;
+    speaker.current.stop();
+    speaker.current.setVolume(LEVELS[settingsRef.current.level].voice);
+    speaker.current.play(uri);
+  }, [screenReader]);
+
+  const full = settings.picture === 'full';
+  const [chrome, setChrome] = useState(true);
+  const chromeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const wake = useCallback(() => {
+    setChrome(true);
+    if (chromeTimer.current) clearTimeout(chromeTimer.current);
+    chromeTimer.current = setTimeout(() => setChrome(false), CHROME_MS);
+  }, []);
+  useEffect(() => {
+    if (full) {
+      wake();
+    } else {
+      if (chromeTimer.current) clearTimeout(chromeTimer.current);
+      setChrome(true);
+    }
+    return () => {
+      if (chromeTimer.current) clearTimeout(chromeTimer.current);
+    };
+  }, [full, wake]);
 
   // Leaving the film must not leave a sentence hanging over the shelf.
   useEffect(() => () => speaker.current.stop(), []);
@@ -191,7 +234,10 @@ export const Player = ({
     const el = videoRef.current;
     // Ignore key-down, so one press is one action. A build that reports no
     // key state at all still works (see friction log entry 16).
-    if (!el || e.eventKeyAction === 0) return;
+    if (e.eventKeyAction === 0) return;
+    // Any key brings the full-screen controls back.
+    if (settingsRef.current.picture === 'full') wake();
+    if (!el) return;
     const seek = (delta: number) => {
       const to = Math.max(0, Math.min((el.duration || Infinity) - 1,
                                       (el.currentTime ?? 0) + delta));
@@ -216,7 +262,7 @@ export const Player = ({
         seek(SKIP_S);
         break;
     }
-  }, [onTimeUpdate, sayAgain]);
+  }, [onTimeUpdate, sayAgain, wake]);
   useTVEventHandler(remote);
 
   /**
@@ -319,10 +365,11 @@ export const Player = ({
   const spoken = totalSpokenSeconds(cues);
   const timelineLength = duration || track.cues.at(-1)?.end || 0;
   const next = nextCueFrom(cues, time) as Cue | null;
+  const caption = speaking ?? again;
 
   return (
-    <View style={styles.screen}>
-      <View style={styles.header}>
+    <View style={full ? styles.screenFull : styles.screen}>
+      {full ? null : <View style={styles.header}>
         <Text style={styles.title} accessibilityRole="header">
           aloud
         </Text>
@@ -340,11 +387,11 @@ export const Player = ({
           <View style={[styles.statusDot, playing && styles.statusDotLive]} />
           <Text style={styles.statusText}>{playing ? 'PLAYING' : 'PAUSED'}</Text>
         </View>
-      </View>
+      </View>}
 
-      <View style={styles.main}>
+      <View style={full ? styles.mainFull : styles.main}>
         <View
-          style={styles.stage}
+          style={full ? styles.stageFull : styles.stage}
           testID="stage"
           onLayout={measureStage}
           accessible
@@ -368,20 +415,31 @@ export const Player = ({
             />
           ) : null}
           {failure ? <Text style={styles.stageNote}>{failure}</Text> : null}
+          {full && caption && (enabled || again !== null) ? (
+            <View style={styles.caption} testID="caption">
+              <Text style={styles.captionText}>{caption.text}</Text>
+            </View>
+          ) : null}
         </View>
 
-        <Voice speaking={speaking ?? again} next={next} enabled={enabled || again !== null}
-               time={time} />
+        {full ? null : (
+          <Voice speaking={caption} next={next} enabled={enabled || again !== null}
+                 time={time} />
+        )}
       </View>
 
-      <Timeline
-        duration={timelineLength}
-        cues={cues}
-        current={time}
-        speaking={speaking}
-      />
+      {full ? null : (
+        <Timeline
+          duration={timelineLength}
+          cues={cues}
+          current={time}
+          speaking={speaking}
+        />
+      )}
 
-      <TVFocusGuideView style={styles.controls}>
+      <TVFocusGuideView
+        style={full ? [styles.controlsFull, {opacity: chrome ? 1 : 0}] : styles.controls}
+        testID="controls">
         <Toggle
           label="Narration"
           value={enabled ? 'On' : 'Off'}
@@ -397,6 +455,8 @@ export const Player = ({
           }}
           hasTVPreferredFocus
           testID="toggle-enabled"
+          spoken={uiUri(enabled ? 'narration-on' : 'narration-off')}
+          speak={say}
         />
         <Toggle
           label="Voice level"
@@ -404,6 +464,8 @@ export const Player = ({
           help={LEVELS[settings.level].help}
           onPress={() => onSettings({...settings, level: nextLevel(settings.level)})}
           testID="toggle-level"
+          spoken={uiUri(`level-${settings.level}`)}
+          speak={say}
         />
         <Toggle
           label="How much is said"
@@ -419,8 +481,21 @@ export const Player = ({
             setDensity((d) => (d === 'full' ? 'sparse' : 'full'));
           }}
           testID="toggle-density"
+          spoken={uiUri(density === 'full' ? 'density-full' : 'density-sparse')}
+          speak={say}
         />
-        <View
+        <Toggle
+          label="Picture"
+          value={full ? 'Full screen' : 'With the voice panel'}
+          help={full
+            ? 'Descriptions show as captions over the film.'
+            : 'The film sits beside what is being said.'}
+          onPress={() => onSettings({...settings, picture: full ? 'panel' : 'full'})}
+          testID="toggle-picture"
+          spoken={uiUri(full ? 'picture-full' : 'picture-panel')}
+          speak={say}
+        />
+        {full ? null : <View
           style={styles.evidence}
           accessible
           accessibilityLabel={
@@ -435,7 +510,7 @@ export const Player = ({
           <Text style={styles.evidenceNote}>
             {spokenCount} spoken so far, each inside a measured gap
           </Text>
-        </View>
+        </View>}
       </TVFocusGuideView>
     </View>
   );
@@ -467,6 +542,22 @@ const styles = StyleSheet.create({
           borderWidth: u(2), borderColor: palette.edge, alignItems: 'center',
           justifyContent: 'center', overflow: 'hidden'},
   stageNote: {color: palette.inkMuted, fontSize: size.lead},
+
+  // Full screen: no safe-area padding on the picture itself (a set crops the
+  // film's edges the same way it crops any film), but the caption and the
+  // controls keep to the safe area.
+  screenFull: {flex: 1, backgroundColor: '#000000'},
+  mainFull: {position: 'absolute', top: 0, left: 0, right: 0, bottom: 0},
+  stageFull: {position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+              backgroundColor: '#000000',
+              alignItems: 'center', justifyContent: 'center', overflow: 'hidden'},
+  caption: {position: 'absolute', left: u(64), bottom: u(190), maxWidth: '62%',
+            backgroundColor: 'rgba(0,0,0,0.78)', borderLeftWidth: u(8),
+            borderLeftColor: palette.voice, paddingHorizontal: u(24),
+            paddingVertical: u(14), borderRadius: u(6)},
+  captionText: {color: '#FFFFFF', fontSize: u(34), lineHeight: u(44)},
+  controlsFull: {position: 'absolute', left: u(64), right: u(64), bottom: u(44),
+                 flexDirection: 'row', alignItems: 'center'},
 
   controls: {flexDirection: 'row', alignItems: 'center', marginTop: u(22)},
   evidence: {marginLeft: 'auto', alignItems: 'flex-end'},

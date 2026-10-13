@@ -1,0 +1,13 @@
+{
+  "narration-on": "Narration, on. Films play with their descriptions.",
+  "narration-off": "Narration, off. Films play with their own sound only.",
+  "level-quiet": "Voice level, quiet. The film barely dips under the voice.",
+  "level-normal": "Voice level, normal. The film dips under each description.",
+  "level-loud": "Voice level, loud. The film drops well back, so every word is clear.",
+  "menus-on": "Read the menu aloud, on.",
+  "menus-off": "Read the menu aloud, off.",
+  "density-full": "How much is said, everything.",
+  "density-sparse": "How much is said, only what changed most. Half as much talking.",
+  "picture-panel": "Picture, with the voice panel. The film sits beside what is being said.",
+  "picture-full": "Picture, full screen. The descriptions show as captions over the film."
+}

@@ -19,7 +19,7 @@ import {palette, size, u} from '../theme';
  * configuring software.
  */
 export const Toggle = ({
-  label, value, help, onPress, checked, hasTVPreferredFocus, testID,
+  label, value, help, onPress, checked, hasTVPreferredFocus, testID, spoken, speak,
 }: {
   label: string;
   value: string;
@@ -31,9 +31,25 @@ export const Toggle = ({
   checked?: boolean;
   hasTVPreferredFocus?: boolean;
   testID?: string;
+  /** The clip that says this setting's name and current value. */
+  spoken?: string;
+  /** Plays a clip, or decides not to (VoiceView on, menu voice off). */
+  speak?: (uri: string) => void;
 }) => {
   const [focused, setFocused] = useState(false);
   const rise = useRef(new Animated.Value(0)).current;
+
+  // Said on focus, and again once select has changed the value, so the viewer
+  // hears what they just chose. Only a press here is answered: a value the
+  // app changes by itself (Menu asked twice, say) must not talk over a
+  // description or a line of the film.
+  const pressed = useRef(false);
+  const said = useRef(spoken);
+  useEffect(() => {
+    if (pressed.current && spoken && spoken !== said.current) speak?.(spoken);
+    pressed.current = false;
+    said.current = spoken;
+  }, [spoken, speak]);
 
   useEffect(() => {
     Animated.timing(rise, {
@@ -51,8 +67,14 @@ export const Toggle = ({
 
   return (
     <Pressable
-      onPress={onPress}
-      onFocus={() => setFocused(true)}
+      onPress={() => {
+        pressed.current = true;
+        onPress();
+      }}
+      onFocus={() => {
+        setFocused(true);
+        if (spoken) speak?.(spoken);
+      }}
       onBlur={() => setFocused(false)}
       hasTVPreferredFocus={hasTVPreferredFocus}
       testID={testID}

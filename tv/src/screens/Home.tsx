@@ -1,10 +1,11 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {AccessibilityInfo, Image, StyleSheet, Text, View} from 'react-native';
+import React, {useCallback, useRef, useState} from 'react';
+import {Image, StyleSheet, Text, View} from 'react-native';
 import {TVFocusGuideView} from '@amazon-devices/react-native-kepler';
 
 import {announcement, describedSummary, type Film} from '../film';
 import {FilmTile} from '../components/FilmTile';
 import {Toggle} from '../components/Toggle';
+import {uiUri, useScreenReader} from '../menuVoice';
 import {announceUri} from '../player/assets';
 import type {Speaker} from '../player/speech';
 import {LEVELS, nextLevel, type Settings} from '../settings';
@@ -17,8 +18,9 @@ import {palette, size, u} from '../theme';
  * may not be able to see the screen. Three things follow.
  *
  * Every move is spoken. When a title takes focus the app plays its name,
- * genre, year, length and how many descriptions it carries, in the same voice
- * that will describe the film, so the shelf and the film are one experience
+ * genre, year, length and how many descriptions it carries, and when a
+ * setting takes focus or changes it says the setting and its value, in the
+ * same voice that will describe the film, so the shelf and the film are one experience
  * rather than a menu in one voice and a film in another. If VoiceView is
  * running the app stays quiet and lets the screen reader read the same words
  * from the tile's label, because two voices reading one menu is worse than
@@ -47,33 +49,23 @@ export const Home = ({
   const [focused, setFocused] = useState<Film>(
     films.find((f) => f.id === initial) ?? films[0],
   );
-  const [screenReader, setScreenReader] = useState(false);
+  const screenReader = useScreenReader();
 
-  useEffect(() => {
-    let live = true;
-    AccessibilityInfo.isScreenReaderEnabled?.()
-      .then((on) => live && setScreenReader(!!on))
-      .catch(() => {});
-    const sub = AccessibilityInfo.addEventListener?.(
-      'screenReaderChanged', (on: boolean) => setScreenReader(!!on));
-    return () => {
-      live = false;
-      sub?.remove?.();
-    };
-  }, []);
-
-  // Speak the title that has focus. Each press cuts off the last
-  // announcement: the newest focus is the only one the viewer still cares
-  // about, and finishing an old sentence would put the voice a title behind
-  // the remote.
+  // Speak whatever has focus. Each press cuts off the last announcement: the
+  // newest focus is the only one the viewer still cares about, and finishing
+  // an old sentence would put the voice a press behind the remote.
   const settingsRef = useRef(settings);
   settingsRef.current = settings;
-  const announce = useCallback((f: Film) => {
-    if (!settingsRef.current.speakMenus || screenReader) return;
+  const say = useCallback((uri: string, always = false) => {
+    if ((!settingsRef.current.speakMenus && !always) || screenReader) return;
     speaker.stop();
     speaker.setVolume(LEVELS[settingsRef.current.level].voice);
-    speaker.play(announceUri(f.id));
+    speaker.play(uri);
   }, [speaker, screenReader]);
+  // Turning the menu voice off is the one change that would otherwise go
+  // unconfirmed, so that setting always answers.
+  const sayAlways = useCallback((uri: string) => say(uri, true), [say]);
+  const announce = useCallback((f: Film) => say(announceUri(f.id)), [say]);
 
   const onFocus = useCallback((f: Film) => {
     setFocused(f);
@@ -137,6 +129,8 @@ export const Home = ({
           checked={settings.narration}
           onPress={() => onSettings({...settings, narration: !settings.narration})}
           testID="home-narration"
+          spoken={uiUri(settings.narration ? 'narration-on' : 'narration-off')}
+          speak={say}
         />
         <Toggle
           label="Voice level"
@@ -144,6 +138,8 @@ export const Home = ({
           help={LEVELS[settings.level].help}
           onPress={() => onSettings({...settings, level: nextLevel(settings.level)})}
           testID="home-level"
+          spoken={uiUri(`level-${settings.level}`)}
+          speak={say}
         />
         <Toggle
           label="Read the menu aloud"
@@ -154,6 +150,8 @@ export const Home = ({
           checked={settings.speakMenus}
           onPress={() => onSettings({...settings, speakMenus: !settings.speakMenus})}
           testID="home-speak-menus"
+          spoken={uiUri(settings.speakMenus ? 'menus-on' : 'menus-off')}
+          speak={sayAlways}
         />
       </TVFocusGuideView>
     </View>
