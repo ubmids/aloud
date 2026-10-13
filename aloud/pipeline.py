@@ -15,15 +15,20 @@ The order matters and is not arbitrary.
   5. Validate before writing anything. A track that would land on dialogue is
      refused, not warned about.
 """
+import hashlib
+import inspect
+import json
 import os
 import shutil
 import subprocess
+import sys
 import tempfile
 from dataclasses import dataclass
 
 from .budget import fit_generated, words_for
 from .gaps import find_gaps, load_audio
-from .scenes import detect_shots, frame_at, plan_descriptions
+from .scenes import (detect_shots, first_lit_frame, frame_at, next_cut_after,
+                     plan_descriptions, split_long_gaps)
 from .synth import Synth
 from .track import Cue, Track, schedule
 
@@ -53,8 +58,69 @@ def stub_captioner(frame_path: str, target_words: int) -> str:
     return " ".join(base[:n]).rstrip(",") + "."
 
 
+def _takes(captioner, name: str) -> bool:
+    """Whether a describer accepts an optional keyword. Plain functions written
+    for the two-argument contract keep working untouched."""
+    if getattr(captioner, "takes_context", False):
+        return True
+    try:
+        return name in inspect.signature(captioner).parameters
+    except (TypeError, ValueError):
+        return False
+
+
+class _Remembered:
+    """Descriptions already written, on disk beside the track.
+
+    A film is a few hundred requests to a describer, and on a CPU that is half
+    an hour. A crash, a rate limit or a tweak to the mixer should not cost all
+    of it again, so every answer is kept, keyed by everything that could change
+    it: which model, which frame, how many words, and what had been said
+    before. Change any of those and it is asked afresh.
+    """
+
+    def __init__(self, path: str | None):
+        self.path = path
+        self.answers = {}
+        if path and os.path.exists(path):
+            try:
+                with open(path) as f:
+                    self.answers = json.load(f)
+            except (OSError, ValueError):
+                self.answers = {}
+
+    @staticmethod
+    def key(*parts) -> str:
+        return hashlib.sha256(json.dumps(parts).encode()).hexdigest()[:24]
+
+    def get(self, key):
+        return self.answers.get(key)
+
+    def put(self, key, text):
+        self.answers[key] = text
+        if self.path:
+            tmp = self.path + ".tmp"
+            with open(tmp, "w") as f:
+                json.dump(self.answers, f, indent=0)
+            os.replace(tmp, self.path)
+
+
+def _log(quiet: bool, msg: str):
+    if not quiet:
+        print(msg, file=sys.stderr, flush=True)
+
+
 def describe_film(video: str, *, captioner=None, synth=None,
-                  out_dir: str | None = None, align: str = "start") -> Result:
+                  out_dir: str | None = None, align: str = "start",
+                  captions: str | None = None, split: bool = True,
+                  memory: int = 3, quiet: bool = True) -> Result:
+    """Describe `video` and return the track.
+
+    `captions` is the title's own SRT or WebVTT file, if it has one. Every cue
+    in it is treated as speech whatever the audio says (see captions.py).
+    `memory` is how many earlier descriptions the describer is shown, so it
+    says what is new instead of reintroducing the same man every cue.
+    """
     from .caption import captioner_from_env
 
     captioner = captioner or captioner_from_env()
@@ -63,28 +129,77 @@ def describe_film(video: str, *, captioner=None, synth=None,
     os.makedirs(out_dir, exist_ok=True)
     frames_dir = os.path.join(out_dir, "frames")
     cues_dir = os.path.join(out_dir, "cues")
+    label = getattr(captioner, "label", getattr(captioner, "__name__", "describer"))
+    remembered = _Remembered(os.path.join(out_dir, "described.cache.json")
+                             if label != "stub_captioner" else None)
+    with_context = _takes(captioner, "context")
+    with_frames = _takes(captioner, "frames")
 
+    also = None
+    if captions:
+        from .captions import speech_spans
+        also = speech_spans(captions)
     audio, sr = load_audio(video)
-    gaps = find_gaps(audio, sr)
+    gaps = find_gaps(audio, sr, also_speech=also)
+    _log(quiet, f"{len(gaps)} gaps in the dialogue")
     shots = detect_shots(video)
-    plans = plan_descriptions(gaps, shots)
+    _log(quiet, f"{len(shots)} shot changes")
+    windows = split_long_gaps(gaps, shots) if split else gaps
+    plans = plan_descriptions(windows, shots)
 
-    track, skipped = Track(source=video), []
-    for plan in plans:
+    track, skipped, said = Track(source=video), [], []
+    for i, plan in enumerate(plans, 1):
         if not plan.worth_describing:
             skipped.append((plan.gap, plan.reason))
             continue
 
-        frame = frame_at(video, plan.describe_at,
-                         os.path.join(frames_dir, f"{plan.describe_at:.3f}.jpg"))
+        # Black is not a picture. Look further into the gap for the moment the
+        # image comes up, and if it never does within the first half, say
+        # nothing: there is not enough of the gap left to describe it well.
+        lit = first_lit_frame(video, plan.describe_at,
+                              plan.describe_at + max(0.5, plan.gap.duration / 2),
+                              frames_dir)
+        if lit is None:
+            skipped.append((plan.gap, "the screen is dark"))
+            continue
+        lit_at, frame = lit
+        if lit_at > plan.describe_at:
+            plan.gap = type(plan.gap)(round(max(plan.gap.start, lit_at - 0.25), 3),
+                                      plan.gap.end)
+            plan.describe_at = round(lit_at, 3)
+            if plan.gap.duration < 1.35:
+                skipped.append((plan.gap, "the picture came up too late"))
+                continue
+        # A second look a second later, if the shot lasts that long, so the
+        # describer can see what is moving rather than guess from one still.
+        extra = []
+        later = plan.describe_at + 1.0
+        cut = next_cut_after(shots, plan.describe_at)
+        if with_frames and later < plan.gap.end and (cut is None or later < cut - 0.1):
+            extra = [frame_at(video, later,
+                              os.path.join(frames_dir, f"{later:.3f}.jpg"))]
+        context = "\n".join(said[-memory:]) if (with_context and memory) else None
+
+        def describe(n, frame=frame, extra=extra, context=context,
+                     at=plan.describe_at):
+            key = _Remembered.key(label, round(at, 3), n, len(extra), context)
+            got = remembered.get(key)
+            if got is None:
+                kw = {}
+                if extra:
+                    kw["frames"] = extra
+                if context:
+                    kw["context"] = context
+                got = captioner(frame, n, **kw)
+                remembered.put(key, got)
+            return got
 
         # One bad frame must not cost the whole film. A describer that raises
         # here is a real possibility (a rate limit, a refused image, a timeout)
         # and the right answer is to leave that gap silent and carry on, which
         # is exactly what a gap with nothing worth saying already gets.
         try:
-            fitted = fit_generated(lambda n: captioner(frame, n),
-                                   plan.gap.duration, synth)
+            fitted = fit_generated(describe, plan.gap.duration, synth)
         except Exception as e:
             skipped.append((plan.gap, f"the describer failed: {type(e).__name__}"))
             continue
@@ -98,7 +213,11 @@ def describe_film(video: str, *, captioner=None, synth=None,
         track.cues.append(Cue(round(start, 3), round(end, 3), fitted.text,
                               audio=spoken.path,
                               gap=(plan.gap.start, plan.gap.end)))
+        said.append(fitted.text)
+        _log(quiet, f"[{i}/{len(plans)}] {start:7.2f}s  {fitted.text}")
 
+    track.describer = label
+    track.voice = getattr(synth, "name", type(synth).__name__)
     problems = track.validate(gaps)
     if problems:
         raise ValueError("the pipeline produced an unsafe track:\n  "

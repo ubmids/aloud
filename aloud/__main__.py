@@ -1,6 +1,7 @@
-"""aloud <film> [--out DIR]
+"""aloud <film> [--out DIR] [--captions FILE]
 
 Describes a film and writes the track next to the audio you can listen to.
+Which describer writes it is chosen by the environment; see docs/DESCRIBERS.md.
 """
 import argparse
 import os
@@ -14,10 +15,15 @@ def main(argv=None):
     ap.add_argument("video")
     ap.add_argument("--out", default="out")
     ap.add_argument("--no-mix", action="store_true")
+    ap.add_argument("--captions", help="the title's SRT or WebVTT caption file; "
+                    "every caption is treated as dialogue")
+    ap.add_argument("--quiet", action="store_true", help="no progress lines")
     a = ap.parse_args(argv)
 
     os.makedirs(a.out, exist_ok=True)
-    r = describe_film(a.video, out_dir=a.out)
+    r = describe_film(a.video, out_dir=a.out, captions=a.captions,
+                      quiet=a.quiet)
+    print(f"described by {r.track.describer}, spoken by {r.track.voice}")
 
     print(f"{len(r.gaps)} gap(s) in the dialogue, {len(r.shots)} shot change(s)")
     for c in r.track.cues:

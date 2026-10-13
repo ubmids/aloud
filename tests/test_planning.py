@@ -374,6 +374,51 @@ def test_overlapping_cues_are_caught():
     print("PASS cues overlapping each other are caught")
 
 
+def test_black_is_not_a_picture():
+    """The first full-length run opened with "Screen is completely black."
+    True, and the one thing a blind viewer already knows. The describer is now
+    handed the first frame that is actually lit, and nothing at all if the
+    picture never comes up."""
+    if not shutil.which("ffmpeg"):
+        print("SKIP no ffmpeg")
+        return
+    from aloud.scenes import DARK_LUMA, brightness, first_lit_frame
+    d = tempfile.mkdtemp(prefix="aloud_dark_")
+    film = os.path.join(d, "fade.mp4")
+    try:
+        subprocess.run(
+            ["ffmpeg", "-v", "error", "-y",
+             "-f", "lavfi", "-i", "color=c=black:s=160x90:d=1.5",
+             "-f", "lavfi", "-i", "color=c=white:s=160x90:d=1.5",
+             "-filter_complex", "[0:v][1:v]concat=n=2:v=1:a=0[v]",
+             "-map", "[v]", "-pix_fmt", "yuv420p", film], check=True)
+        black = frame_at(film, 0.2, os.path.join(d, "b.jpg"))
+        assert brightness(black) < DARK_LUMA, brightness(black)
+        got = first_lit_frame(film, 0.2, 3.0, d)
+        assert got is not None and 1.4 <= got[0] <= 2.0, got
+        assert brightness(got[1]) > 200, brightness(got[1])
+        assert first_lit_frame(film, 0.0, 1.2, d) is None
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+    print("PASS a black frame is skipped for the first lit one, or for silence")
+
+
+def test_a_long_action_gap_is_cut_at_its_hard_cuts():
+    """Forty seconds of battle got one sentence about its first shot. Long gaps
+    are now divided at hard cuts, every piece inside the original gap."""
+    from aloud.scenes import split_long_gaps
+    gap = Gap(10.0, 40.0)
+    shots = [Shot(12.0, 0.9), Shot(15.0, 0.6), Shot(15.5, 0.12),
+             Shot(22.0, 0.4), Shot(37.5, 0.8)]
+    pieces = split_long_gaps([gap, Gap(50.0, 55.0)], shots)
+    assert [(p.start, p.end) for p in pieces] == [
+        (10.0, 15.0), (15.0, 22.0), (22.0, 40.0), (50.0, 55.0)], pieces
+    assert all(gap.start <= p.start < p.end <= gap.end for p in pieces[:3])
+    still = split_long_gaps([gap], [Shot(20.0, 0.12)])
+    assert [(p.start, p.end) for p in still] == [(10.0, 40.0)], still
+    print("PASS long gaps split at hard cuts, short and static ones left whole")
+
+
 if __name__ == "__main__":
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for fn in fns:

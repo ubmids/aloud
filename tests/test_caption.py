@@ -14,10 +14,21 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from aloud.caption import VisionCaptioner, captioner_from_env, clean
+from aloud.caption import (GeminiCaptioner, LocalCaptioner, VisionCaptioner,
+                           captioner_from_env, clean)
 
 STATE = {"reply": "A man crosses the empty street.", "status": 200, "req": None,
          "path": None, "headers": None}
+
+PROVIDER_ENV = ("ALOUD_LLM_BASE_URL", "ALOUD_LLM_API_KEY", "ALOUD_LLM_MODEL",
+                "GEMINI_API_KEY", "ALOUD_GEMINI_API_KEY", "ALOUD_GEMINI_MODEL",
+                "ALOUD_GEMINI_BASE_URL", "ALOUD_LOCAL_VLM_URL",
+                "ALOUD_LOCAL_VLM_MODEL", "ALOUD_VISION")
+
+
+def clear_provider_env():
+    for k in PROVIDER_ENV:
+        os.environ.pop(k, None)
 # Per-process, not a fixed path. Two copies of this suite running at once, as
 # any mutation tester or parallel CI does, otherwise race on the same file.
 FRAME = os.path.join(tempfile.gettempdir(), f"aloud_caption_frame_{os.getpid()}.jpg")
@@ -33,7 +44,11 @@ class Stub(BaseHTTPRequestHandler):
         if STATE["status"] != 200:
             self.send_response(STATE["status"]); self.end_headers()
             self.wfile.write(b'{"error":"nope"}'); return
-        out = json.dumps({"choices": [{"message": {"content": STATE["reply"]}}]}).encode()
+        if ":generateContent" in self.path:
+            out = json.dumps({"candidates": [{"content": {"parts": [
+                {"text": STATE["reply"]}]}, "finishReason": "STOP"}]}).encode()
+        else:
+            out = json.dumps({"choices": [{"message": {"content": STATE["reply"]}}]}).encode()
         self.send_response(200)
         self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(out)))
@@ -129,8 +144,7 @@ def test_a_failure_is_raised_not_papered_over():
 
 
 def test_with_no_endpoint_it_falls_back_visibly():
-    for k in ("ALOUD_LLM_BASE_URL", "ALOUD_LLM_API_KEY"):
-        os.environ.pop(k, None)
+    clear_provider_env()
     c = captioner_from_env()
     assert not isinstance(c, VisionCaptioner)
     out = c("/nonexistent.jpg", 8)
@@ -171,6 +185,7 @@ def test_half_a_configuration_is_not_a_working_captioner():
 def test_the_configured_endpoint_is_used_when_there_is_one():
     """Only the no-key branch was tested, so `captioner_from_env` could have
     returned nothing at all on the path that matters in production."""
+    clear_provider_env()
     os.environ["ALOUD_LLM_BASE_URL"] = BASE
     os.environ["ALOUD_LLM_API_KEY"] = "k"
     os.environ["ALOUD_LLM_MODEL"] = "configured-vision"
@@ -269,6 +284,107 @@ def test_every_preamble_in_the_list_is_actually_stripped():
     assert clean("Does he leave?") == "Does he leave?", (
         "a question was given a second terminator")
     print("PASS every preamble in the list is stripped")
+
+
+# --- the provider abstraction ----------------------------------------------
+
+def test_gemini_is_asked_in_its_own_shape_with_the_same_brief():
+    """Same conventions, same word target, same cleaning; only the envelope
+    differs. The key goes in a header, never the URL, because URLs are logged."""
+    if not make_frame():
+        print("SKIP no ffmpeg"); return
+    g = GeminiCaptioner(api_key="gk", model="gemini-test", base_url=BASE)
+    STATE["reply"] = "The image shows a woman at a window"
+    try:
+        out = g(FRAME, 9)
+    finally:
+        STATE["reply"] = "A man crosses the empty street."
+    assert out == "A woman at a window.", out
+    assert STATE["path"] == "/models/gemini-test:generateContent", STATE["path"]
+    assert "gk" not in STATE["path"]
+    assert STATE["headers"]["x-goog-api-key"] == "gk", STATE["headers"]
+    req = STATE["req"]
+    sysmsg = req["systemInstruction"]["parts"][0]["text"].lower()
+    assert "present tense" in sysmsg and "name characters" in sysmsg, sysmsg
+    parts = req["contents"][0]["parts"]
+    assert "about 9 words" in parts[0]["text"], parts[0]
+    img = parts[1]["inline_data"]
+    assert img["mime_type"] == "image/jpeg" and len(base64.b64decode(img["data"])) > 100
+    assert req["generationConfig"]["temperature"] <= 0.5
+    print("PASS Gemini gets the same brief in its own request shape")
+
+
+def test_a_gemini_reply_with_no_text_is_an_error_not_a_blank_cue():
+    if not make_frame():
+        print("SKIP no ffmpeg"); return
+    g = GeminiCaptioner(api_key="gk", model="gemini-test", base_url=BASE)
+    STATE["reply"] = ""
+    try:
+        g(FRAME, 9)
+        raise AssertionError("an empty reply was returned as a description")
+    except RuntimeError:
+        pass
+    finally:
+        STATE["reply"] = "A man crosses the empty street."
+    print("PASS an empty Gemini reply raises")
+
+
+def test_the_local_model_needs_no_key_but_does_need_a_server():
+    clear_provider_env()
+    assert not LocalCaptioner().available
+    assert LocalCaptioner(base_url=BASE).available
+    os.environ["ALOUD_LOCAL_VLM_URL"] = BASE
+    try:
+        c = captioner_from_env()
+        assert isinstance(c, LocalCaptioner), c
+        assert "llama.cpp" in c.label, c.label
+    finally:
+        clear_provider_env()
+    print("PASS a local llama.cpp server is a describer with no key")
+
+
+def test_hosted_beats_local_and_the_choice_can_be_forced():
+    """A key added later has to win without anyone remembering to unset the
+    local server, and an explicit choice has to be obeyed or refused, never
+    quietly swapped for something else."""
+    clear_provider_env()
+    os.environ["ALOUD_LOCAL_VLM_URL"] = BASE
+    os.environ["GEMINI_API_KEY"] = "gk"
+    try:
+        assert isinstance(captioner_from_env(), GeminiCaptioner)
+        os.environ["ALOUD_VISION"] = "local"
+        assert isinstance(captioner_from_env(), LocalCaptioner)
+        os.environ["ALOUD_VISION"] = "openai"
+        try:
+            captioner_from_env()
+            raise AssertionError("an unconfigured forced provider was accepted")
+        except RuntimeError:
+            pass
+        os.environ["ALOUD_VISION"] = "stub"
+        assert not hasattr(captioner_from_env(), "provider")
+    finally:
+        clear_provider_env()
+    print("PASS hosted wins over local, and ALOUD_VISION is obeyed or refused")
+
+
+def test_more_frames_and_what_was_said_reach_the_model():
+    if not make_frame():
+        print("SKIP no ffmpeg"); return
+    cap()(FRAME, 8, frames=[FRAME], context="A grey-haired man stands at a door.")
+    msgs = STATE["req"]["messages"]
+    images = [c for c in msgs[1]["content"] if c["type"] == "image_url"]
+    assert len(images) == 2, len(images)
+    text = next(c for c in msgs[1]["content"] if c["type"] == "text")["text"]
+    assert "grey-haired man" in text, text
+    sysmsg = msgs[0]["content"]
+    assert "same shot" in sysmsg and "Do not repeat" in sysmsg, sysmsg
+    print("PASS extra frames and the earlier descriptions are sent")
+
+
+def test_a_second_sentence_is_dropped():
+    assert clean("A man runs. He stops at the door.") == "A man runs."
+    assert clean("Mr. Smith waits") == "Mr. Smith waits."
+    print("PASS one sentence was asked for and one is kept")
 
 
 if __name__ == "__main__":

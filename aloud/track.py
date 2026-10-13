@@ -33,6 +33,10 @@ class Cue:
 class Track:
     cues: list = field(default_factory=list)
     source: str = ""
+    # Provenance. A description track is reviewed by a person before it ships,
+    # and the first question a reviewer asks is what wrote it.
+    describer: str = ""
+    voice: str = ""
 
     def validate(self, gaps, tolerance: float = 0.01) -> list[str]:
         """Every problem with this track, as plain sentences. Empty means good."""
@@ -71,8 +75,13 @@ class Track:
         return "\n".join(out)
 
     def to_dict(self) -> dict:
+        out = {"source": self.source}
+        if self.describer:
+            out["describer"] = self.describer
+        if self.voice:
+            out["voice"] = self.voice
         return {
-            "source": self.source,
+            **out,
             "cues": [{"start": round(c.start, 3), "end": round(c.end, 3),
                       "text": c.text, "audio": c.audio,
                       "gap": list(c.gap) if c.gap else None} for c in self.cues],

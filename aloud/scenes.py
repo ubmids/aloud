@@ -98,7 +98,10 @@ def frame_at(video: str, t: float, out_path: str) -> str:
     os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
     subprocess.run(
         ["ffmpeg", "-v", "error", "-y", "-ss", f"{max(0.0, t):.3f}", "-i", video,
-         "-frames:v", "1", "-q:v", "3", out_path],
+         # A describer reads a 768 pixel frame as well as a 4K one, and on a
+         # CPU the image is most of the cost of each description.
+         "-frames:v", "1", "-vf", "scale='min(768,iw)':-2", "-q:v", "3",
+         out_path],
         check=True, capture_output=True)
     return out_path
 
@@ -144,3 +147,74 @@ def plan_descriptions(gaps, shots, *, lookahead: float = 0.0,
                           f"{len(new)} shot change(s) since the last cue"))
         last_said = gap.end
     return plans
+
+
+def split_long_gaps(gaps, shots, *, longest: float = 8.0,
+                    piece: float = 4.0, hard_cut: float = 0.25):
+    """Cut long gaps at hard cuts, so an action sequence gets more than one cue.
+
+    One gap, one description was right for a trailer and wrong for a film. The
+    longest gap in *Tears of Steel* is forty seconds of battle with no dialogue
+    and a dozen hard cuts, and it got a single sentence about the first shot:
+    the listener then sat through thirty-five seconds of explosions with no idea
+    who was winning. Professional describers talk most in exactly these
+    stretches, because the picture is carrying the whole story.
+
+    So a gap longer than `longest` is divided at its hard cuts (a change score
+    of at least `hard_cut`, so a muzzle flash does not count) into pieces of
+    at least `piece` seconds, each beginning on its cut. Every piece lies inside
+    the original gap, so nothing here can move a cue onto dialogue, and the
+    planner still decides piece by piece whether anything changed enough to be
+    worth saying. Gaps with no hard cut in them stay whole: a long static shot
+    needs describing once.
+    """
+    out = []
+    for gap in gaps:
+        if gap.duration <= longest:
+            out.append(gap)
+            continue
+        cuts = sorted(s.at for s in shots
+                      if s.score >= hard_cut
+                      and gap.start + piece <= s.at <= gap.end - piece)
+        start = gap.start
+        for c in cuts:
+            if c - start >= piece:
+                out.append(type(gap)(round(start, 3), round(c, 3)))
+                start = c
+        out.append(type(gap)(round(start, 3), gap.end))
+    return out
+
+
+def next_cut_after(shots, t: float) -> float | None:
+    """When the shot on screen at `t` ends, if it does."""
+    later = [s.at for s in shots if s.at > t]
+    return min(later) if later else None
+
+
+# Mean luma, 0..255, below which a frame is treated as black. Films open on
+# black, fade through it, and cut to it for effect, and a describer handed one
+# says so: the first cue of the first full-length run was "Screen is completely
+# black." That is true, it costs the opening gap, and it is the one thing a
+# blind viewer already knows.
+DARK_LUMA = 18.0
+
+
+def brightness(path: str) -> float:
+    """Mean luma of an image, read through ffmpeg so nothing new is needed."""
+    _require_ffmpeg()
+    raw = subprocess.run(
+        ["ffmpeg", "-v", "error", "-i", path, "-vf", "scale=64:-2,format=gray",
+         "-f", "rawvideo", "-"], capture_output=True, check=True).stdout
+    return (sum(raw) / len(raw)) if raw else 0.0
+
+
+def first_lit_frame(video: str, start: float, end: float, out_dir: str,
+                    step: float = 0.5) -> tuple[float, str] | None:
+    """The first moment in [start, end) that is not black, and its frame."""
+    t = start
+    while t < end:
+        path = frame_at(video, t, os.path.join(out_dir, f"{t:.3f}.jpg"))
+        if brightness(path) >= DARK_LUMA:
+            return t, path
+        t += step
+    return None
