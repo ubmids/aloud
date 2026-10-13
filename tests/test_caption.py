@@ -407,6 +407,15 @@ def test_a_sentence_already_said_is_not_said_again():
     assert repeats("The man keeps his eyes closed.", said)
     assert not repeats("A woman in a red coat runs onto the bridge.", said)
     assert not repeats("Anything.", [])
+    # Same subject, new action: from Tears of Steel, where the brief's own
+    # instruction to refer back to people made every next sentence share
+    # its subject with the last.
+    before = ["A figure in heavy gear lowers a translucent, glowing object over "
+              "two large, circular mechanical devices."]
+    assert not repeats("A figure in heavy gear drops the glowing object as "
+                       "debris falls.", before)
+    assert repeats("A figure in heavy gear lowers a glowing object over two "
+                   "circular devices.", before)
     print("PASS a description the listener already heard is refused")
 
 

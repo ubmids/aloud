@@ -271,7 +271,7 @@ def _shorten(text: str, words_to_drop: int) -> str:
 
 
 def fit_generated(describe, gap_seconds: float, synth, *,
-                  headroom: float = HEADROOM, max_rounds: int = 4) -> "Fit":
+                  headroom: float = HEADROOM, max_rounds: int = 6) -> "Fit":
     """Ask for a description the right size, rather than cutting one to size.
 
     `describe(target_words)` returns a description of roughly that length. This

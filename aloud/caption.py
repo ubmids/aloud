@@ -22,7 +22,7 @@ Three describers, one contract, chosen by the environment (see
   - Google Gemini (`GEMINI_API_KEY`)
   - a local open model on the CPU, served by llama.cpp's `llama-server`, which
     speaks the same OpenAI protocol (`ALOUD_LOCAL_VLM_URL`). The tracks in the
-    app were written this way, by Qwen3-VL 8B on a CPU, so they are real
+    app were written this way, by Qwen3-VL 4B on a CPU, so they are real
     descriptions of real frames with no key and no GPU. Regenerating them with
     a hosted model is one environment variable and the same command.
 
@@ -124,20 +124,32 @@ def _content_words(text: str) -> set:
     return {w for w in words if w not in _STOP and len(w) > 2}
 
 
-def repeats(text: str, earlier, threshold: float = 0.6) -> bool:
+def repeats(text: str, earlier, novelty: float = 0.34) -> bool:
     """True if `text` mostly says what one of `earlier` already said.
 
     "The man's eyes remain closed." came back thirty seconds after the same
     sentence. The describer is told what it said, and still does this; a
     sentence the listener has already heard is a gap spent on nothing.
-    Overlap of content words, measured against the shorter sentence.
+
+    Measured as what is new, not what is shared. The brief tells the
+    describer to refer back to people by what was already said of them ("the
+    grey-haired man"), so a good next sentence shares its subject with the
+    last one by design. The first rule, overlap against the shorter sentence,
+    refused "A figure in heavy gear drops the glowing object as debris falls."
+    for sharing "figure in heavy gear ... glowing object" with the cue before
+    it, and left eighteen gaps of Tears of Steel silent, some of them ten
+    seconds long in the middle of a battle. A sentence is a repeat when it
+    adds fewer than two content words, or new words are under a third of it.
     """
     mine = _content_words(text)
     if not mine:
         return False
     for e in earlier:
         theirs = _content_words(e)
-        if theirs and len(mine & theirs) / min(len(mine), len(theirs)) >= threshold:
+        if not theirs:
+            continue
+        new = mine - theirs
+        if len(new) < 2 or len(new) / len(mine) < novelty:
             return True
     return False
 
@@ -236,7 +248,7 @@ class LocalCaptioner(VisionCaptioner):
         super().__init__(
             base_url=base_url or os.getenv("ALOUD_LOCAL_VLM_URL"),
             api_key="local",
-            model=model or os.getenv("ALOUD_LOCAL_VLM_MODEL", "qwen3-vl-8b"),
+            model=model or os.getenv("ALOUD_LOCAL_VLM_MODEL", "qwen3-vl-4b"),
             timeout=timeout)
 
 
