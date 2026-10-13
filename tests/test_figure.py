@@ -18,8 +18,8 @@ def test_spans_are_the_runs_of_speech():
 
 def test_every_cue_is_drawn_once_and_named():
     cues = [{"start": 11.5, "end": 14.0, "text": "Rocket engines ignite."},
-            # Straddles the four-minute row break, so it is drawn in two parts.
-            {"start": 238.0, "end": 242.0, "text": "A man & a robot."}]
+            # Straddles the row break (300 s is two rows of 150), so it is drawn in two parts.
+            {"start": 148.0, "end": 152.0, "text": "A man & a robot."}]
     svg = draw(cues, [(1.0, 3.0)], 300.0, "Test")
     assert "Rocket engines ignite." in svg
     assert "A man &amp; a robot." in svg, "text is not escaped for SVG"

@@ -29,7 +29,7 @@ RULE = "#2a211c"
 DIALOGUE = "#3987e5"
 VOICE = "#d95926"
 
-ROW_S = 240.0          # four minutes a row
+ROW_S = 250.0          # at most this much film a row
 WIDTH = 1200
 LEFT, RIGHT = 120, 24
 LANE = 14
@@ -56,11 +56,14 @@ def _clock(t: float) -> str:
 
 def draw(cues: list[dict], dialogue: list[tuple[float, float]], duration: float,
          title: str, note: str = "") -> str:
+    # Equal rows, so twelve minutes and fourteen seconds is three rows of a
+    # little over four minutes rather than three full rows and a stub.
     rows = max(1, int(np.ceil(duration / ROW_S)))
+    row_s = duration / rows
     top = 96
     height = top + rows * ROW_H + 40
     plot_w = WIDTH - LEFT - RIGHT
-    x = lambda t, r: LEFT + (t - r * ROW_S) / ROW_S * plot_w  # noqa: E731
+    x = lambda t, r: LEFT + (t - r * row_s) / row_s * plot_w  # noqa: E731
 
     spoken = sum(c["end"] - c["start"] for c in cues)
     out = [
@@ -88,7 +91,7 @@ def draw(cues: list[dict], dialogue: list[tuple[float, float]], duration: float,
     ]
     for r in range(rows):
         y0 = top + r * ROW_H
-        end = min(duration, (r + 1) * ROW_S)
+        end = min(duration, (r + 1) * row_s)
         out.append(f'<text x="{LEFT - 12}" y="{y0 + 11}" fill="{INK_MUTED}" '
                    f'font-size="12" text-anchor="end">dialogue</text>')
         out.append(f'<text x="{LEFT - 12}" y="{y0 + LANE + 15}" fill="{INK_MUTED}" '
@@ -96,21 +99,21 @@ def draw(cues: list[dict], dialogue: list[tuple[float, float]], duration: float,
         out.append(f'<line x1="{LEFT}" x2="{x(end, r):.1f}" y1="{y0 + LANE + 2}" '
                    f'y2="{y0 + LANE + 2}" stroke="{RULE}" stroke-width="1"/>')
         for a, b in dialogue:
-            a, b = max(a, r * ROW_S), min(b, end)
+            a, b = max(a, r * row_s), min(b, end)
             if b <= a:
                 continue
             out.append(f'<rect x="{x(a, r):.1f}" y="{y0}" width="{max(1.0, x(b, r) - x(a, r)):.1f}" '
                        f'height="{LANE}" rx="2" fill="{DIALOGUE}"><title>dialogue '
                        f'{_clock(a)} to {_clock(b)}</title></rect>')
         for c in cues:
-            a, b = max(c["start"], r * ROW_S), min(c["end"], end)
+            a, b = max(c["start"], r * row_s), min(c["end"], end)
             if b <= a:
                 continue
             out.append(f'<rect x="{x(a, r):.1f}" y="{y0 + LANE + 4}" '
                        f'width="{max(1.5, x(b, r) - x(a, r)):.1f}" height="{LANE}" rx="2" '
                        f'fill="{VOICE}"><title>{_clock(c["start"])} '
                        f'{html.escape(c["text"])}</title></rect>')
-        t = r * ROW_S
+        t = np.ceil(r * row_s / 30.0) * 30.0
         while t <= end + 1e-6:
             out.append(f'<text x="{x(t, r):.1f}" y="{y0 + 2 * LANE + 22}" fill="{INK_MUTED}" '
                        f'font-size="11" text-anchor="middle">{_clock(t)}</text>')
