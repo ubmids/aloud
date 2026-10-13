@@ -9,9 +9,10 @@ Never over a line of dialogue. Close your eyes and you can still follow the
 film.
 
 aloud is a Vega OS app (React Native for Vega) with a computer-vision pipeline
-behind it. A vision-language model watches each new shot, a scheduler finds
-the silences in the dialogue and measures what fits in them, and the app plays
-the result as a second voice, ducking the film a little while it speaks.
+behind it. Before a film is ever played, a vision-language model watches each
+new shot, a scheduler finds the silences in the dialogue and measures what fits
+in them, and the result ships as a timed description track. The app plays it as
+a second voice, ducking the film a little while it speaks.
 
 ## Who it is for
 

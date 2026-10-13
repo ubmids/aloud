@@ -35,7 +35,7 @@ huggingface-cli download Qwen/Qwen3-VL-4B-Instruct-GGUF \
 llama-server -m models/Qwen3VL-4B-Instruct-Q4_K_M.gguf \
   --mmproj models/mmproj-Qwen3VL-4B-Instruct-Q8_0.gguf \
   --port 8181 -t 10 -c 4096 -np 1 -ngl 0 -lm none --image-max-tokens 1024 \
-  --alias qwen3-vl-4b
+  --cache-ram 0 --alias qwen3-vl-4b
 
 export ALOUD_LOCAL_VLM_URL=http://127.0.0.1:8181/v1
 ```
@@ -47,7 +47,12 @@ shared machine could spare while other jobs ran, and a run was killed partway
 through the first full film. The 4B model fits comfortably.
 
 One slot and a 4k context are deliberate for the same reason: the default of
-four slots at 8k reserves several gigabytes of KV cache.
+four slots at 8k reserves several gigabytes of KV cache. `--cache-ram 0` turns
+off the server's prompt cache, which by default keeps up to 8 GiB of old
+prompts in memory; every request here carries a new image, so it never hits,
+and on this machine it grew until the out-of-memory killer took the server
+partway through a film. `-lm none` loads the weights once instead of mapping
+them and keeping a repacked copy beside the map.
 
 ## Regenerating everything with a hosted model
 
