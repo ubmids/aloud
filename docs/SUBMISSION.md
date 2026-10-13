@@ -12,6 +12,9 @@ Device; **the current app has not yet been run on one** (PENDING: Subomi's VVD
 run, see "Needs Subomi" below). No developer account or Appstore listing is
 required by the rules.
 
+Primary track: **Fire TV**. Mini challenge: **Open Source** (one project can
+win only one mini; fields below).
+
 Category fit, in the track's own words: **AI-enhanced viewing**, **computer
 vision**, and **multi-modal UX combining voice, D-pad and visual in a single
 flow**.
@@ -153,6 +156,27 @@ reaches the settings (each says its name and value), select plays. In the
 player: Menu repeats the last description; "Picture" switches to full screen.
 Tests: `for t in tests/test_*.py; do python3 $t; done`, and in `tv/`,
 `npx jest && node test/schedule.test.mjs`.
+
+## Open Source mini challenge (the four Devpost fields)
+
+PENDING: Subomi makes `ubmids/vega-described-track` public (it was created
+private) before pasting these. Optionally, and stronger: fork
+AmazonAppDev/react-native-multi-tv-app-sample, apply
+`examples/react-native-multi-tv-app-sample.patch` from the library, open a PR,
+and use that PR as the contribution URL.
+
+- **Contribution URL:** https://github.com/ubmids/vega-described-track
+- **Project repository URL:** https://github.com/ubmids/aloud
+- **GitHub username:** ubmids
+- **Description:** vega-described-track adds audio description to any React
+  Native for Vega video. It reads a description track (WebVTT or JSON, with
+  each cue's silence and audio clip), and a scheduler driven by the player's
+  own `timeupdate` starts each description only if the rest of its silence can
+  still hold the whole sentence, so a late clock never pushes speech onto the
+  next line of dialogue. The voice is a w3cmedia `AudioPlayer` classified as
+  accessibility speech. It was extracted from aloud's Fire TV player, ships with
+  37 tests and an MIT licence, and includes a patch that adds description to
+  the Vega player screen of Amazon's react-native-multi-tv-app-sample.
 
 ## Credits and licences (put in the video description too)
 
