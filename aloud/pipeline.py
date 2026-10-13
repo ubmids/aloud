@@ -122,7 +122,7 @@ def describe_film(video: str, *, captioner=None, synth=None,
     `memory` is how many earlier descriptions the describer is shown, so it
     says what is new instead of reintroducing the same man every cue.
     """
-    from .caption import brief_version, captioner_from_env, vacuous
+    from .caption import brief_version, captioner_from_env, repeats, vacuous
 
     captioner = captioner or captioner_from_env()
     synth = synth or Synth()
@@ -201,7 +201,11 @@ def describe_film(video: str, *, captioner=None, synth=None,
             # silent rather than spent on it.
             # The stub is exempt: it is obvious on purpose, so the plumbing
             # around it can be tested end to end with no model at all.
-            return "" if (vacuous(got) and not is_stub) else got
+            if is_stub:
+                return got
+            if vacuous(got) or repeats(got, said[-6:]):
+                return ""
+            return got
 
         # One bad frame must not cost the whole film. A describer that raises
         # here is a real possibility (a rate limit, a refused image, a timeout)

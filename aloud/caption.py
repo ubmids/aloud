@@ -42,8 +42,10 @@ SYSTEM = (
     "is visible in this frame. Use the present tense. Do not interpret, "
     "explain, or name emotions. Do not describe anything that can be heard. Do "
     "not name characters. Put the most important new information first, because "
-    "the description may be cut short. Describe people by what can be seen "
-    "of them: age, hair, clothing. If there is legible text on screen and it "
+    "the description may be cut short. Say first who is in the shot and "
+    "where, then what they are doing. Describe people by what can be seen "
+    "of them: age, hair, clothing. Skip small details of faces, eyes and "
+    "hands unless they are the main action. If there is legible text on screen and it "
     "fits the length, say 'On screen:' and then the words exactly; otherwise "
     "describe the picture. "
     "Never say only that text appears or that the scene changes. Write one "
@@ -110,6 +112,34 @@ VACUOUS = re.compile(
 def vacuous(text: str) -> bool:
     """True for a description that only says the film is a film."""
     return bool(VACUOUS.search((text or "").strip()))
+
+
+_STOP = {"a", "an", "the", "and", "of", "in", "on", "at", "to", "with", "his",
+         "her", "their", "its", "is", "are", "while", "as"}
+
+
+def _content_words(text: str) -> set:
+    words = re.findall(r"[a-z']+", (text or "").lower().replace("\u2019", "'"))
+    words = [w[:-2] if w.endswith("'s") else w.strip("'") for w in words]
+    return {w for w in words if w not in _STOP and len(w) > 2}
+
+
+def repeats(text: str, earlier, threshold: float = 0.6) -> bool:
+    """True if `text` mostly says what one of `earlier` already said.
+
+    "The man's eyes remain closed." came back thirty seconds after the same
+    sentence. The describer is told what it said, and still does this; a
+    sentence the listener has already heard is a gap spent on nothing.
+    Overlap of content words, measured against the shorter sentence.
+    """
+    mine = _content_words(text)
+    if not mine:
+        return False
+    for e in earlier:
+        theirs = _content_words(e)
+        if theirs and len(mine & theirs) / min(len(mine), len(theirs)) >= threshold:
+            return True
+    return False
 
 
 def brief_version() -> str:

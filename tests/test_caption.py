@@ -15,7 +15,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from aloud.caption import (GeminiCaptioner, LocalCaptioner, VisionCaptioner,
-                           captioner_from_env, clean, vacuous)
+                           captioner_from_env, clean, repeats, vacuous)
 
 STATE = {"reply": "A man crosses the empty street.", "status": 200, "req": None,
          "path": None, "headers": None}
@@ -399,6 +399,15 @@ def test_a_sentence_about_the_film_is_not_a_description():
                  "Two engines fire."):
         assert not vacuous(said), said
     print("PASS sentences about the film are refused, sentences of it are not")
+
+
+def test_a_sentence_already_said_is_not_said_again():
+    said = ["The man’s eyes remain closed.", "A train crosses a bridge."]
+    assert repeats("The man's eyes remain closed.", said)
+    assert repeats("The man keeps his eyes closed.", said)
+    assert not repeats("A woman in a red coat runs onto the bridge.", said)
+    assert not repeats("Anything.", [])
+    print("PASS a description the listener already heard is refused")
 
 
 if __name__ == "__main__":

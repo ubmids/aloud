@@ -1,7 +1,9 @@
 # Friction log: building a video app for Vega OS
 
-Recorded while building Aloud, a Fire TV app that speaks audio description into
-the gaps between dialogue, between 14 September and submission. Every entry is
+Recorded while building aloud, a Fire TV app that speaks audio description into
+the gaps between dialogue, between 14 September and submission. Entries 1 to 13
+are from the first build (14 to 17 September); 14 to 17 are from adding the
+remote-driven shelf and player in October. Every entry is
 something that actually cost time on this build, in the format the hackathon
 rules ask for: task attempted, steps taken, expected versus actual, severity,
 workaround, suggestion.
@@ -551,6 +553,115 @@ distribution and only one of them can be installed.
 
 **Suggestion.** Search and replace `@amzn/` on the published documentation. It is
 a one-line fix and it is currently the first thing a developer copies.
+
+---
+
+## 14. `build-vega` builds the whole bundle before saying the SDK is missing
+
+**Severity: medium** for anyone building in CI or on a second machine.
+
+**Task attempted.** Check, on a Linux build machine without the Vega SDK, that
+the app still packages after a large change (a new home screen and player).
+
+**Steps taken.** `npm install`, then `npx react-native build-vega --build-type
+Release`.
+
+**Expected.** Either a clean package, or an immediate statement that the Vega
+CLI is required, before any work is done.
+
+**Actual.** The command bundles the JavaScript, writes the sourcemap, compiles
+the Hermes bytecode, processes the debug files, and only then stops with
+`error Vega CLI was not found in ambient environment, nor could be found within
+$KEPLER_SDK_PATH (value = 'undefined')`. The useful half of that is real: the
+JavaScript and Hermes steps passing is a meaningful check on a machine with no
+SDK. But nothing says which steps need the SDK, so the first run reads as a
+failure, and there is no flag to stop after the bytecode on purpose.
+
+**Workaround.** Treat "Completed building Hermes bundle" followed by the CLI
+error as a pass for the JavaScript half, and package on the Mac.
+
+**Suggestion.** Check for the CLI before starting, and offer `--js-only` (or
+document that the JS and Hermes stages are SDK-free), so CI can verify the
+bundle on any Linux runner.
+
+---
+
+## 15. The method that hands media controls to a player is marked `@hidden`
+
+**Severity: medium.** It decides whether "Alexa, pause" reaches your player.
+
+**Task attempted.** Let voice transport commands (pause, resume, rewind) drive
+the film, so a viewer who cannot see the screen can control it by voice as well
+as with the remote.
+
+**Steps taken.** Read `@amazon-devices/react-native-w3cmedia`'s type
+definitions for how a player receives Kepler Media Controls.
+
+**Expected.** A documented call, or a prop on `Video`.
+
+**Actual.** `MediaPlayer.setMediaControlFocus(componentInstance,
+mediaControlHandler?)` is the method, and its doc comment is `@hidden`, as are
+`initialize()` and `deinitialize()` beside it, even though entry 7 shows
+`initialize()` is mandatory. `KeplerMediaControlHandler`'s comments do say that
+w3cmedia handles play, pause, seek and skip "internally ... as a default mode",
+which is the reassuring half, but not what the app must do to become the
+player those commands go to. The `IComponentInstance` it needs comes from
+`useComponentInstance()` in a different package.
+
+**Workaround.** Call `setMediaControlFocus(useComponentInstance())` once the
+film's metadata has loaded, guarded so a failure leaves the remote working.
+Unverified on the Virtual Device at the time of writing.
+
+**Suggestion.** Un-hide the three methods, and add one paragraph to the media
+player page: "to receive voice and remote transport commands, call
+`setMediaControlFocus` with your component instance".
+
+---
+
+## 16. The remote event's doc comment and its type disagree on the field name
+
+**Severity: low.**
+
+**Task attempted.** Act on play/pause and skip presses once, not twice (down and
+up).
+
+**Steps taken.** Read `HWEvent` in `react-native-kepler/Libraries/TV/TVTypes.d.ts`.
+
+**Expected.** One name for the key state.
+
+**Actual.** The doc comment documents `eventAction` (0 pressed, 1 released); the
+type declares `eventKeyAction?: -1 | 1 | 0 | number` and has no `eventAction`.
+Code written from the comment compiles in plain JavaScript and silently reads
+`undefined`.
+
+**Workaround.** Use the typed name, ignore only an explicit key-down (0), so a
+build that sends no key state still works.
+
+**Suggestion.** Rename the field in the comment and document what -1 means.
+
+---
+
+## 17. The Jest preset's animation timers produce an `act()` warning on every focus test
+
+**Severity: low**, but it buries real warnings.
+
+**Task attempted.** Unit test a D-pad focus state: focus a tile, check it says
+"PRESS SELECT TO PLAY".
+
+**Steps taken.** `@testing-library/react-native` with the
+`@amazon-devices/react-native-kepler` Jest preset; `fireEvent(tile, 'focus')`.
+
+**Expected.** A passing test with clean output.
+
+**Actual.** The test passes, and prints a full-page `An update to ... was not
+wrapped in act(...)` stack for every focus change, raised from the preset's own
+`jest/setup.js` timer driving `Animated.timing`. Any focus-animated component
+in a Vega app will do this.
+
+**Workaround.** Live with the noise, or switch the suite to fake timers.
+
+**Suggestion.** Have the preset's Animated mock settle synchronously inside
+`act`, as React Native's own preset does for `useNativeDriver` animations.
 
 ---
 
