@@ -51,9 +51,10 @@ in their second language. aloud is a way of watching with your ears.
    Transport goes through Vega's media controls, so Alexa voice commands reach
    the same player.
 
-Three open films from the Blender Foundation are on the shelf: **Tears of
-Steel** (12 min, 46 descriptions), **Sintel** (15 min,
-49 descriptions) and the Sintel trailer.
+Four open films from the Blender Foundation are on the shelf: **Tears of
+Steel** (12 min, 46 descriptions), **Sintel** (15 min, 49 descriptions), the
+family comedy **Big Buck Bunny** (10 min, 50 descriptions, and not one word of
+dialogue, so aloud narrates over the score) and the Sintel trailer.
 
 ## What makes it work
 
@@ -121,7 +122,7 @@ the television nothing to play. That makes two paths to viewers:
 - **Voice**: Kokoro 82M on CPU (macOS `say` also supported).
 - **Listening**: a hand-built speech-band and syllable-rhythm detector, Silero
   VAD, caption files.
-- Python 3.12+, numpy, ffmpeg. 151 Python tests, 52
+- Python 3.12+, numpy, ffmpeg. 151 Python tests, 62
   JavaScript tests.
 
 ## Run it
@@ -158,7 +159,8 @@ Tests: `for t in tests/test_*.py; do python3 $t; done`, and in `tv/`,
 
 *Tears of Steel*: (CC) Blender Foundation, mango.blender.org, CC BY 3.0.
 *Sintel* and its trailer: (c) copyright Blender Foundation, durian.blender.org,
-CC BY 3.0. Films from download.blender.org, re-encoded for the app package;
+CC BY 3.0. *Big Buck Bunny*: (c) copyright 2008, Blender Foundation,
+www.bigbuckbunny.org, CC BY 3.0. Films from download.blender.org, re-encoded for the app package;
 descriptions are added as a separate track and the films are otherwise
 unchanged. Silero VAD (MIT), Kokoro (Apache 2.0), Qwen3-VL (Apache 2.0).
 aloud itself is MIT licensed.

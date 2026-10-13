@@ -94,7 +94,8 @@ CPU via llama.cpp, with no key and no GPU; the same pipeline takes Gemini or any
 OpenAI-compatible model with one environment variable. *Tears of Steel* carries
 46 descriptions (2.9 minutes of narration), of which
 0.9 seconds overlap dialogue, measured against the production stems, in five
-touches of under 0.4 s and none on a captioned line.
+touches of under 0.4 s and none on a captioned line. *Sintel* carries 49 and
+the family comedy *Big Buck Bunny*, which has no dialogue at all, 50.
 
 ### Challenges
 
@@ -129,7 +130,8 @@ ffmpeg, numpy, jest
 ## Credits and licences (put in the video description too)
 
 *Tears of Steel*, (CC) Blender Foundation, mango.blender.org. *Sintel* and its
-trailer, (c) copyright Blender Foundation, durian.blender.org. Both CC BY 3.0,
+trailer, (c) copyright Blender Foundation, durian.blender.org. *Big Buck
+Bunny*, (c) copyright 2008, Blender Foundation, www.bigbuckbunny.org. All CC BY 3.0,
 from download.blender.org, re-encoded; descriptions are a separate track.
 
 ---

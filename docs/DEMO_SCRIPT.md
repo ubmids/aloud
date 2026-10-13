@@ -40,7 +40,9 @@ first 20 seconds.
 Press Back to the shelf. On screen: the shelf on the Vega Virtual Device.
 
 - Press **right**: *"Sintel. Fantasy, 2010, 15 minutes. 49 descriptions."* is
-  heard. Press **left**: *"Tears of Steel..."*. Each press cuts off the last.
+  heard. **Right** again: *"Big Buck Bunny. Family comedy, 2008, 10
+  minutes..."*, the family title, with no dialogue at all. Press **left** twice:
+  *"Tears of Steel..."*. Each press cuts off the last.
 - Say (voiceover, short): "Every title is read out as you reach it, in the same
   voice that will describe the film. If VoiceView is on, aloud steps aside."
 - Press **down** to *Voice level*, select twice: Normal, Loud. Up, select Tears
@@ -50,6 +52,9 @@ Press Back to the shelf. On screen: the shelf on the Vega Virtual Device.
   the film pauses, aloud says what is on screen, the film carries on. Voiceover
   (short): "Narration off for whoever doesn't need it. One button for whoever
   does." This is the multi-modal beat: remote, voice and picture in one flow.
+- Optional, if there are seconds to spare: on "How much is said: Only what
+  changed most", press Menu twice; the setting flips back to "Everything" and
+  says why. Voiceover: "Ask twice, and it says more."
 - Narration back on, skip back ten seconds and let a description fire again.
 - If "Alexa, pause" worked on the Virtual Device (see MAC_CHECKLIST), do it
   here. If not, do not show it.
@@ -88,7 +93,8 @@ film. And it is a standard timed track, so a person can still check it before
 it airs, and the TV itself does no AI work."
 
 "It is for blind viewers first. It is also for anyone watching without
-looking: the cook, the parent, the viewer whose eyesight is going."
+looking: the cook with a kids' film on in the next room, the parent, the
+viewer whose eyesight is going."
 
 ## 2:20 to 2:45: close
 
@@ -98,7 +104,8 @@ over anyone." End card: **aloud** · Fire TV · Vega OS · github.com/ubmids/alo
 
 Credits on the end card and in the YouTube description: *Tears of Steel*,
 (CC) Blender Foundation, mango.blender.org; *Sintel*, (c) copyright Blender
-Foundation, durian.blender.org; both CC BY 3.0.
+Foundation, durian.blender.org; *Big Buck Bunny*, (c) copyright 2008, Blender
+Foundation, www.bigbuckbunny.org; all CC BY 3.0 (credit only the ones shown).
 
 ---
 

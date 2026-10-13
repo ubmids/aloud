@@ -15,12 +15,12 @@ is not there.
 ```bash
 git checkout first-place && git pull
 pip install -r requirements.txt
-python3 -m aloud.films fetch          # Tears of Steel and Sintel, from download.blender.org
-ls -la tv/assets/films/*/film.mp4     # three files: ~45MB, ~60MB, and the 1.9MB trailer
+python3 -m aloud.films fetch          # Tears of Steel, Sintel, Big Buck Bunny, from download.blender.org
+ls -la tv/assets/films/*/film.mp4     # four files: three full films and the 1.9MB trailer
 ```
 
-The trailer is in the repository; the two full films are not (too large for
-git) and must be fetched before building, or those two titles will show
+The trailer is in the repository; the three full films are not (too large for
+git) and must be fetched before building, or those titles will show
 "The film could not be played."
 
 ## 2. Build and install
@@ -48,8 +48,12 @@ If the package is rejected for size, drop the trailer from `FILMS` in
       device log for the `AudioPlayer` initialising; it must happen before the
       first focus event. If it is a race, the fix is to call `announce` once
       `speaker.available` turns true.
-- [ ] D-pad right moves to Sintel, then the trailer; each is read aloud, and
-      each press cuts off the previous announcement rather than queuing.
+- [ ] D-pad right moves to Sintel, Big Buck Bunny, then the trailer; each is
+      read aloud, and each press cuts off the previous announcement rather
+      than queuing.
+- [ ] All four tiles fit on the row with the focused one lifted, and the last
+      tile is not cut off at the right edge. If it is, lower the tile `width`
+      in `FilmTile.tsx` (now 400 of the 1920 grid).
 - [ ] The big panel updates with each focus: poster, genre/year/minutes,
       synopsis, "N descriptions, M minutes of narration", the describer and
       voice line, and the credit.
@@ -83,6 +87,12 @@ If the package is rejected for size, drop the trailer from `FILMS` in
       `console.log(e.eventType)` at the top of `remote` in `Player.tsx`, press
       the button, and put whatever name the device reports next to `'menu'` in
       the `switch`.
+- [ ] **Two Menu presses say more.** Set "How much is said" to "Only what
+      changed most", then press Menu twice within two minutes: the setting
+      flips back to "Everything" and its help line reads "You asked twice in
+      two minutes, so everything is said again."
+- [ ] Big Buck Bunny has no dialogue at all: descriptions run through the
+      score, and the film dips under each one.
 - [ ] Rewind / fast-forward (or skip) moves 10 seconds; a description that
       was skipped over does not fire late, and one rewound past fires again.
 - [ ] **Back returns to the shelf with the same title focused**, and nothing
