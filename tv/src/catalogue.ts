@@ -2,6 +2,7 @@ import type {Film} from './film';
 import {parseTrack} from './player/track';
 import tearsOfSteel from './data/films/tears-of-steel.json';
 import sintel from './data/films/sintel.json';
+import bigBuckBunny from './data/films/big-buck-bunny.json';
 import sintelTrailer from './data/films/sintel-trailer.json';
 
 /**
@@ -14,7 +15,7 @@ import sintelTrailer from './data/films/sintel-trailer.json';
  * says so: a precomputed track can be reviewed by a person before it airs,
  * and it costs nothing on the device.
  *
- * All three are open films from the Blender Foundation under CC BY 3.0, the
+ * All four are open films from the Blender Foundation under CC BY 3.0, the
  * only licence that lets a hackathon entry show a real film end to end. The
  * credits travel with each title and are shown on its details panel, as the
  * licence asks.
@@ -62,6 +63,19 @@ export const FILMS: Film[] = [
     licence: BLENDER,
     poster: require('./assets/posters/sintel.jpg'),
   }, sintel),
+  film({
+    id: 'big-buck-bunny',
+    title: 'Big Buck Bunny',
+    year: 2008,
+    minutes: 10,
+    genre: 'Family comedy',
+    synopsis:
+      'A large, gentle rabbit is pushed too far by three woodland bullies, ' +
+      'and plans his revenge. No dialogue at all: aloud narrates over the score.',
+    credit: '(c) copyright 2008, Blender Foundation | www.bigbuckbunny.org',
+    licence: BLENDER,
+    poster: require('./assets/posters/big-buck-bunny.jpg'),
+  }, bigBuckBunny),
   film({
     id: 'sintel-trailer',
     title: 'Sintel: the trailer',

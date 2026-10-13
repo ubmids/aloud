@@ -74,11 +74,11 @@ export const FilmTile = ({
 };
 
 const styles = StyleSheet.create({
-  tile: {width: u(420), marginRight: u(36), borderRadius: u(14),
+  tile: {width: u(400), marginRight: u(32), borderRadius: u(14),
          borderWidth: u(4), borderColor: palette.edge,
          backgroundColor: palette.panel, overflow: 'hidden'},
   tileFocused: {borderColor: palette.voice},
-  poster: {width: '100%', height: u(176)},
+  poster: {width: '100%', height: u(168)},
   caption: {paddingHorizontal: u(20), paddingVertical: u(14)},
   title: {color: palette.ink, fontSize: size.lead, fontWeight: '600'},
   cta: {color: palette.inkMuted, fontSize: size.eyebrow, letterSpacing: u(3),

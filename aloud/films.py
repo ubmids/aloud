@@ -76,6 +76,16 @@ TITLES = [
         genre="Fantasy", year=2010, minutes=15, poster_at=70.0,
     ),
     Title(
+        id="big-buck-bunny",
+        title="Big Buck Bunny",
+        url="https://download.blender.org/peach/bigbuckbunny_movies/"
+            "big_buck_bunny_720p_h264.mov.zip",
+        member="big_buck_bunny_720p_h264.mov",
+        # No dialogue at all: the whole film is a gap, cut up by its shots.
+        credit="(c) copyright 2008, Blender Foundation | www.bigbuckbunny.org",
+        genre="Family comedy", year=2008, minutes=10, poster_at=75.0,
+    ),
+    Title(
         id="sintel-trailer",
         title="Sintel: the trailer",
         url="https://download.blender.org/durian/trailer/sintel_trailer-720p.mp4",
