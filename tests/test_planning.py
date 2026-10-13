@@ -419,6 +419,24 @@ def test_a_long_action_gap_is_cut_at_its_hard_cuts():
     print("PASS long gaps split at hard cuts, short and static ones left whole")
 
 
+def test_a_gap_left_silent_does_not_count_as_said():
+    """The Sintel trailer came out with no descriptions: its first gap is
+    black, and because planning assumed every planned gap would be spoken,
+    the seven after it all reported that nothing had changed since the last
+    cue. Whether a gap is worth describing depends on what was actually said."""
+    from aloud.scenes import plan_one, with_opening
+    shots = with_opening([Shot(3.0, 0.8)])
+    first, second = Gap(0.2, 2.0), Gap(5.0, 9.0)
+    assert plan_one(first, shots, 0.0).worth_describing
+    # If the first was spoken, the second has the cut at 3.0 to describe.
+    assert plan_one(second, shots, first.end).worth_describing
+    # If nothing was said in the first, the second still describes the cut,
+    # and a third gap in the same shot after the second was spoken does not.
+    assert plan_one(second, shots, 0.0).worth_describing
+    assert not plan_one(Gap(10.0, 12.0), shots, second.end).worth_describing
+    print("PASS a skipped gap does not stop the next one being described")
+
+
 if __name__ == "__main__":
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for fn in fns:

@@ -119,34 +119,55 @@ def plan_descriptions(gaps, shots, *, lookahead: float = 0.0,
     frame of a shot is often a whip pan, a blur, or half a dissolve, and
     describing it produces confident nonsense.
     """
-    # The opening shot is never a cut, so nothing marks it and the first gap
-    # would go undescribed: the listener gets no idea where the film has put
-    # them. Treat the start as a change, since going from nothing to an image is
-    # the largest change there is.
+    plans, last_said = [], 0.0
+    shots = with_opening(shots, settle)
+    for gap in gaps:
+        plan = plan_one(gap, shots, last_said, lookahead=lookahead, settle=settle)
+        plans.append(plan)
+        if plan.worth_describing:
+            last_said = gap.end
+    return plans
+
+
+def with_opening(shots, settle: float = 0.25):
+    """The opening shot is never a cut, so nothing marks it and the first gap
+    would go undescribed: the listener gets no idea where the film has put
+    them. Treat the start as a change, since going from nothing to an image is
+    the largest change there is."""
     shots = list(shots)
     if not any(s.at <= settle for s in shots):
         shots.insert(0, Shot(0.0, 1.0))
+    return shots
 
-    plans, last_said = [], 0.0
-    for gap in gaps:
-        window_end = gap.start + lookahead
-        new = [s for s in shots if last_said <= s.at <= window_end]
-        if not new:
-            plans.append(Plan(gap, None, "nothing has changed since the last cue"))
-            continue
-        # The most RECENT change, not the biggest one. Ranking by score picked
-        # the opening shot to describe a gap two cuts later, because a hard cut
-        # from black outscores everything after it. That describes an image the
-        # viewer moved past long ago, which is worse than saying nothing: it is
-        # confidently wrong about what is on screen.
-        #
-        # Score decides WHETHER a change is worth words. Time decides WHICH
-        # frame gets described. Conflating the two was the bug.
-        chosen = max(new, key=lambda s: s.at)
-        plans.append(Plan(gap, round(chosen.at + settle, 3),
-                          f"{len(new)} shot change(s) since the last cue"))
-        last_said = gap.end
-    return plans
+
+def plan_one(gap, shots, last_said: float, *, lookahead: float = 0.0,
+             settle: float = 0.25) -> Plan:
+    """Whether one gap is worth a description, given when something was last
+    actually said.
+
+    `last_said` has to be what was SAID, not what was planned. Planning a whole
+    film up front assumed every planned gap would be spoken, so when one was
+    skipped (a black frame, a refused sentence, nothing fitting) every gap
+    after it believed the listener had just been told about the picture. The
+    Sintel trailer came out with no descriptions at all that way: its first
+    gap is black, and the seven after it all reported "nothing has changed
+    since the last cue". The pipeline now plans one gap at a time.
+    """
+    window_end = gap.start + lookahead
+    new = [s for s in shots if last_said <= s.at <= window_end]
+    if not new:
+        return Plan(gap, None, "nothing has changed since the last cue")
+    # The most RECENT change, not the biggest one. Ranking by score picked
+    # the opening shot to describe a gap two cuts later, because a hard cut
+    # from black outscores everything after it. That describes an image the
+    # viewer moved past long ago, which is worse than saying nothing: it is
+    # confidently wrong about what is on screen.
+    #
+    # Score decides WHETHER a change is worth words. Time decides WHICH
+    # frame gets described. Conflating the two was the bug.
+    chosen = max(new, key=lambda s: s.at)
+    return Plan(gap, round(chosen.at + settle, 3),
+                f"{len(new)} shot change(s) since the last cue")
 
 
 def split_long_gaps(gaps, shots, *, longest: float = 8.0,
