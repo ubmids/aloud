@@ -50,7 +50,15 @@ class Title:
     minutes: int = 0
     # A moment that makes a good poster, in seconds.
     poster_at: float = 0.0
+    # Who is in it, as the film names them, with what a viewer sees of them,
+    # so the describer can say "Sintel" rather than "the red-haired figure".
+    cast: str = ""
 
+
+# Sintel says her own name, and names the dragon. The old man never is.
+SINTEL_CAST = ("Sintel: a young woman with short red hair, who carries a "
+               "staff and later a spear. Scales: a small baby dragon. Any "
+               "full-grown dragon is just 'a dragon'.")
 
 TITLES = [
     Title(
@@ -74,6 +82,7 @@ TITLES = [
         captions="embedded:0:3",
         credit="(c) copyright Blender Foundation | durian.blender.org",
         genre="Fantasy", year=2010, minutes=15, poster_at=70.0,
+        cast=SINTEL_CAST,
     ),
     Title(
         id="big-buck-bunny",
@@ -84,6 +93,10 @@ TITLES = [
         # No dialogue at all: the whole film is a gap, cut up by its shots.
         credit="(c) copyright 2008, Blender Foundation | www.bigbuckbunny.org",
         genre="Family comedy", year=2008, minutes=10, poster_at=75.0,
+        cast=("Bunny: a big, round, fluffy grey-and-white rabbit. Frank: a "
+              "brown flying squirrel, the bullies' leader. Rinky: a red "
+              "squirrel. Gimera: a grey chinchilla. Frank, Rinky and Gimera "
+              "are the three bullies."),
     ),
     Title(
         id="sintel-trailer",
@@ -91,6 +104,7 @@ TITLES = [
         url="https://download.blender.org/durian/trailer/sintel_trailer-720p.mp4",
         credit="(c) copyright Blender Foundation | durian.blender.org",
         genre="Trailer", year=2010, minutes=1, poster_at=30.0,
+        cast=SINTEL_CAST,
     ),
 ]
 
@@ -168,7 +182,8 @@ def build(t: Title, app: str, cache: str) -> dict:
     film = source(t, cache)
     captions = captions_for(t, cache, film)
     out = os.path.join(cache, t.id, "out")
-    r = describe_film(film, out_dir=out, captions=captions, quiet=False)
+    r = describe_film(film, out_dir=out, captions=captions, quiet=False,
+                      cast=t.cast or None)
     r.track.write(vtt_path=os.path.join(out, "description.vtt"),
                   json_path=os.path.join(out, "description.json"), gaps=r.gaps)
     dest = app_film_path(app, t.id)

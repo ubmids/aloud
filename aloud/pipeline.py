@@ -115,15 +115,17 @@ def describe_film(video: str, *, captioner=None, synth=None,
                   out_dir: str | None = None, align: str = "start",
                   captions: str | None = None, split: bool = True,
                   memory: int = 3, quiet: bool = True,
-                  max_failures: int = 5) -> Result:
+                  max_failures: int = 5, cast: str | None = None) -> Result:
     """Describe `video` and return the track.
 
     `captions` is the title's own SRT or WebVTT file, if it has one. Every cue
     in it is treated as speech whatever the audio says (see captions.py).
     `memory` is how many earlier descriptions the describer is shown, so it
     says what is new instead of reintroducing the same man every cue.
+    `cast` names the title's characters as the film names them (see
+    films.Title.cast), for a describer that takes it.
     """
-    from .caption import ask_version, captioner_from_env, repeats, vacuous
+    from .caption import ask_version, captioner_from_env, repeats, unfit
 
     captioner = captioner or captioner_from_env()
     synth = synth or Synth()
@@ -137,6 +139,7 @@ def describe_film(video: str, *, captioner=None, synth=None,
     is_stub = captioner is stub_captioner
     with_context = _takes(captioner, "context")
     with_frames = _takes(captioner, "frames")
+    cast = cast if (cast and _takes(captioner, "cast")) else None
 
     also = None
     if captions:
@@ -192,7 +195,7 @@ def describe_film(video: str, *, captioner=None, synth=None,
 
         def ask(n, context, frame=frame, extra=extra, at=plan.describe_at):
             key = _Remembered.key(label, ask_version(n), round(at, 3), n,
-                                  len(extra), context)
+                                  len(extra), context, *([cast] if cast else []))
             got = remembered.get(key)
             if got is None:
                 kw = {}
@@ -200,6 +203,8 @@ def describe_film(video: str, *, captioner=None, synth=None,
                     kw["frames"] = extra
                 if context:
                     kw["context"] = context
+                if cast:
+                    kw["cast"] = cast
                 got = captioner(frame, n, **kw)
                 remembered.put(key, got)
             return got
@@ -207,14 +212,16 @@ def describe_film(video: str, *, captioner=None, synth=None,
         def describe(n, context=context, refused=refused):
             got = ask(n, context)
             # A sentence about the film instead of what is in it ("Text appears
-            # on screen.") is treated as nothing written, so the gap is left
-            # silent rather than spent on it.
+            # on screen.", "The camera focuses on..."), or one that stops
+            # before its noun ("...stands in a sunlit."), is treated as nothing
+            # written, so the gap is left silent rather than spent on it.
             # The stub is exempt: it is obvious on purpose, so the plumbing
             # around it can be tested end to end with no model at all.
             if is_stub:
                 return got
-            if vacuous(got):
-                refused.append("it only said the film is a film")
+            why = unfit(got)
+            if why:
+                refused.append(why)
                 return ""
             if repeats(got, said[-6:]):
                 # Small models repeat themselves even when shown what they
@@ -224,7 +231,7 @@ def describe_film(video: str, *, captioner=None, synth=None,
                 # cannot find anything new leaves the gap silent.
                 if with_context and memory:
                     again = ask(n, "\n".join(filter(None, [context, got])))
-                    if (again and not vacuous(again)
+                    if (again and not unfit(again)
                             and not repeats(again, said[-6:] + [got])):
                         return again
                 refused.append("it would repeat what was just said")
@@ -260,6 +267,13 @@ def describe_film(video: str, *, captioner=None, synth=None,
             why = refused[-1] if refused else "nothing useful fitted in the time"
             if fitted.tried and not refused:
                 why += f" (closest: \"{fitted.tried}\" for {fitted.budget}s)"
+            skipped.append((plan.gap, why))
+            continue
+
+        # Trimming to fit can leave a sentence the describer never wrote; it
+        # passes the same gate.
+        why = None if is_stub else unfit(fitted.text)
+        if why:
             skipped.append((plan.gap, why))
             continue
 

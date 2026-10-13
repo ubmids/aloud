@@ -249,6 +249,53 @@ def test_a_gap_nothing_will_fit_in_is_left_silent():
         shutil.rmtree(out, ignore_errors=True)
 
 
+def test_a_sentence_that_stops_early_or_names_the_camera_is_not_spoken():
+    """"A red-haired figure stands in a sunlit." shipped on Sintel: the model
+    wrote it broken, and nothing after the model looked. Now the pipeline
+    refuses it the way it refuses "Text appears on screen.": the gap stays
+    silent and the log says why."""
+    if not make_film():
+        print("SKIP no ffmpeg")
+        return
+    for said, why in (("A red-haired figure stands in a sunlit.",
+                       "it stops before its noun"),
+                      ("The camera focuses on the rock.",
+                       "it is about the film, not in it")):
+        result, out = described(captioner=lambda frame, words, s=said: s)
+        try:
+            assert result.track.cues == [], [c.text for c in result.track.cues]
+            assert any(w == why for _gap, w in result.skipped), result.skipped
+        finally:
+            shutil.rmtree(out, ignore_errors=True)
+    print("PASS an unfinished or camera-talking sentence leaves the gap silent")
+
+
+def test_the_cast_is_handed_to_a_describer_that_takes_it():
+    if not make_film():
+        print("SKIP no ffmpeg")
+        return
+    seen = []
+
+    def named(frame, words, cast=None):
+        seen.append(cast)
+        return "Sintel crosses the snow."
+
+    result, out = described(captioner=named, cast="Sintel: a young woman.")
+    try:
+        assert seen and set(seen) == {"Sintel: a young woman."}, seen
+        assert result.track.cues[0].text == "Sintel crosses the snow."
+    finally:
+        shutil.rmtree(out, ignore_errors=True)
+    # A two-argument describer still works: the cast is simply not offered.
+    result, out = described(captioner=lambda frame, words: "Snow covers the yard.",
+                            cast="Sintel: a young woman.")
+    try:
+        assert result.track.cues
+    finally:
+        shutil.rmtree(out, ignore_errors=True)
+    print("PASS the cast reaches a describer that takes it, and no other")
+
+
 def test_the_stub_describer_never_pretends_to_have_seen_the_frame():
     """It exists so the pipeline runs with no key, which means it runs in front
     of people. A stub that wrote plausible descriptions would make a broken

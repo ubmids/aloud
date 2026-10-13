@@ -381,6 +381,34 @@ def test_more_frames_and_what_was_said_reach_the_model():
     print("PASS extra frames and the earlier descriptions are sent")
 
 
+def test_the_cast_reaches_the_model_and_names_are_allowed_only_from_it():
+    """Sintel's lead was "the red-haired figure" thirty times and never
+    Sintel. The film gives her name; a listener should get it too. The cast
+    list is the only source of names, so the model is never invited to guess
+    one."""
+    if not make_frame():
+        print("SKIP no ffmpeg"); return
+    cast = "Sintel: a young woman with short red hair. Scales: a baby dragon."
+    cap()(FRAME, 8, cast=cast)
+    sysmsg = STATE["req"]["messages"][0]["content"]
+    assert cast in sysmsg, sysmsg
+    assert "only the names in this cast list" in sysmsg, sysmsg
+    cap()(FRAME, 8)
+    sysmsg = STATE["req"]["messages"][0]["content"]
+    assert "cast list" not in sysmsg and "Do not name characters" in sysmsg, sysmsg
+    print("PASS the cast is sent, and names come only from it")
+
+
+def test_the_brief_asks_for_the_world_not_the_camera():
+    if not make_frame():
+        print("SKIP no ffmpeg"); return
+    cap()(FRAME, 8)
+    sysmsg = STATE["req"]["messages"][0]["content"].lower()
+    for rule in ("camera", "animated", "logos", "previously"):
+        assert rule in sysmsg, rule
+    print("PASS the brief rules out camera talk and comparisons")
+
+
 def test_a_second_sentence_is_dropped():
     assert clean("A man runs. He stops at the door.") == "A man runs."
     assert clean("Mr. Smith waits") == "Mr. Smith waits."

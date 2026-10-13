@@ -240,6 +240,74 @@ def _ends_cleanly(words: list[str]) -> bool:
     return bool(last) and last not in DANGLING
 
 
+# Adjectives in -y that describers use for places and fur. The -y suffix alone
+# cannot be trusted at the end of a whole sentence ("holds a puppy."), so the
+# final check names them instead.
+_Y_MODIFIERS = {
+    "sunny", "misty", "foggy", "snowy", "rocky", "grassy", "leafy", "mossy",
+    "dusty", "sandy", "stormy", "cloudy", "shadowy", "rainy", "icy", "hazy",
+    "murky", "smoky", "muddy", "dirty", "shiny", "furry", "fluffy", "hairy",
+    "bushy", "rusty", "craggy", "gloomy", "wintry", "watery", "glassy",
+}
+# Adjectives that are also places after "the": "in the dark", "into the open".
+_THE_NOUNS = {"dark", "light", "open", "deep", "cold", "wild", "past", "blue"}
+# Nouns that wear an adjective's suffix.
+_SUFFIX_NOUNS = {"olive", "hive", "archive", "detective", "motive", "handful",
+                 "mouthful", "explosive", "relative", "native", "captive"}
+_ADVERB = re.compile(r"ly$")
+
+
+def dangles(text: str) -> bool:
+    """True if a whole sentence stops before the noun it was heading for.
+
+    "A red-haired figure stands in a sunlit." came out of a model, not out of
+    truncation, so the cutting rules in `_shorten` never saw it, and it shipped.
+    This is the same test applied to every finished sentence: it ends on a
+    function word, or on an adjective that sits straight after a determiner
+    (perhaps with more adjectives between), with nothing after it.
+
+    Narrower than `_ends_on_modifier` on purpose. That one decides where a cut
+    may go and can afford to refuse an honest cut; this one decides whether a
+    sentence is spoken at all, so "The sky is blue." and "A girl holds a
+    puppy." must pass.
+    """
+    words = re.findall(r"\S+", (text or "").strip())
+    if not words:
+        return False
+    if words[0].lower().startswith("on") and len(words) > 1 \
+            and words[1].lower().startswith("screen:"):
+        return False                      # on-screen text is quoted as it is
+    if not _ends_cleanly(words):
+        return True
+    bare = [_bare(w) for w in words]
+    last = bare[-1]
+    # Walk back over the adjectives (and adverbs: "a dimly lit") to what
+    # precedes them. Only a determiner there makes the last word a dangler.
+    i = len(bare) - 2
+    while i >= 0 and (_is_modifier(bare[i]) or _ADVERB.search(bare[i])):
+        i -= 1
+    if i < 0 or bare[i] not in _DETERMINERS:
+        return False
+    # "in the dim light", "into the open": after "the", these are places.
+    # "Light" is a thing after any determiner ("switches on a light").
+    if last == "light" or (bare[i] == "the" and last in _THE_NOUNS):
+        return False
+    return _is_modifier(last)
+
+
+def _is_modifier(word: str) -> bool:
+    if not word or word in _SUFFIX_NOUNS or word in _Y_NOUNS \
+            or word in _ED_ING_NOUNS:
+        return False
+    if word in MODIFIERS or word in _Y_MODIFIERS:
+        return True
+    if word.endswith("lit"):              # sunlit, moonlit, dimly-lit
+        return True
+    if "-" in word:
+        return word.endswith(("ed", "ing", "like", "lit"))
+    return bool(re.search(r"(?:ive|ous|ful|less|ed|ing)$", word))
+
+
 def _shorten(text: str, words_to_drop: int) -> str:
     """Drop a trailing clause if there is one, otherwise whole words, and never
     stop on a word that leaves the sentence hanging."""

@@ -48,7 +48,11 @@ SYSTEM = (
     "hands unless they are the main action. If there is legible text on screen and it "
     "fits the length, say 'On screen:' and then the words exactly; otherwise "
     "describe the picture. "
-    "Never say only that text appears or that the scene changes. Write one "
+    "Never say only that text appears or that the scene changes. Describe "
+    "the world of the film as if it were real: never mention the camera, "
+    "shots, framing or close-ups, never say it is animated or a cartoon, "
+    "never mention logos or credits, and never compare with an earlier moment "
+    "('previously', 'now'). Write one "
     "sentence and no more. Reply "
     "with the sentence alone, no preamble and no quotation marks."
 )
@@ -72,6 +76,19 @@ CONTEXT = (
 )
 
 
+# Replaces "Do not name characters." when the title has a cast. Audio
+# description names a character once the film has, and a listener who hears
+# "the red-haired figure" thirty times in Sintel is being told less than the
+# film tells a sighted viewer. The list is the only source of names, so the
+# model is never invited to guess one.
+NO_NAMES = "Do not name characters. "
+CAST = (
+    " This film's characters, as the film itself names them: {cast} When "
+    "you recognise one of them, call them by that name. Use only the names in "
+    "this cast list; describe anyone else by what can be seen of them."
+)
+
+
 def _data_url(path: str) -> str:
     mime = mimetypes.guess_type(path)[0] or "image/jpeg"
     with open(path, "rb") as f:
@@ -92,6 +109,13 @@ def clean(text: str) -> str:
     m = re.search(r"(?<!\bMr)(?<!\bMrs)(?<!\bMs)(?<!\bDr)(?<!\bSt)[.!?]\s+(?=\S)", t)
     if m:
         t = t[:m.start() + 1]
+    # Every creature in an animated film is "animated" or "a cartoon" to a
+    # vision model. The creature is worth the gap; the word is about the film,
+    # and dropping it keeps a sentence that would otherwise be refused whole.
+    if not re.match(r"on screen:", t, re.IGNORECASE):
+        t = re.sub(r"\b(?:animated|cartoon|cgi|computer-generated)\s+(?=[A-Za-z])",
+                   "", t, flags=re.IGNORECASE)
+        t = re.sub(r",\s*,", ",", t)
     if t and not t.endswith((".", "!", "?")):
         t += "."
     return (t[:1].upper() + t[1:]) if t else ""
@@ -112,6 +136,46 @@ VACUOUS = re.compile(
 def vacuous(text: str) -> bool:
     """True for a description that only says the film is a film."""
     return bool(VACUOUS.search((text or "").strip()))
+
+
+# Sentences that are about the film as a made thing, anywhere in them, not only
+# when that is all they say. Each pattern is from a cue that shipped: "The
+# Blender Foundation Presents logo appears...", "The camera focuses on...",
+# "A close-up of...", "...previously stretching, now...", "...scrolling white
+# credit text", "...fills the frame", "...in a fast-moving, low-angle shot".
+# The listener is inside the film; a describer pointing at the camera takes
+# them out of it, and spends the gap doing it.
+META = re.compile(
+    r"\blogos?\b|\bthe camera\b|\bcamera (?:pans|focuses|zooms|cuts|moves|tilts|"
+    r"tracks|lingers|shows)\b|\bclose-?ups?\b|\bpreviously\b|"
+    r"\b(?:white|scrolling|rolling|credit|end)\s+(?:\w+\s+)?text\b|"
+    r"\bcredits? (?:roll|scroll|text|appear)|"
+    r"\b(?:fills?|enters?|leaves?|exits?|in|out of|of) the frame\b|"
+    r"\b(?:angle|tracking|wide|aerial|establishing|long|medium) shot\b|"
+    r"\banimated\b|\bcartoon\b|\bcgi\b|\bcomputer-generated\b",
+    re.IGNORECASE)
+
+
+def meta(text: str) -> bool:
+    """True for a sentence about the film rather than in it."""
+    t = (text or "").strip()
+    if re.match(r"on screen:", t, re.IGNORECASE):
+        return False                      # the film's own words, quoted
+    return vacuous(t) or bool(META.search(t))
+
+
+def unfit(text: str) -> str | None:
+    """Why a finished sentence must not be spoken, or None if it may be.
+
+    The one gate every cue passes twice: in the pipeline before it is
+    synthesised, and in `publish` before it ships inside the app.
+    """
+    from .budget import dangles
+    if dangles(text):
+        return "it stops before its noun"
+    if meta(text):
+        return "it is about the film, not in it"
+    return None
 
 
 _STOP = {"a", "an", "the", "and", "of", "in", "on", "at", "to", "with", "his",
@@ -165,7 +229,7 @@ def brief_version() -> str:
     """Changes whenever the brief does, so remembered answers to an older
     brief are not reused for a newer one."""
     import hashlib
-    return hashlib.sha256((SYSTEM + MOTION + CONTEXT).encode()).hexdigest()[:8]
+    return hashlib.sha256((SYSTEM + MOTION + CONTEXT + CAST).encode()).hexdigest()[:8]
 
 
 # At or under this many words the ask changes from "about" to "at most", with
@@ -179,10 +243,14 @@ def brief_version() -> str:
 SHORT_WORDS = 6
 
 
-def _ask(n: int, frames: int, context: str | None) -> tuple[str, str]:
+def _ask(n: int, frames: int, context: str | None,
+         cast: str | None = None) -> tuple[str, str]:
     """The system and user text for one request, shared by every provider so
     that switching describers changes the model and nothing about the brief."""
-    system = SYSTEM + (MOTION if frames > 1 else "") + (CONTEXT if context else "")
+    system = SYSTEM.replace(NO_NAMES, "") if cast else SYSTEM
+    system += (MOTION if frames > 1 else "") + (CONTEXT if context else "")
+    if cast:
+        system += CAST.format(cast=cast.strip())
     if n <= SHORT_WORDS:
         user = (f"Describe this frame in {n} words or fewer: who or what, and "
                 f"what they do, like \"Two men shake hands.\" or \"The "
@@ -226,14 +294,15 @@ class VisionCaptioner:
         return f"{self.model} ({self.provider})"
 
     def __call__(self, frame_path: str, target_words: int, *,
-                 frames=(), context: str | None = None) -> str:
+                 frames=(), context: str | None = None,
+                 cast: str | None = None) -> str:
         if not self.available:
             raise RuntimeError("no vision endpoint configured")
         import httpx
 
         n = max(2, int(target_words))
         stills = [frame_path, *frames]
-        system, user = _ask(n, len(stills), context)
+        system, user = _ask(n, len(stills), context, cast)
         r = httpx.post(
             f"{self.base_url.rstrip('/')}/chat/completions",
             headers={"Authorization": f"Bearer {self.api_key}"},
@@ -305,14 +374,15 @@ class GeminiCaptioner:
         return f"{self.model} ({self.provider})"
 
     def __call__(self, frame_path: str, target_words: int, *,
-                 frames=(), context: str | None = None) -> str:
+                 frames=(), context: str | None = None,
+                 cast: str | None = None) -> str:
         if not self.available:
             raise RuntimeError("no Gemini key configured")
         import httpx
 
         n = max(2, int(target_words))
         stills = [frame_path, *frames]
-        system, user = _ask(n, len(stills), context)
+        system, user = _ask(n, len(stills), context, cast)
         parts = [{"text": user}]
         for p in stills:
             url = _data_url(p)

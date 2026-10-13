@@ -107,6 +107,11 @@ def test_every_title_names_an_official_source_and_its_credit():
         assert t.year and t.minutes and t.genre, t.id
     assert announcement(BY_ID["sintel-trailer"], 7) == \
         "Sintel: the trailer. Trailer, 2010, 1 minute. 7 descriptions."
+    # Every film with people in it carries its cast, so the describer can
+    # call them what the film calls them.
+    for id in ("sintel", "big-buck-bunny", "sintel-trailer"):
+        assert BY_ID[id].cast, id
+    assert "Sintel" in BY_ID["sintel"].cast and "Scales" in BY_ID["sintel"].cast
     print("PASS every title comes from the Blender mirror with its credit")
 
 

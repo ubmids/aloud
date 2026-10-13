@@ -21,6 +21,7 @@ import shutil
 import subprocess
 import sys
 
+from .caption import unfit
 from .films import BY_ID, announcement, encode
 from .synth import Synth
 
@@ -44,6 +45,13 @@ def publish(out_dir: str, id: str, app: str = "tv", film: str | None = None,
         g = c.get("gap")
         if not g or c["start"] < g[0] - 0.01 or c["end"] > g[1] + 0.01:
             raise ValueError(f"cue at {c['start']}s is outside its gap; not publishing")
+        # The same sentence gate the pipeline applies, once more, so a track
+        # written before the gate existed, or edited by hand, cannot carry a
+        # sentence that stops before its noun or talks about the camera.
+        why = unfit(c.get("text", ""))
+        if why:
+            raise ValueError(f"cue at {c['start']}s: {why} "
+                             f"({c.get('text', '')!r}); not publishing")
 
     root = os.path.join(app, "assets", "films", id)
     cue_dir = os.path.join(root, "cues")
