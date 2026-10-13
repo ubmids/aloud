@@ -44,7 +44,8 @@ SYSTEM = (
     "not name characters. Put the most important new information first, because "
     "the description may be cut short. Describe people by what can be seen "
     "of them: age, hair, clothing. If there is legible text on screen and it "
-    "fits the length, read it out exactly; otherwise describe the picture. "
+    "fits the length, say 'On screen:' and then the words exactly; otherwise "
+    "describe the picture. "
     "Never say only that text appears or that the scene changes. Write one "
     "sentence and no more. Reply "
     "with the sentence alone, no preamble and no quotation marks."
@@ -99,7 +100,7 @@ def clean(text: str) -> str:
 # the listener nothing: "Text appears on screen." while the screen read "This
 # film is supported by the Netherlands Film Fund". Better silent.
 VACUOUS = re.compile(
-    r"^(?:the )?(?:text|words|a title|credits|captions?|subtitles?|an? image|"
+    r"^(?:the |an? )?(?:[a-z]+ ){0,2}(?:text|words|a title|credits|captions?|subtitles?|an? image|"
     r"the image|the scene|the screen|the frame|a scene|it)\s+"
     r"(?:appears?|is shown|is displayed|are displayed|are shown|changes?|cuts?|"
     r"fades?|shows?|is black|goes black|is dark)\b[^.]*\.?$|^(?:the )?screen is "

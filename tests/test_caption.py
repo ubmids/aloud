@@ -390,7 +390,8 @@ def test_a_second_sentence_is_dropped():
 def test_a_sentence_about_the_film_is_not_a_description():
     for said in ("Text appears on screen.", "Screen is completely black.",
                  "The scene changes.", "The image fades to black.",
-                 "Words appear.", "Credits are displayed"):
+                 "Words appear.", "Credits are displayed",
+                 "White text appears at bottom left of screen."):
         assert vacuous(said), said
     for said in ("A woman reads the text on a screen.",
                  "Text on a wall reads Leave now.",

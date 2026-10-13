@@ -301,6 +301,25 @@ def test_each_cue_is_ducked_against_the_film_underneath_it():
         shutil.rmtree(out, ignore_errors=True)
 
 
+def test_a_describer_that_has_gone_away_stops_the_run():
+    """A model server died a few minutes into a film and the run carried on,
+    skipping every gap after it, and wrote a track that was silent from there
+    to the end. A run of failures now stops the film with nothing written."""
+    if not make_film():
+        print("SKIP no ffmpeg")
+        return
+
+    def dead(frame, words):
+        raise ConnectionError("connection refused")
+
+    try:
+        described(captioner=dead, max_failures=1)
+        raise AssertionError("a dead describer produced a finished track")
+    except RuntimeError as e:
+        assert "in a row" in str(e), e
+    print("PASS a describer that has gone away stops the run")
+
+
 if __name__ == "__main__":
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for fn in fns:

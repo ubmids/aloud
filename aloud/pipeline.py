@@ -113,7 +113,8 @@ def _log(quiet: bool, msg: str):
 def describe_film(video: str, *, captioner=None, synth=None,
                   out_dir: str | None = None, align: str = "start",
                   captions: str | None = None, split: bool = True,
-                  memory: int = 3, quiet: bool = True) -> Result:
+                  memory: int = 3, quiet: bool = True,
+                  max_failures: int = 5) -> Result:
     """Describe `video` and return the track.
 
     `captions` is the title's own SRT or WebVTT file, if it has one. Every cue
@@ -149,6 +150,7 @@ def describe_film(video: str, *, captioner=None, synth=None,
     plans = plan_descriptions(windows, shots)
 
     track, skipped, said = Track(source=video), [], []
+    failures = 0
     for i, plan in enumerate(plans, 1):
         if not plan.worth_describing:
             skipped.append((plan.gap, plan.reason))
@@ -207,8 +209,20 @@ def describe_film(video: str, *, captioner=None, synth=None,
         # is exactly what a gap with nothing worth saying already gets.
         try:
             fitted = fit_generated(describe, plan.gap.duration, synth)
+            failures = 0
         except Exception as e:
             skipped.append((plan.gap, f"the describer failed: {type(e).__name__}"))
+            failures += 1
+            # One failure is a bad frame. A run of them is a describer that
+            # has gone away, and carrying on would write a track that is
+            # silent from here to the end and call it finished. That happened:
+            # a local model server died a few minutes into a film and the run
+            # "completed" with 45 gaps skipped.
+            if failures >= max_failures:
+                raise RuntimeError(
+                    f"the describer failed {failures} times in a row, last "
+                    f"with {type(e).__name__}: {e}. Nothing was written; "
+                    "answers so far are kept, so rerunning resumes.") from e
             continue
 
         if not fitted.fits or not fitted.text:
