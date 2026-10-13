@@ -299,8 +299,12 @@ def fit_generated(describe, gap_seconds: float, synth, *,
 
     # The writer could not hit the budget. Fall back to measured truncation,
     # which is allowed to return nothing.
-    return fit_measured(best or "", gap_seconds, synth, headroom=headroom) \
-        if best else Fit("", 0.0, round(budget, 3), False, True)
+    if not best:
+        return Fit("", 0.0, round(budget, 3), False, True)
+    got = fit_measured(best, gap_seconds, synth, headroom=headroom)
+    if not got.fits:
+        got.tried = best
+    return got
 
 
 @dataclass
@@ -310,6 +314,9 @@ class Fit:
     budget: float
     fits: bool
     trimmed: bool = False
+    # The longest-running thing the writer offered, kept when nothing fitted
+    # so the log can say what was refused rather than only that something was.
+    tried: str = ""
 
 
 def fit(text: str, gap_seconds: float, headroom: float = HEADROOM) -> Fit:

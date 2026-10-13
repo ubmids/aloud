@@ -258,6 +258,8 @@ def describe_film(video: str, *, captioner=None, synth=None,
             # refused as a repeat sends whoever reads the log to the wrong
             # file.
             why = refused[-1] if refused else "nothing useful fitted in the time"
+            if fitted.tried and not refused:
+                why += f" (closest: \"{fitted.tried}\" for {fitted.budget}s)"
             skipped.append((plan.gap, why))
             continue
 
