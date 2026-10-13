@@ -193,6 +193,41 @@ def test_a_describer_that_fails_costs_that_gap_and_not_the_film():
         shutil.rmtree(out, ignore_errors=True)
 
 
+def test_a_describer_that_repeats_itself_is_asked_once_more():
+    """Small models say the same thing twice even when shown what they said.
+    The pipeline asks again with the repeat added to what the listener has
+    heard, and if the model still has nothing new, the gap stays silent and
+    the log says why, rather than "nothing fitted"."""
+    if not make_film():
+        print("SKIP no ffmpeg")
+        return
+    first = "A man stands by the gate."
+
+    def forgetful(frame, words, context=None, frames=None):
+        if context and first in context:
+            return "Snow covers the courtyard."
+        return first
+
+    result, out = described(captioner=forgetful)
+    try:
+        texts = [c.text for c in result.track.cues]
+        assert texts[:2] == [first, "Snow covers the courtyard."], texts
+    finally:
+        shutil.rmtree(out, ignore_errors=True)
+
+    def stubborn(frame, words, context=None, frames=None):
+        return first
+
+    result, out = described(captioner=stubborn)
+    try:
+        assert [c.text for c in result.track.cues] == [first], result.track.cues
+        assert any(why == "it would repeat what was just said"
+                   for _gap, why in result.skipped), result.skipped
+        print("PASS a repeat is asked again once, then left silent, and says so")
+    finally:
+        shutil.rmtree(out, ignore_errors=True)
+
+
 def test_a_gap_nothing_will_fit_in_is_left_silent():
     """Silence is a valid description. A writer that will not come down to the
     size of the gap has to be dropped rather than squeezed in, because the only

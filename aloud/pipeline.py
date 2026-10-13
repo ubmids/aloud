@@ -188,9 +188,9 @@ def describe_film(video: str, *, captioner=None, synth=None,
             extra = [frame_at(video, later,
                               os.path.join(frames_dir, f"{later:.3f}.jpg"))]
         context = "\n".join(said[-memory:]) if (with_context and memory) else None
+        refused = []
 
-        def describe(n, frame=frame, extra=extra, context=context,
-                     at=plan.describe_at):
+        def ask(n, context, frame=frame, extra=extra, at=plan.describe_at):
             key = _Remembered.key(label, brief_version(), round(at, 3), n,
                                   len(extra), context)
             got = remembered.get(key)
@@ -202,6 +202,10 @@ def describe_film(video: str, *, captioner=None, synth=None,
                     kw["context"] = context
                 got = captioner(frame, n, **kw)
                 remembered.put(key, got)
+            return got
+
+        def describe(n, context=context, refused=refused):
+            got = ask(n, context)
             # A sentence about the film instead of what is in it ("Text appears
             # on screen.") is treated as nothing written, so the gap is left
             # silent rather than spent on it.
@@ -209,7 +213,21 @@ def describe_film(video: str, *, captioner=None, synth=None,
             # around it can be tested end to end with no model at all.
             if is_stub:
                 return got
-            if vacuous(got) or repeats(got, said[-6:]):
+            if vacuous(got):
+                refused.append("it only said the film is a film")
+                return ""
+            if repeats(got, said[-6:]):
+                # Small models repeat themselves even when shown what they
+                # said. On the first Tears of Steel run with the 4B model this
+                # was most of the silent gaps. Ask once more with the repeat
+                # added to what the listener has heard; a model that still
+                # cannot find anything new leaves the gap silent.
+                if with_context and memory:
+                    again = ask(n, "\n".join(filter(None, [context, got])))
+                    if (again and not vacuous(again)
+                            and not repeats(again, said[-6:] + [got])):
+                        return again
+                refused.append("it would repeat what was just said")
                 return ""
             return got
 
@@ -236,7 +254,11 @@ def describe_film(video: str, *, captioner=None, synth=None,
             continue
 
         if not fitted.fits or not fitted.text:
-            skipped.append((plan.gap, "nothing useful fitted in the time"))
+            # Name the real reason. "Nothing fitted" for a sentence that was
+            # refused as a repeat sends whoever reads the log to the wrong
+            # file.
+            why = refused[-1] if refused else "nothing useful fitted in the time"
+            skipped.append((plan.gap, why))
             continue
 
         spoken = synth.speak(fitted.text, out_dir=cues_dir)
