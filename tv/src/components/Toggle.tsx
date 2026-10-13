@@ -86,7 +86,7 @@ export const Toggle = ({
 const styles = StyleSheet.create({
   box: {borderRadius: u(14), borderWidth: u(2), borderColor: palette.edge,
         backgroundColor: palette.panel, paddingLeft: u(28), paddingRight: u(24),
-        paddingVertical: u(18), marginRight: u(32), width: u(430), overflow: 'hidden'},
+        paddingVertical: u(18), marginRight: u(28), width: u(400), overflow: 'hidden'},
   boxFocused: {borderColor: palette.voice, backgroundColor: palette.voiceWash},
   edge: {position: 'absolute', left: u(0), top: u(0), bottom: u(0), width: u(10),
          backgroundColor: palette.voice},

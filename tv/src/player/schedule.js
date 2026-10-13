@@ -91,6 +91,25 @@ export function nextCueFrom(cues, t) {
   return cues.length > 0 ? cues[cues.length - 1] : null;
 }
 
+/**
+ * What the viewer last heard described, or would have, at time `t`.
+ *
+ * The answer to "what did I miss?". It is the latest cue that has started by
+ * `t`, whether or not it was actually spoken: a viewer with narration off who
+ * asks what is happening wants the most recent description of the picture,
+ * and a viewer who talked over the last one wants that one again. Nothing
+ * before the first cue has been described, so the answer there is nothing,
+ * not a description of a moment still to come.
+ */
+export function lastDescribed(cues, t) {
+  let last = null;
+  for (const cue of cues) {
+    if (cue.start > t) break;
+    last = cue;
+  }
+  return last;
+}
+
 export class DescriptionScheduler {
   /**
    * @typedef {object} ScheduledCue

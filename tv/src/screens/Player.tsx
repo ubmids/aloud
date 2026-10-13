@@ -1,24 +1,33 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import type {LayoutChangeEvent} from 'react-native';
-import {TVFocusGuideView} from '@amazon-devices/react-native-kepler';
+import {
+  TVFocusGuideView,
+  useComponentInstance,
+  useTVEventHandler,
+} from '@amazon-devices/react-native-kepler';
+import type {HWEvent} from '@amazon-devices/react-native-kepler';
 import {Video} from '@amazon-devices/react-native-w3cmedia';
 import type {HTMLVideoElement} from '@amazon-devices/react-native-w3cmedia';
 
-import {Timeline} from './components/Timeline';
-import {Toggle} from './components/Toggle';
-import {Voice} from './components/Voice';
-import {secs} from './format';
-import {cueAudioUri, filmUri} from './player/assets';
-import {nextCueFrom} from './player/schedule.js';
-import {Speaker} from './player/speech';
-import {parseTrack, totalSpokenSeconds, type Cue, type Density} from './player/track';
-import {useDescriptions} from './player/useDescriptions';
-import {palette, size, u} from './theme';
-import describedTrack from './data/description.json';
+import type {Film} from '../film';
+import {Timeline} from '../components/Timeline';
+import {Toggle} from '../components/Toggle';
+import {Voice} from '../components/Voice';
+import {secs} from '../format';
+import {cueAudioUri, filmUri} from '../player/assets';
+import {lastDescribed, nextCueFrom} from '../player/schedule.js';
+import {Speaker} from '../player/speech';
+import {totalSpokenSeconds, type Cue, type Density} from '../player/track';
+import {useDescriptions} from '../player/useDescriptions';
+import {filmVolume, LEVELS, nextLevel, type Settings} from '../settings';
+import {palette, size, u} from '../theme';
+
+/** How far the remote's skip buttons move the film. */
+const SKIP_S = 10;
 
 /**
- * Aloud: a television that describes itself.
+ * The player: one film, described.
  *
  * The screen is doing something slightly unusual on purpose. Audio description
  * is invisible: a still of this app playing a film looks exactly like a still
@@ -37,22 +46,28 @@ import describedTrack from './data/description.json';
  * Read top to bottom it is: here is the film, here is what was said, here is
  * where it was said, here is how to change it.
  */
-export const App = () => {
+export const Player = ({
+  film: title, settings, onSettings, speaker: shared,
+}: {
+  film: Film;
+  settings: Settings;
+  onSettings: (s: Settings) => void;
+  /** The app's one description voice, shared with the shelf so the device is
+   *  never asked for a second accessibility audio session. */
+  speaker: Speaker;
+}) => {
   // The track as the backend wrote it, with each cue's audio turned into a URL
   // the device can open. Resolution happens once, here, so nothing downstream
   // has to know that a cue's `audio` started life as a filename.
-  const track = useMemo(() => {
-    const parsed = parseTrack(describedTrack);
-    return {
-      ...parsed,
-      cues: parsed.cues.map((c) => ({...c, audio: cueAudioUri(c.audio)})),
-    };
-  }, []);
+  const track = useMemo(() => ({
+    ...title.track,
+    cues: title.track.cues.map((c) => ({...c, audio: cueAudioUri(title.id, c.audio)})),
+  }), [title]);
 
-  const film = useMemo(() => filmUri(), []);
+  const film = useMemo(() => filmUri(title.id), [title]);
 
   const [density, setDensity] = useState<Density>('full');
-  const [enabled, setEnabled] = useState(true);
+  const enabled = settings.narration;
   const [time, setTime] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -60,15 +75,11 @@ export const App = () => {
   const [source, setSource] = useState<string | undefined>(undefined);
   const [failure, setFailure] = useState<string | null>(null);
 
-  const speaker = useRef<Speaker | null>(null);
-  if (speaker.current === null) {
-    speaker.current = new Speaker();
-  }
+  const speaker = useRef<Speaker>(shared);
+  speaker.current = shared;
 
-  // Hand the audio player back on the way out. A device has a small number of
-  // media sessions and the film is holding one of them, so a description player
-  // that is never deinitialised is one the next app may not get.
-  useEffect(() => () => speaker.current?.release(), []);
+  // Leaving the film must not leave a sentence hanging over the shelf.
+  useEffect(() => () => speaker.current.stop(), []);
 
   const enabledRef = useRef(enabled);
   enabledRef.current = enabled;
@@ -87,6 +98,113 @@ export const App = () => {
   );
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const component = useComponentInstance();
+
+  /**
+   * "What did I miss?", on the Menu button.
+   *
+   * The film pauses and the last description is said again, then the film
+   * carries on by itself. It works with narration off too, which makes it a
+   * second way to watch: a sighted viewer on the same sofa hears the film as
+   * it was made, and the viewer who needs to know what is on screen asks, at
+   * the moment they need to, with one button. The film is paused first so the
+   * repeat can never land on a line of dialogue, the same promise every other
+   * description keeps.
+   */
+  const [again, setAgain] = useState<Cue | null>(null);
+  const againTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const clearAgain = useCallback(() => {
+    if (againTimer.current) clearTimeout(againTimer.current);
+    againTimer.current = null;
+    setAgain(null);
+  }, []);
+  useEffect(() => () => {
+    if (againTimer.current) clearTimeout(againTimer.current);
+  }, []);
+  const sayAgain = useCallback(() => {
+    const el = videoRef.current;
+    const t = el?.currentTime ?? 0;
+    const cue = lastDescribed(track.cues, t) as Cue | null;
+    if (!el || !cue) return;
+    // Tell the scheduler about the pause now rather than when the pause event
+    // arrives, so it lets go of anything mid-sentence before the repeat starts
+    // and has nothing left to stop when the event does arrive.
+    const wasPlaying = !el.paused;
+    onTimeUpdate(t, false);
+    el.pause();
+    speaker.current.stop();
+    speaker.current.speak(cue);
+    clearAgain();
+    setAgain(cue);
+    againTimer.current = setTimeout(() => {
+      againTimer.current = null;
+      setAgain(null);
+      // A film the viewer had paused stays paused; asking a question is not
+      // asking for the film to start.
+      if (!wasPlaying) return;
+      try {
+        el.play();
+      } catch {
+        // The viewer can still press play.
+      }
+    }, (cue.end - cue.start + 0.5) * 1000);
+  }, [track, onTimeUpdate, clearAgain]);
+
+  // The voice level is two numbers: how loud the describer is, and how far
+  // the film dips while it speaks. The dip happens only while a description is
+  // playing, and a description only ever plays inside a gap in the dialogue,
+  // so no line of dialogue is ever turned down.
+  useEffect(() => {
+    speaker.current.setVolume(LEVELS[settings.level].voice);
+  }, [settings.level]);
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el) return;
+    try {
+      el.volume = filmVolume(settings.level, speaking !== null, enabled);
+    } catch {
+      // A player that will not take a volume plays the film at full scale,
+      // which is the film as it was made.
+    }
+  }, [speaking, settings.level, enabled]);
+
+  /**
+   * The remote, beyond focus. Play/pause and the skip buttons drive the film
+   * directly, and every one of them goes through the scheduler's clock, so a
+   * skip backwards re-arms the descriptions it passes and a skip forwards
+   * drops the ones it jumps over, exactly as a scrub does.
+   */
+  const remote = useCallback((e: HWEvent) => {
+    const el = videoRef.current;
+    // Ignore key-down, so one press is one action. A build that reports no
+    // key state at all still works (see friction log entry 16).
+    if (!el || e.eventKeyAction === 0) return;
+    const seek = (delta: number) => {
+      const to = Math.max(0, Math.min((el.duration || Infinity) - 1,
+                                      (el.currentTime ?? 0) + delta));
+      el.currentTime = to;
+      onTimeUpdate(to, !el.paused);
+    };
+    switch (e.eventType) {
+      case 'menu':
+      case 'info':
+        sayAgain();
+        break;
+      case 'playpause':
+      case 'pause':
+        if (el.paused) el.play(); else el.pause();
+        break;
+      case 'rewind':
+      case 'skip_backward':
+        seek(-SKIP_S);
+        break;
+      case 'fastforward':
+      case 'skip_forward':
+        seek(SKIP_S);
+        break;
+    }
+  }, [onTimeUpdate, sayAgain]);
+  useTVEventHandler(remote);
 
   /**
    * The only clock in the app.
@@ -116,7 +234,10 @@ export const App = () => {
   const handlePlay = useCallback(() => {
     setFailure(null);
     setPlaying(true);
-  }, []);
+    // Pressing play during a repeat is the viewer saying they have heard
+    // enough; the film is already moving, so there is nothing to resume.
+    clearAgain();
+  }, [clearAgain]);
 
   /**
    * Attach the film only once the player has a surface to draw on.
@@ -140,6 +261,15 @@ export const App = () => {
   const handleMetadata = useCallback(() => {
     const el = videoRef.current;
     if (el && isFinite(el.duration)) setDuration(el.duration);
+    // Hand Vega's media controls to this player, so the voice remote's
+    // "Alexa, pause" and "Alexa, rewind" reach the film. The w3cmedia player
+    // answers those commands itself once it has focus; the descriptions follow
+    // because every transport change comes back through `timeupdate`.
+    try {
+      void (el as any)?.setMediaControlFocus?.(component);
+    } catch {
+      // Without voice transport the remote still works.
+    }
     // Playback is started here rather than with `autoplay`, because there is
     // nothing to autoplay at the point the player would act on it.
     try {
@@ -147,7 +277,7 @@ export const App = () => {
     } catch {
       setFailure('The film could not be played.');
     }
-  }, []);
+  }, [component]);
 
   const handleEnded = useCallback(() => {
     setPlaying(false);
@@ -181,11 +311,15 @@ export const App = () => {
     <View style={styles.screen}>
       <View style={styles.header}>
         <Text style={styles.title} accessibilityRole="header">
-          Aloud
+          aloud
         </Text>
         <View style={styles.rule} />
-        <Text style={styles.strap}>
-          A television that describes itself, in the gaps between dialogue.
+        <Text style={styles.strap} numberOfLines={1}>
+          {title.title}
+          <Text style={styles.strapSoft}>
+            {'  '}described in the gaps between dialogue. Menu says the last one
+            again; Back returns to the shelf.
+          </Text>
         </Text>
         {/* The state is in the word as well as the dot. A viewer who cannot
             separate a lit dot from an unlit one still reads "PAUSED". */}
@@ -201,7 +335,7 @@ export const App = () => {
           testID="stage"
           onLayout={measureStage}
           accessible
-          accessibilityLabel="The film: the Sintel trailer.">
+          accessibilityLabel={`The film: ${title.title}.`}>
           {stage.width > 0 && stage.height > 0 ? (
             <Video
               ref={(r: unknown) => {
@@ -223,7 +357,8 @@ export const App = () => {
           {failure ? <Text style={styles.stageNote}>{failure}</Text> : null}
         </View>
 
-        <Voice speaking={speaking} next={next} enabled={enabled} time={time} />
+        <Voice speaking={speaking ?? again} next={next} enabled={enabled || again !== null}
+               time={time} />
       </View>
 
       <Timeline
@@ -235,7 +370,7 @@ export const App = () => {
 
       <TVFocusGuideView style={styles.controls}>
         <Toggle
-          label="Audio description"
+          label="Narration"
           value={enabled ? 'On' : 'Off'}
           help={
             enabled
@@ -244,11 +379,18 @@ export const App = () => {
           }
           checked={enabled}
           onPress={() => {
-            setEnabled((v) => !v);
+            onSettings({...settings, narration: !enabled});
             stop();
           }}
           hasTVPreferredFocus
           testID="toggle-enabled"
+        />
+        <Toggle
+          label="Voice level"
+          value={LEVELS[settings.level].label}
+          help={LEVELS[settings.level].help}
+          onPress={() => onSettings({...settings, level: nextLevel(settings.level)})}
+          testID="toggle-level"
         />
         <Toggle
           label="How much is said"
@@ -293,7 +435,8 @@ const styles = StyleSheet.create({
           letterSpacing: u(-1)},
   rule: {width: u(2), height: u(26), backgroundColor: palette.edge,
          marginHorizontal: u(20)},
-  strap: {color: palette.inkMuted, fontSize: size.strap, flexShrink: 1},
+  strap: {color: palette.ink, fontSize: size.strap, flexShrink: 1, fontWeight: '600'},
+  strapSoft: {color: palette.inkMuted, fontWeight: '400'},
   status: {flexDirection: 'row', alignItems: 'center', marginLeft: 'auto',
            paddingLeft: u(24)},
   statusDot: {width: u(14), height: u(14), borderRadius: u(7), marginRight: u(12),

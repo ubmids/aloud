@@ -27,9 +27,20 @@
 
 const PACKAGE_ASSETS = '/pkg/assets';
 
-/** The film this build describes. */
-export function filmUri(): string {
-  return `${PACKAGE_ASSETS}/sintel-trailer.mp4`;
+/**
+ * Each title has a folder of its own: `assets/films/<id>/` holds `film.mp4`,
+ * `cues/` with one spoken file per description, and `announce.m4a`, the title
+ * read aloud for the shelf. The trailer's film is small enough to live in the
+ * repository; the full-length films are fetched and encoded by
+ * `python3 -m aloud.films fetch`, from the Blender Foundation's own mirror.
+ */
+function folder(id: string): string {
+  return `${PACKAGE_ASSETS}/films/${id}`;
+}
+
+/** The film a title plays. */
+export function filmUri(id: string): string {
+  return `${folder(id)}/film.mp4`;
 }
 
 /**
@@ -39,6 +50,11 @@ export function filmUri(): string {
  * still scheduled and still appears on screen, it just says nothing. Silence is
  * the safe failure here, and the only one the whole design is willing to accept.
  */
-export function cueAudioUri(name: string | null | undefined): string | null {
-  return name ? `${PACKAGE_ASSETS}/cues/${name}` : null;
+export function cueAudioUri(id: string, name: string | null | undefined): string | null {
+  return name ? `${folder(id)}/cues/${name}` : null;
+}
+
+/** The title, spoken, for when it takes focus on the shelf. */
+export function announceUri(id: string): string {
+  return `${folder(id)}/announce.m4a`;
 }

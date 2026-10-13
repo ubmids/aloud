@@ -23,6 +23,7 @@ export class Speaker {
   private player: AudioPlayer | null = null;
   private current: Cue | null = null;
   private ready = false;
+  private level = 1;
 
   constructor() {
     try {
@@ -60,13 +61,38 @@ export class Speaker {
   }
 
   speak(cue: Cue): void {
-    if (!this.player || !this.ready || !cue.audio) return;
-    this.current = cue;
+    if (!cue.audio) return;
+    if (this.play(cue.audio)) this.current = cue;
+  }
+
+  /**
+   * Play any bundled clip: a cue, or a title being read out on the shelf.
+   * Returns whether it started, so a caller never believes a sound was made
+   * by a player that was not ready to make it.
+   */
+  play(uri: string): boolean {
+    if (!this.player || !this.ready) return false;
     try {
-      this.player.src = cue.audio;
+      this.player.src = uri;
+      this.player.volume = this.level;
       this.player.play();
+      return true;
     } catch {
       this.current = null;
+      return false;
+    }
+  }
+
+  /**
+   * How loud the describer is, 0 to 1. Applied to the clip playing now and
+   * to every one after it, so changing the level mid-sentence is heard at once.
+   */
+  setVolume(level: number): void {
+    this.level = Math.max(0, Math.min(1, level));
+    try {
+      if (this.player) this.player.volume = this.level;
+    } catch {
+      // A player that refuses a volume still speaks at the old one.
     }
   }
 

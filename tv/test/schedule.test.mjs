@@ -1,5 +1,5 @@
 import {
-  DescriptionScheduler, cueWindow, fitsAt, nextCueFrom,
+  DescriptionScheduler, cueWindow, fitsAt, lastDescribed, nextCueFrom,
 } from "../src/player/schedule.js";
 
 let pass = 0, fail = 0;
@@ -206,6 +206,19 @@ t("the cue to point at is the one whose silence has not closed", () => {
   eq(nextCueFrom(cues, 5.0).id, "b");
   eq(nextCueFrom(cues, 99).id, "b", "the screen emptied out at the end of the film:");
   eq(nextCueFrom([], 0), null);
+});
+
+t("asked what is happening, the answer is the last description that has started", () => {
+  const cues = [
+    { id: "a", start: 2.0, end: 5.0 },
+    { id: "b", start: 9.0, end: 12.0 },
+  ];
+  eq(lastDescribed(cues, 1.9), null, "described a moment still to come:");
+  eq(lastDescribed(cues, 2.0).id, "a");
+  eq(lastDescribed(cues, 8.9).id, "a", "the gap after a cue still answers with it:");
+  eq(lastDescribed(cues, 9.5).id, "b", "mid-sentence, the sentence being said:");
+  eq(lastDescribed(cues, 99).id, "b");
+  eq(lastDescribed([], 5), null);
 });
 
 console.log(`\n${pass} passed, ${fail} failed`);
