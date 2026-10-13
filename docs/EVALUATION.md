@@ -59,7 +59,7 @@ matters.
 
 ## The shipped track
 
-34 descriptions, 153.5 seconds of speech. Measured against the stems, 3 of them touch dialogue, for **0.61 seconds** in total (0.02 s at 54 s; 0.22 s at 432 s; 0.37 s at 479 s). Two of the three are the tail of a line, a few tenths of a second past where the caption file says it ends. The third, 0.37 s at 479 s in the middle of the battle, has no caption near it: either an uncaptioned shout, or an effect the two masters mix differently. Nothing in the track lands on a captioned line.
+46 descriptions, 171.9 seconds of speech. Measured against the stems, 5 of them touch dialogue, for **0.9 seconds** in total: 0.02 s at 54 s, 0.22 s at 432 s, 0.37 s at 479 s, 0.07 s at 499 s and 0.22 s at 567 s. Three are the tail of a line, a few tenths of a second past where the caption file says it ends. The other two, at 479 s and 499 s in the battle, have no caption near them: either uncaptioned shouts, or effects the two masters mix differently. Nothing in the track lands on a captioned line.
 
 ## Reproducing
 

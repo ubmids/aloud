@@ -39,7 +39,7 @@ first 20 seconds.
 
 Press Back to the shelf. On screen: the shelf on the Vega Virtual Device.
 
-- Press **right**: *"Sintel. Fantasy, 2010, 15 minutes. 47 descriptions."* is
+- Press **right**: *"Sintel. Fantasy, 2010, 15 minutes. 49 descriptions."* is
   heard. Press **left**: *"Tears of Steel..."*. Each press cuts off the last.
 - Say (voiceover, short): "Every title is read out as you reach it, in the same
   voice that will describe the film. If VoiceView is on, aloud steps aside."
@@ -76,7 +76,7 @@ to be written if any of them would leave its gap."
 
 On screen briefly: `docs/EVALUATION.md`'s table: 27.4 s of dialogue inside the
 hand-built detector's gaps, 0.9 s with all three ears, and the shipped track's
-0.6 s, measured against the film's own production stems.
+0.9 s, measured against the film's own production stems.
 
 ## 1:50 to 2:20: why this, and why not Prime Video's
 

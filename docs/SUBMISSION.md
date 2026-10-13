@@ -87,8 +87,9 @@ the television does no inference at all.
 The tracks on the shelf were written by **Qwen3-VL 4B**, an open model, on a
 CPU via llama.cpp, with no key and no GPU; the same pipeline takes Gemini or any
 OpenAI-compatible model with one environment variable. *Tears of Steel* carries
-34 descriptions (2.6 minutes of narration), of which
-0.6 seconds overlap dialogue, measured against the production stems.
+46 descriptions (2.9 minutes of narration), of which
+0.9 seconds overlap dialogue, measured against the production stems, in five
+touches of under 0.4 s and none on a captioned line.
 
 ### Challenges
 

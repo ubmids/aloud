@@ -33,7 +33,7 @@ in their second language. aloud is a way of watching with your ears.
 
 1. **The shelf speaks.** Each title is read aloud as it takes focus, in the
    same voice that will describe the film: *"Tears of Steel. Science fiction,
-   2012, 12 minutes. 34 descriptions."* If VoiceView is on, aloud
+   2012, 12 minutes. 46 descriptions."* If VoiceView is on, aloud
    stays quiet and lets the screen reader read the same words.
 2. **Select plays it, described.** The first description lands
    11.6 seconds in. The screen shows the schedule: the dialogue as a bar,
@@ -49,8 +49,8 @@ in their second language. aloud is a way of watching with your ears.
    the same player.
 
 Three open films from the Blender Foundation are on the shelf: **Tears of
-Steel** (12 min, 34 descriptions), **Sintel** (15 min,
-47 descriptions) and the Sintel trailer.
+Steel** (12 min, 46 descriptions), **Sintel** (15 min,
+49 descriptions) and the Sintel trailer.
 
 ## What makes it work
 
@@ -71,7 +71,8 @@ Steel** (12 min, 34 descriptions), **Sintel** (15 min,
 - **It never talks over a line.** Each description is synthesised and measured
   before it is placed, and the track refuses to be written if any cue would
   leave its gap. Measured the same way, the shipped Tears of Steel track speaks
-  **0.6 seconds** over dialogue in 2.6 minutes of narration.
+  **0.9 seconds** over dialogue in 2.9 minutes of narration, in five touches of
+  under 0.4 s, none of them on a captioned line.
 
   ![Tears of Steel in four-minute rows: blue blocks are dialogue as the film's
   production stems hear it, orange blocks are aloud's descriptions, and no
@@ -117,7 +118,7 @@ the television nothing to play. That makes two paths to viewers:
 - **Voice**: Kokoro 82M on CPU (macOS `say` also supported).
 - **Listening**: a hand-built speech-band and syllable-rhythm detector, Silero
   VAD, caption files.
-- Python 3.12+, numpy, ffmpeg. 150 Python tests, 52
+- Python 3.12+, numpy, ffmpeg. 151 Python tests, 52
   JavaScript tests.
 
 ## Run it
