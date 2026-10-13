@@ -255,7 +255,7 @@ def test_a_word_target_below_two_is_raised_to_two():
         cap()(FRAME, asked)
         text = next(c for c in STATE["req"]["messages"][1]["content"]
                     if c["type"] == "text")["text"]
-        assert "about 2 words" in text, (asked, text)
+        assert "in 2 words or fewer" in text, (asked, text)
     print("PASS a word target below two is raised to two")
 
 
@@ -417,6 +417,17 @@ def test_a_sentence_already_said_is_not_said_again():
     assert repeats("A figure in heavy gear lowers a glowing object over two "
                    "circular devices.", before)
     print("PASS a description the listener already heard is refused")
+
+
+def test_a_short_gap_asks_for_at_most_its_words_with_an_example():
+    from aloud.caption import SHORT_WORDS, _ask, ask_version
+    _, short = _ask(4, 1, None)
+    assert "4 words or fewer" in short and "A clock tower shatters." in short
+    _, long = _ask(12, 1, None)
+    assert "about 12 words" in long and "or fewer" not in long
+    # Remembered answers to the old short wording are not reused; long ones are.
+    assert ask_version(SHORT_WORDS) != ask_version(SHORT_WORDS + 1)
+    print("PASS a short gap is asked for a short sentence, and shown one")
 
 
 if __name__ == "__main__":

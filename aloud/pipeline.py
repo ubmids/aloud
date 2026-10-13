@@ -123,7 +123,7 @@ def describe_film(video: str, *, captioner=None, synth=None,
     `memory` is how many earlier descriptions the describer is shown, so it
     says what is new instead of reintroducing the same man every cue.
     """
-    from .caption import brief_version, captioner_from_env, repeats, vacuous
+    from .caption import ask_version, captioner_from_env, repeats, vacuous
 
     captioner = captioner or captioner_from_env()
     synth = synth or Synth()
@@ -191,7 +191,7 @@ def describe_film(video: str, *, captioner=None, synth=None,
         refused = []
 
         def ask(n, context, frame=frame, extra=extra, at=plan.describe_at):
-            key = _Remembered.key(label, brief_version(), round(at, 3), n,
+            key = _Remembered.key(label, ask_version(n), round(at, 3), n,
                                   len(extra), context)
             got = remembered.get(key)
             if got is None:

@@ -154,6 +154,13 @@ def repeats(text: str, earlier, novelty: float = 0.34) -> bool:
     return False
 
 
+def ask_version(n: int) -> str:
+    """The brief's version as it applies to an ask of `n` words. Short asks
+    have their own wording, so their remembered answers are kept apart and a
+    change to it re-asks only them."""
+    return brief_version() + ("-short1" if n <= SHORT_WORDS else "")
+
+
 def brief_version() -> str:
     """Changes whenever the brief does, so remembered answers to an older
     brief are not reused for a newer one."""
@@ -161,13 +168,27 @@ def brief_version() -> str:
     return hashlib.sha256((SYSTEM + MOTION + CONTEXT).encode()).hexdigest()[:8]
 
 
+# At or under this many words the ask changes from "about" to "at most", with
+# an example. Most of the silent gaps in the first Tears of Steel tracks were
+# a second and a half to two and a half seconds long, room for three to five
+# words, and a 4B model asked for "about 4 words" wrote eight, then eight
+# again. Shown the shape of a short description, it writes one.
+SHORT_WORDS = 6
+
+
 def _ask(n: int, frames: int, context: str | None) -> tuple[str, str]:
     """The system and user text for one request, shared by every provider so
     that switching describers changes the model and nothing about the brief."""
     system = SYSTEM + (MOTION if frames > 1 else "") + (CONTEXT if context else "")
-    user = (f"Describe this frame in about {n} words. "
-            f"Hitting that length matters: the gap it has to fit "
-            f"in is fixed, and a longer sentence will be cut.")
+    if n <= SHORT_WORDS:
+        user = (f"Describe this frame in {n} words or fewer: who or what, and "
+                f"what they do, like \"A clock tower shatters.\" or \"The "
+                f"woman runs.\" The gap is short; a longer sentence will not "
+                f"be heard at all.")
+    else:
+        user = (f"Describe this frame in about {n} words. "
+                f"Hitting that length matters: the gap it has to fit "
+                f"in is fixed, and a longer sentence will be cut.")
     if context:
         user += "\n\nAlready described, most recent last:\n" + context
     return system, user
