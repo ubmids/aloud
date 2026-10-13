@@ -138,3 +138,21 @@ test('key-down is ignored, so one press is one answer', () => {
   act(() => mockRemote?.({eventType: 'menu', eventKeyAction: 0}));
   expect(s.speak).not.toHaveBeenCalled();
 });
+
+test('two Menu presses on the lighter setting turn description back up, and say why', () => {
+  const {getByTestId, getByText, queryByText} = open(true);
+  fireEvent.press(getByTestId('toggle-density'));
+  expect(getByText('Only what changed most')).toBeTruthy();
+  mockFilm.currentTime = 30;
+  press('menu');
+  act(() => jest.advanceTimersByTime(3100));
+  expect(queryByText('Everything')).toBeNull();
+  mockFilm.currentTime = 50;
+  press('menu');
+  expect(getByText('Everything')).toBeTruthy();
+  expect(getByText(/You asked twice in two minutes/)).toBeTruthy();
+  // Changing it by hand is the viewer's word, and the explanation goes.
+  fireEvent.press(getByTestId('toggle-density'));
+  fireEvent.press(getByTestId('toggle-density'));
+  expect(queryByText(/You asked twice/)).toBeNull();
+});

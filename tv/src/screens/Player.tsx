@@ -15,6 +15,7 @@ import {Timeline} from '../components/Timeline';
 import {Toggle} from '../components/Toggle';
 import {Voice} from '../components/Voice';
 import {secs} from '../format';
+import {remember, SAID_MORE, shouldSayMore} from '../player/adapt';
 import {cueAudioUri, filmUri} from '../player/assets';
 import {lastDescribed, nextCueFrom} from '../player/schedule.js';
 import {Speaker} from '../player/speech';
@@ -67,6 +68,12 @@ export const Player = ({
   const film = useMemo(() => filmUri(title.id), [title]);
 
   const [density, setDensity] = useState<Density>('full');
+  const densityRef = useRef(density);
+  densityRef.current = density;
+  // Menu presses, by wall clock, and whether the last density change was the
+  // player's own answer to them rather than the viewer's (see adapt.ts).
+  const asks = useRef<number[]>([]);
+  const [saidMore, setSaidMore] = useState(false);
   const enabled = settings.narration;
   const [time, setTime] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -136,6 +143,12 @@ export const Player = ({
     speaker.current.speak(cue);
     clearAgain();
     setAgain(cue);
+    asks.current = remember(asks.current, Date.now());
+    if (shouldSayMore(asks.current, densityRef.current)) {
+      asks.current = [];
+      setDensity('full');
+      setSaidMore(true);
+    }
     againTimer.current = setTimeout(() => {
       againTimer.current = null;
       setAgain(null);
@@ -397,10 +410,14 @@ export const Player = ({
           value={density === 'full' ? 'Everything' : 'Only what changed most'}
           help={
             density === 'full'
-              ? 'Every description there was room for.'
+              ? (saidMore ? SAID_MORE : 'Every description there was room for.')
               : 'Half as much talking, kept for the biggest changes.'
           }
-          onPress={() => setDensity((d) => (d === 'full' ? 'sparse' : 'full'))}
+          onPress={() => {
+            asks.current = [];
+            setSaidMore(false);
+            setDensity((d) => (d === 'full' ? 'sparse' : 'full'));
+          }}
           testID="toggle-density"
         />
         <View
