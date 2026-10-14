@@ -4,14 +4,14 @@
   "source": "Sintel.2010.720p.mkv",
   "describer": "qwen3-vl-4b (local, llama.cpp on CPU)",
   "voice": "Kokoro 82M (af_heart)",
-  "announcement": "Sintel. Fantasy, 2010, 15 minutes. 49 descriptions.",
+  "announcement": "Sintel. Fantasy, 2010, 15 minutes. 47 descriptions.",
   "credit": "(c) copyright Blender Foundation | durian.blender.org",
   "licence": "Creative Commons Attribution 3.0",
   "cues": [
     {
       "start": 3.5,
-      "end": 12.533,
-      "text": "The Blender Foundation Presents logo appears centered on a dark, snowy, mountainous landscape with blurred, shadowy rock formations in the foreground.",
+      "end": 6.066,
+      "text": "On screen: THE BLENDER FOUNDATION PRESENTS.",
       "audio": "cue-001.m4a",
       "gap": [
         3.5,
@@ -19,30 +19,20 @@
       ]
     },
     {
-      "start": 22.25,
-      "end": 26.14,
-      "text": "Snow-covered mountains loom, with a distant, icy structure visible.",
+      "start": 19.69,
+      "end": 21.161,
+      "text": "Snow-covered mountains loom.",
       "audio": "cue-002.m4a",
       "gap": [
-        22.25,
-        27.03
-      ]
-    },
-    {
-      "start": 31.67,
-      "end": 40.181,
-      "text": "A figure in a hooded, brown outfit stands on snow, gripping a long, curved staff, with misty, snow-capped mountains looming behind them.",
-      "audio": "cue-003.m4a",
-      "gap": [
-        31.67,
-        44.57
+        19.69,
+        21.51
       ]
     },
     {
       "start": 46.63,
-      "end": 48.649,
-      "text": "A figure in brown leaps through the snow.",
-      "audio": "cue-004.m4a",
+      "end": 48.378,
+      "text": "A man stands on a snowy slope.",
+      "audio": "cue-003.m4a",
       "gap": [
         46.63,
         49.01
@@ -50,9 +40,9 @@
     },
     {
       "start": 53.958,
-      "end": 56.666,
-      "text": "The figure\u2019s arm extends forward, gripping the staff.",
-      "audio": "cue-005.m4a",
+      "end": 56.699,
+      "text": "A muscular arm extends forward, fingers splayed.",
+      "audio": "cue-004.m4a",
       "gap": [
         53.958,
         57.29
@@ -60,9 +50,9 @@
     },
     {
       "start": 61.41,
-      "end": 63.152,
-      "text": "The grey-haired man draws a knife.",
-      "audio": "cue-006.m4a",
+      "end": 64.0,
+      "text": "A bald man grips a knife, standing on snow.",
+      "audio": "cue-005.m4a",
       "gap": [
         61.41,
         64.73
@@ -70,9 +60,9 @@
     },
     {
       "start": 65.39,
-      "end": 70.916,
-      "text": "The grey-haired man grips a staff as a red-haired figure bends forward, snow falling around them.",
-      "audio": "cue-007.m4a",
+      "end": 70.874,
+      "text": "A bald man grips a knife, confronting Sintel whose red hair is blurred as she holds a staff.",
+      "audio": "cue-006.m4a",
       "gap": [
         65.39,
         74.042
@@ -80,9 +70,9 @@
     },
     {
       "start": 74.042,
-      "end": 79.479,
-      "text": "The red-haired figure lies motionless on snow, a knife resting beside them, hands clasped.",
-      "audio": "cue-008.m4a",
+      "end": 79.982,
+      "text": "Sintel lies on snow, red hair fanned, mouth open, a knife rests beside her, her hands clasped.",
+      "audio": "cue-007.m4a",
       "gap": [
         74.042,
         81.458
@@ -90,9 +80,9 @@
     },
     {
       "start": 81.458,
-      "end": 85.218,
-      "text": "A snow-covered mountain pass holds a distant, warmly lit shelter.",
-      "audio": "cue-009.m4a",
+      "end": 85.242,
+      "text": "Snow-covered mountains frame a distant, warmly lit cave entrance.",
+      "audio": "cue-008.m4a",
       "gap": [
         81.458,
         86.79
@@ -100,9 +90,9 @@
     },
     {
       "start": 88.542,
-      "end": 96.826,
-      "text": "The red-haired figure stands alone in the vast, snow-laden pass, gripping a staff as towering, icy peaks loom in the misty distance.",
-      "audio": "cue-010.m4a",
+      "end": 97.883,
+      "text": "Sintel stands alone in a vast, snow-laden valley, her red hair contrasting against the white, as jagged, icy peaks loom in the misty distance.",
+      "audio": "cue-009.m4a",
       "gap": [
         88.542,
         101.208
@@ -110,9 +100,9 @@
     },
     {
       "start": 145.41,
-      "end": 146.957,
-      "text": "The red-haired figure looks down.",
-      "audio": "cue-011.m4a",
+      "end": 147.824,
+      "text": "Sintel looks down, her face illuminated.",
+      "audio": "cue-010.m4a",
       "gap": [
         145.41,
         148.29
@@ -120,29 +110,29 @@
     },
     {
       "start": 156.27,
-      "end": 158.354,
-      "text": "A red-haired figure stands in a sunlit.",
-      "audio": "cue-012.m4a",
+      "end": 158.243,
+      "text": "Sintel walks through a ruined alleyway.",
+      "audio": "cue-011.m4a",
       "gap": [
         156.27,
         159.37
       ]
     },
     {
-      "start": 162.083,
-      "end": 170.774,
-      "text": "A red-haired figure reaches out, gripping a thick, dark fabric as sunlight illuminates rustic rooftops and weathered stone buildings behind them.",
-      "audio": "cue-013.m4a",
+      "start": 175.65,
+      "end": 177.907,
+      "text": "Sintel grips a large, dark object.",
+      "audio": "cue-012.m4a",
       "gap": [
-        162.083,
-        174.93
+        175.65,
+        180.083
       ]
     },
     {
       "start": 180.083,
-      "end": 182.367,
-      "text": "The red-haired figure pulls the fabric taut.",
-      "audio": "cue-014.m4a",
+      "end": 181.913,
+      "text": "Sintel leaps from a rooftop ledge.",
+      "audio": "cue-013.m4a",
       "gap": [
         180.083,
         184.375
@@ -150,9 +140,9 @@
     },
     {
       "start": 184.375,
-      "end": 188.517,
-      "text": "The red-haired figure lowers their hand, revealing a tattoo on their shoulder.",
-      "audio": "cue-015.m4a",
+      "end": 188.775,
+      "text": "Sintel stands on a rooftop, gripping a spear, her red hair catching the light.",
+      "audio": "cue-014.m4a",
       "gap": [
         184.375,
         189.792
@@ -160,9 +150,9 @@
     },
     {
       "start": 189.792,
-      "end": 193.347,
-      "text": "The red-haired figure\u2019s eyes open, revealing brown irises.",
-      "audio": "cue-016.m4a",
+      "end": 193.714,
+      "text": "Sintel\u2019s eyes open, revealing brown irises, as she looks forward.",
+      "audio": "cue-015.m4a",
       "gap": [
         189.792,
         194.625
@@ -170,28 +160,38 @@
     },
     {
       "start": 194.625,
-      "end": 201.944,
-      "text": "A small, scaly creature with orange eyes sits on a stone roof, its mouth open as a human hand extends toward it.",
-      "audio": "cue-017.m4a",
+      "end": 202.123,
+      "text": "A small dragon, Scales, lies on a rooftop with blood on its chest, its mouth open as a human hand reaches toward it.",
+      "audio": "cue-016.m4a",
       "gap": [
         194.625,
         205.47
       ]
     },
     {
-      "start": 218.37,
-      "end": 226.264,
-      "text": "The red-haired figure holds the small scaly creature close, its hand gripping the creature\u2019s tail as the creature\u2019s mouth remains open.",
+      "start": 215.65,
+      "end": 217.262,
+      "text": "Sintel holds Scales gently.",
+      "audio": "cue-017.m4a",
+      "gap": [
+        215.65,
+        217.81
+      ]
+    },
+    {
+      "start": 219.458,
+      "end": 224.379,
+      "text": "A gloved hand places a shallow, dark bowl onto a dark, fringed fabric surface.",
       "audio": "cue-018.m4a",
       "gap": [
-        218.37,
+        219.458,
         227.69
       ]
     },
     {
       "start": 259.95,
-      "end": 262.187,
-      "text": "A red-haired figure steps away from a crate.",
+      "end": 263.46,
+      "text": "Sintel stands in a market alley, scattering apples from a crate.",
       "audio": "cue-019.m4a",
       "gap": [
         259.95,
@@ -200,8 +200,8 @@
     },
     {
       "start": 269.69,
-      "end": 273.772,
-      "text": "A red-haired figure stands in a sunlit alleyway, facing another person.",
+      "end": 273.824,
+      "text": "Sintel, with short red hair and a tattooed arm, stands in a market alley.",
       "audio": "cue-020.m4a",
       "gap": [
         269.69,
@@ -209,19 +209,19 @@
       ]
     },
     {
-      "start": 275.625,
-      "end": 282.165,
-      "text": "The red-haired figure stands in a sunlit alleyway, facing forward with wide eyes and a surprised expression.",
+      "start": 284.39,
+      "end": 288.193,
+      "text": "Sintel runs up a broken stone staircase toward distant ruins.",
       "audio": "cue-021.m4a",
       "gap": [
-        275.625,
-        283.57
+        284.39,
+        288.87
       ]
     },
     {
       "start": 300.39,
-      "end": 302.143,
-      "text": "The red-haired figure bends forward.",
+      "end": 302.006,
+      "text": "Sintel stands atop ruins.",
       "audio": "cue-022.m4a",
       "gap": [
         300.39,
@@ -229,19 +229,19 @@
       ]
     },
     {
-      "start": 313.63,
-      "end": 320.111,
-      "text": "Two large, winged creatures soar through a hazy, warm-toned sky, with a smaller red bird flying nearby.",
+      "start": 307.91,
+      "end": 311.322,
+      "text": "Sintel, with short red hair, stands atop ruins, smiling.",
       "audio": "cue-023.m4a",
       "gap": [
-        313.63,
-        322.25
+        307.91,
+        313.11
       ]
     },
     {
       "start": 322.93,
-      "end": 327.171,
-      "text": "A large winged creature dominates the foreground, its wings spread wide.",
+      "end": 327.107,
+      "text": "A dragon with large wings hovers near Sintel, who stands atop ruins.",
       "audio": "cue-024.m4a",
       "gap": [
         322.93,
@@ -250,8 +250,8 @@
     },
     {
       "start": 328.167,
-      "end": 332.38,
-      "text": "A small, winged creature clings to a larger one, both soaring through the sky.",
+      "end": 332.434,
+      "text": "Scales, the small baby dragon, flies toward Sintel\u2019s outstretched hand.",
       "audio": "cue-025.m4a",
       "gap": [
         328.167,
@@ -259,50 +259,20 @@
       ]
     },
     {
-      "start": 335.292,
-      "end": 336.974,
-      "text": "A large winged creature soars.",
-      "audio": "cue-026.m4a",
-      "gap": [
-        335.292,
-        338.19
-      ]
-    },
-    {
-      "start": 342.41,
-      "end": 347.301,
-      "text": "A young woman with red hair and a tattoo stands before crumbling stone structures.",
-      "audio": "cue-027.m4a",
-      "gap": [
-        342.41,
-        349.75
-      ]
-    },
-    {
       "start": 349.75,
-      "end": 357.559,
-      "text": "A blurred figure in heavy boots runs across a dusty, rocky terrain, their motion captured in a fast-moving, low-angle shot.",
-      "audio": "cue-028.m4a",
+      "end": 355.115,
+      "text": "Sintel\u2019s boots strike the dusty ground as she runs, motion blurred, across the ruined terrain.",
+      "audio": "cue-026.m4a",
       "gap": [
         349.75,
         361.23
       ]
     },
     {
-      "start": 367.21,
-      "end": 368.886,
-      "text": "The sun glows brightly overhead.",
-      "audio": "cue-029.m4a",
-      "gap": [
-        367.21,
-        369.27
-      ]
-    },
-    {
       "start": 390.29,
-      "end": 393.049,
-      "text": "A figure with red hair moves through dense bamboo.",
-      "audio": "cue-030.m4a",
+      "end": 393.144,
+      "text": "A red-haired girl peeks from behind bamboo stalks.",
+      "audio": "cue-027.m4a",
       "gap": [
         390.29,
         394.01
@@ -310,49 +280,39 @@
     },
     {
       "start": 396.875,
-      "end": 400.145,
-      "text": "A figure with dark hair holds a staff and raises a hand.",
-      "audio": "cue-031.m4a",
+      "end": 399.488,
+      "text": "Sintel extends her hand as Scales approaches.",
+      "audio": "cue-028.m4a",
       "gap": [
         396.875,
         400.75
       ]
     },
     {
+      "start": 418.25,
+      "end": 419.892,
+      "text": "Sintel\u2019s head peeks over snow.",
+      "audio": "cue-029.m4a",
+      "gap": [
+        418.25,
+        420.31
+      ]
+    },
+    {
       "start": 421.19,
-      "end": 428.803,
-      "text": "The red-haired figure lies buried in deep snow, a staff resting beside them, their head just visible above the white surface.",
-      "audio": "cue-032.m4a",
+      "end": 428.504,
+      "text": "Sintel strides through deep snow, staff raised, across a vast, foggy landscape with icy cliffs and scattered boulders.",
+      "audio": "cue-030.m4a",
       "gap": [
         421.19,
         431.583
       ]
     },
     {
-      "start": 431.583,
-      "end": 439.119,
-      "text": "The red-haired figure stands in a snowy, jagged landscape, their fur-lined coat and staff visible as mist swirls around them.",
-      "audio": "cue-033.m4a",
-      "gap": [
-        431.583,
-        445.29
-      ]
-    },
-    {
-      "start": 464.41,
-      "end": 473.709,
-      "text": "The red-haired figure, previously buried, now looks up with a hand raised, their expression shifting as a dark, curved object enters the frame from the left.",
-      "audio": "cue-034.m4a",
-      "gap": [
-        464.41,
-        483.708
-      ]
-    },
-    {
       "start": 483.708,
-      "end": 493.869,
-      "text": "A small figure stands on a rocky cave floor, silhouetted against a bright moonlit opening, with glowing blue crystals scattered around the cavern\u2019s dark, textured walls.",
-      "audio": "cue-035.m4a",
+      "end": 494.322,
+      "text": "Sintel stands small in the cavern\u2019s shadowed mouth, silhouetted against the glowing moon, her staff held aloft as she faces the vast, icy expanse beyond the cave\u2019s opening.",
+      "audio": "cue-031.m4a",
       "gap": [
         483.708,
         502.51
@@ -360,29 +320,19 @@
     },
     {
       "start": 519.458,
-      "end": 528.324,
-      "text": "The spiky, scaled creature lies motionless on the cavern floor, its armored back gleaming faintly under dim light as shadows deepen around it.",
-      "audio": "cue-036.m4a",
+      "end": 528.893,
+      "text": "A small dragon with spiky scales rests motionless on rocky ground within a dark, cavernous space, its form partially obscured by shadow and stone.",
+      "audio": "cue-032.m4a",
       "gap": [
         519.458,
         536.333
       ]
     },
     {
-      "start": 536.333,
-      "end": 539.582,
-      "text": "A gloved hand reaches toward the motionless, scaled creature.",
-      "audio": "cue-037.m4a",
-      "gap": [
-        536.333,
-        541.083
-      ]
-    },
-    {
       "start": 541.083,
-      "end": 546.143,
-      "text": "A small figure kneels beside the creature as a fiery explosion erupts from its head.",
-      "audio": "cue-038.m4a",
+      "end": 545.663,
+      "text": "Sintel kneels before the dragon, its head glowing as fire erupts from its mouth.",
+      "audio": "cue-033.m4a",
       "gap": [
         541.083,
         547.083
@@ -390,69 +340,69 @@
     },
     {
       "start": 547.083,
-      "end": 555.174,
-      "text": "A small, winged figure crawls across the cavern floor toward the motionless, scaled creature, its form glinting faintly in the dim light.",
-      "audio": "cue-039.m4a",
+      "end": 554.854,
+      "text": "The dragon\u2019s head glows as fire erupts from its mouth, its spiky scales catching the light against the dark, rippling cavern floor.",
+      "audio": "cue-034.m4a",
       "gap": [
         547.083,
         557.05
       ]
     },
     {
-      "start": 567.29,
-      "end": 569.788,
-      "text": "The red-haired woman draws a spear from the ground.",
-      "audio": "cue-040.m4a",
+      "start": 564.43,
+      "end": 565.737,
+      "text": "Sintel draws her spear.",
+      "audio": "cue-035.m4a",
       "gap": [
-        567.29,
-        571.15
+        564.43,
+        566.67
+      ]
+    },
+    {
+      "start": 571.65,
+      "end": 574.293,
+      "text": "Sintel stands atop the dragon, spear raised.",
+      "audio": "cue-036.m4a",
+      "gap": [
+        571.65,
+        576.69
       ]
     },
     {
       "start": 582.05,
-      "end": 591.036,
-      "text": "The red-haired woman leaps forward, spear drawn, as the creature's head explodes in fire, sending shards of light flying across the dark cavern floor.",
-      "audio": "cue-041.m4a",
+      "end": 592.443,
+      "text": "Sintel leaps from the dragon\u2019s back, her spear flashing as she dives through the air, while the dragon\u2019s glowing head and spiky scales remain visible against the dark cavern floor.",
+      "audio": "cue-037.m4a",
       "gap": [
         582.05,
         595.55
       ]
     },
     {
-      "start": 605.29,
-      "end": 610.457,
-      "text": "The scaled creature lies motionless on the dark cavern floor, its wings and tail still.",
-      "audio": "cue-042.m4a",
-      "gap": [
-        605.29,
-        611.875
-      ]
-    },
-    {
       "start": 611.875,
-      "end": 619.312,
-      "text": "The red-haired woman grips her spear, her face showing shock as the dark cavern floor remains still after the creature\u2019s explosion.",
-      "audio": "cue-043.m4a",
+      "end": 619.226,
+      "text": "Sintel, with short red hair and a fur-wrapped hand, grips her spear, her expression tense against the dark, cavernous background.",
+      "audio": "cue-038.m4a",
       "gap": [
         611.875,
         621.05
       ]
     },
     {
-      "start": 649.11,
-      "end": 650.67,
-      "text": "The red-haired woman steps back.",
-      "audio": "cue-044.m4a",
+      "start": 630.21,
+      "end": 639.623,
+      "text": "A large dragon rests on the cavern floor, its textured scales and glowing red eye visible, with crystalline formations glowing faintly in the background.",
+      "audio": "cue-039.m4a",
       "gap": [
-        649.11,
-        651.63
+        630.21,
+        646.25
       ]
     },
     {
       "start": 655.09,
-      "end": 658.281,
-      "text": "The red-haired woman stands still, her gaze fixed downward.",
-      "audio": "cue-045.m4a",
+      "end": 658.626,
+      "text": "Sintel stands in the dark cavern, her spear gone, looking down.",
+      "audio": "cue-040.m4a",
       "gap": [
         655.09,
         659.61
@@ -460,9 +410,9 @@
     },
     {
       "start": 662.542,
-      "end": 671.217,
-      "text": "The massive, scaled creature lies motionless in the dark cavern, its single glowing red eye fixed forward as faint sparks drift through the air.",
-      "audio": "cue-046.m4a",
+      "end": 673.037,
+      "text": "The dragon's head rests low, its textured scales gleaming under dim light, one glowing red eye fixed forward, with crystalline formations glowing faintly in the background.",
+      "audio": "cue-041.m4a",
       "gap": [
         662.542,
         684.417
@@ -470,9 +420,9 @@
     },
     {
       "start": 684.417,
-      "end": 695.632,
-      "text": "A lone, small figure sits atop a rugged hill, dwarfed by a colossal, gnarled tree root system in the foreground, with misty, sunlit mountains receding into the hazy horizon.",
-      "audio": "cue-047.m4a",
+      "end": 694.208,
+      "text": "A massive, gnarled tree root dominates the foreground, its rough surface detailed, while a small figure sits atop a distant hill under a hazy, warm sky.",
+      "audio": "cue-042.m4a",
       "gap": [
         684.417,
         702.05
@@ -480,22 +430,52 @@
     },
     {
       "start": 702.65,
-      "end": 707.358,
-      "text": "The red-haired woman\u2019s head tilts slightly as her eyes close, her expression softening.",
-      "audio": "cue-048.m4a",
+      "end": 708.922,
+      "text": "Sintel, with short red and grey hair and a shoulder wound, looks down, her expression heavy, in the dim cavern.",
+      "audio": "cue-043.m4a",
       "gap": [
         702.65,
         710.042
       ]
     },
     {
-      "start": 710.042,
-      "end": 718.034,
-      "text": "The camera focuses on a vast, textured expanse of rough, uneven rock with deep crevices and mottled brown and grey tones.",
-      "audio": "cue-049.m4a",
+      "start": 721.67,
+      "end": 727.295,
+      "text": "A rusted, broken leather strap with a buckle lies discarded on a rough, textured rock surface.",
+      "audio": "cue-044.m4a",
       "gap": [
-        710.042,
-        721.09
+        721.67,
+        747.49
+      ]
+    },
+    {
+      "start": 791.83,
+      "end": 803.258,
+      "text": "On screen: credits list names like Claudio Andaur, Juan Redondo, and Guillaume Canino, displayed on a wooden surface beside a carved staff, a broken leather strap, and a dragon's head.",
+      "audio": "cue-045.m4a",
+      "gap": [
+        791.83,
+        806.69
+      ]
+    },
+    {
+      "start": 821.05,
+      "end": 825.818,
+      "text": "A parchment with a dragon sketch rests beside credits on a weathered wooden surface.",
+      "audio": "cue-046.m4a",
+      "gap": [
+        821.05,
+        828.47
+      ]
+    },
+    {
+      "start": 875.63,
+      "end": 883.816,
+      "text": "A parchment sketch of Sintel with red hair and a staff lies on weathered wood beside credits, a broken leather strap, and a dragon's head.",
+      "audio": "cue-047.m4a",
+      "gap": [
+        875.63,
+        887.87
       ]
     }
   ]
