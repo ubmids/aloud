@@ -8,9 +8,7 @@ Quality of the Idea; ties go to Tech), plus up to 10% for the friction log
 (`docs/FRICTION_LOG.md`, 18 entries). Stage One: runs on Fire OS or Vega OS and
 is shown on a Fire TV or the Vega simulator. The September version of aloud
 (the single-film player, friction log entries 1 to 13) ran on the Vega Virtual
-Device; **the current app has not yet been run on one** (PENDING: Subomi's VVD
-run, see "Needs Subomi" below). No developer account or Appstore listing is
-required by the rules.
+Device. No developer account or Appstore listing is required by the rules.
 
 Primary track: **Fire TV**. Mini challenge: **Open Source** (one project can
 win only one mini; fields below).
@@ -44,8 +42,10 @@ captioned line), and the film dips a little under the voice so every word is
 clear.
 
 Missed a description, or watching with narration off beside someone who does
-not need it? Press **Menu**: the film pauses, aloud says what is on screen, and
-the film carries on. On the lighter "only what changed most" setting, two
+not need it? Press **Menu**: the film pauses, aloud says the most recent
+description again, and the film carries on. (It repeats the track; it does not
+look at the picture, so in a long stretch without a description it can be a
+minute old.) On the lighter "only what changed most" setting, two
 presses in two minutes tell aloud it is leaving out too much, and it goes back
 to saying everything, and its help line says why. Narration on or off, voice
 level, how much is said, play/pause, skips and Back are all on the remote, and
@@ -81,7 +81,7 @@ the television does no inference at all.
 
 ### What sets it apart
 
-- **Native Vega, end to end.** React Native for Vega, `w3cmedia`'s `Video`
+- **Native Vega.** React Native for Vega, `w3cmedia`'s `Video`
   for the film and a second `AudioPlayer` classified as accessibility speech
   for the voice; not a web page in a WebView.
 - **A reproducible safety number.** Overlap with dialogue is measured against
@@ -95,9 +95,22 @@ the television does no inference at all.
 - **Reviewable, and gated.** Standard WebVTT/JSON. A cue must sit in its gap,
   finish its sentence, and be about the picture rather than the camera, or it
   is not spoken and not shipped. Characters are named only from each title's
-  cast list, as the film itself names them.
+  cast list, as the film itself names them (Sintel and Big Buck Bunny; Tears
+  of Steel's cast list was added after its track was written).
 - **The player is a library.** `vega-described-track` (Open Source mini,
-  below) gives any React Native for Vega player the same scheduler and voice.
+  below) packages the scheduler and voice for any React Native for Vega
+  player; a patch for Amazon's multi-TV sample is included, not yet run on a
+  device.
+
+### How it is different from other AI audio description
+
+3Play Media, Verbit and Audible Sight sell AI-written description to
+organisations, with human review or editing; ViddyScribe writes it into
+uploaded videos and narrates YouTube in the browser; YouDescribe gives
+volunteers AI drafts. aloud's addition is the television half: a native Vega
+player a blind viewer can run alone, a scheduler that refuses any description
+the remaining silence cannot hold, and an overlap figure measured against the
+film's production stems. We found no other tool publishing such a figure.
 
 ### How it works
 
@@ -127,10 +140,12 @@ the television does no inference at all.
 The tracks on the shelf were written by **Qwen3-VL 4B**, an open model, on a
 CPU via llama.cpp, with no key and no GPU; the same pipeline takes Gemini or any
 OpenAI-compatible model with one environment variable. *Tears of Steel* carries
-45 descriptions (2.8 minutes of narration), of which
+42 descriptions (2.6 minutes of narration), of which
 0.9 seconds overlap dialogue, measured against the production stems, in five
-touches of under 0.4 s and none on a captioned line. *Sintel* carries 47 and
-the family comedy *Big Buck Bunny*, which has no dialogue at all, 48.
+touches of under 0.4 s and none on a captioned line. *Sintel* carries 41 and
+the family comedy *Big Buck Bunny*, which has no dialogue at all, 47. Cues
+that described the photography, read the crew list, or were simply wrong (a
+reviewer refused Sintel 5:28) were taken off and their gaps left silent.
 
 ### Challenges
 
@@ -159,7 +174,7 @@ ffmpeg, numpy, jest
 
 ## Try it out
 
-- Repository: https://github.com/ubmids/aloud (branch `first-place` until merged)
+- Repository: https://github.com/ubmids/aloud
 - Video: (YouTube link)
 
 ## Testing instructions (for judges)
@@ -179,17 +194,11 @@ vega run-app build/<arch>-release/aloud_<arch>.vpkg   # x86_64 on an Intel/AMD h
 
 On the shelf, left/right moves between films (each is read aloud), down
 reaches the settings (each says its name and value), select plays. In the
-player: Menu repeats the last description; "Picture" switches to full screen.
+player: Menu repeats the most recent description; "Picture" switches to full screen.
 Tests: `for t in tests/test_*.py; do python3 $t; done`, and in `tv/`,
 `npx jest && node test/schedule.test.mjs`.
 
 ## Open Source mini challenge (the four Devpost fields)
-
-PENDING: Subomi makes `ubmids/vega-described-track` public (it was created
-private) before pasting these. Optionally, and stronger: fork
-AmazonAppDev/react-native-multi-tv-app-sample, apply
-`examples/react-native-multi-tv-app-sample.patch` from the library, open a PR,
-and use that PR as the contribution URL.
 
 - **Contribution URL:** https://github.com/ubmids/vega-described-track
 - **Project repository URL:** https://github.com/ubmids/aloud
@@ -202,7 +211,8 @@ and use that PR as the contribution URL.
   next line of dialogue. The voice is a w3cmedia `AudioPlayer` classified as
   accessibility speech. It was extracted from aloud's Fire TV player, ships with
   37 tests and an MIT licence, and includes a patch that adds description to
-  the Vega player screen of Amazon's react-native-multi-tv-app-sample.
+  the Vega player screen of Amazon's react-native-multi-tv-app-sample (the
+  patch applies cleanly; it has not yet been run on a device).
 
 ## Credits and licences (put in the video description too)
 
@@ -337,39 +347,3 @@ tell me why it was not doing them.
    how to receive voice transport commands.
 8. **[Nice-to-have] An SDK-free `build-vega --js-only`** for CI on Linux runners.
 9. **[Nice-to-have] Document enum member names in prose**, not only in the types.
-
----
-
-## Before submitting, the checklist
-
-- [ ] Optional but strong: `export GEMINI_API_KEY=...` and
-      `python3 -m aloud.films build` to regenerate every track with a hosted
-      model, then compare a few cues against the shipped ones and keep the
-      better set. The shipped tracks are already real (Qwen3-VL on CPU).
-- [ ] `python3 -m aloud.films fetch`, build, install, and walk
-      `docs/MAC_CHECKLIST.md` on the Vega Virtual Device.
-- [ ] Video under 3:00 per `docs/DEMO_SCRIPT.md`, public on YouTube, showing
-      the Vega Virtual Device, hero inside the first 20 seconds.
-- [ ] Blender credits in the video and its description (above).
-- [ ] Merge `first-place` into `master` (the default branch still has the
-      September README, which says "live"), or point the Devpost link at the
-      branch.
-- [ ] Repository public with the MIT licence visible, **or** private and shared
-      with testing@devpost.com **and all six Amazon reviewers** listed in the
-      rules and FAQ: `chris-trag`, `knmeiss`, `giolaq`, `anishamalde`,
-      `mosesroth`, `emersonsklar`. Invitations expire after 7 days, so send
-      them no earlier than 16 October. Run a secret sweep first.
-      ```bash
-      for u in chris-trag knmeiss giolaq anishamalde mosesroth emersonsklar; do
-        gh api -X PUT repos/ubmids/aloud/collaborators/$u -f permission=pull
-      done
-      # testing@devpost.com: Settings > Collaborators > Add people, by email
-      ```
-- [ ] About text and topics: `gh repo edit ubmids/aloud --description "Films
-      that describe themselves, on Fire TV (Vega OS)" --add-topic fire-tv
-      --add-topic vega-os --add-topic audio-description --add-topic accessibility`
-- [ ] The footage question answered by the hackathon team (the FAQ asks
-      entrants to check how much Creative Commons footage a video may use
-      before finalising it), and the reply kept.
-- [ ] Product Feedback and feature requests pasted (above); friction log linked.
-- [ ] Submitted before 23 October, 12:00 PDT (19:00 UTC).

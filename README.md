@@ -7,7 +7,8 @@ across the shelf. Press play, and in the silences between the lines a voice
 tells you what is on screen: *"Through a circular viewport, a large, steampunk-style airship hovers above a cityscape."*
 Never over a captioned line: on Tears of Steel the whole track overlaps
 dialogue by 0.9 seconds in 12 minutes, measured against the film's production
-stems. Close your eyes and you can still follow the film.
+stems. Close your eyes and hear what the picture is doing. (No blind viewer
+has tested it yet; that is the next step, not a claim.)
 
 aloud is a Vega OS app (React Native for Vega) with a computer-vision pipeline
 behind it. Before a film is ever played, a scheduler finds the silences in the
@@ -36,7 +37,7 @@ in their second language. aloud is a way of watching with your ears.
 
 1. **The shelf speaks.** Each title is read aloud as it takes focus, in the
    same voice that will describe the film: *"Tears of Steel. Science fiction,
-   2012, 12 minutes. 45 descriptions."* Every setting does the same, on the
+   2012, 12 minutes. 42 descriptions."* Every setting does the same, on the
    shelf and under the film: *"Voice level, loud. The film drops well back, so
    every word is clear."* when it takes focus, and its new value when select
    changes it. If VoiceView is on, aloud stays quiet and lets the screen
@@ -50,7 +51,9 @@ in their second language. aloud is a way of watching with your ears.
 3. **Missed something? Press Menu.** The film pauses, aloud says the last
    description again, and the film carries on. It works with narration off
    too, so one viewer on the sofa hears the film as it was made and another
-   asks what is on screen when they need to, with one button. On the lighter
+   asks for the last description when they need it, with one button. It
+   repeats the most recent description in the track, which can be a minute
+   old in a long stretch without one; it does not look at the picture. On the lighter
    "only what changed most" setting, two presses in two minutes tell aloud it
    is leaving out too much: it goes back to saying everything, and the
    setting's help line says why.
@@ -62,8 +65,8 @@ in their second language. aloud is a way of watching with your ears.
    treat voice transport as untested.
 
 Four open films from the Blender Foundation are on the shelf: **Tears of
-Steel** (12 min, 45 descriptions), **Sintel** (15 min, 47 descriptions), the
-family comedy **Big Buck Bunny** (10 min, 48 descriptions, and not one word of
+Steel** (12 min, 42 descriptions), **Sintel** (15 min, 41 descriptions), the
+family comedy **Big Buck Bunny** (10 min, 47 descriptions, and not one word of
 dialogue, so aloud narrates over the score) and the Sintel trailer.
 
 ## What makes it work
@@ -132,12 +135,35 @@ inference at all.
 - **A track a person can check, and a gate before it ships.** The output is
   standard WebVTT and JSON. Before a cue is spoken or published it must sit
   inside its gap, finish its sentence, and be about the picture rather than
-  the camera; characters are named only from each title's cast list, as
-  the film itself names them.
-- **The playback half is a library.** `vega-described-track` gives any React
-  Native for Vega player the same scheduler and accessibility voice, with a
-  patch for Amazon's multi-TV app sample. (PENDING: Subomi makes
-  github.com/ubmids/vega-described-track public; it is private today.)
+  the camera, or the crew list; characters are named only from each title's
+  cast list, as the film itself names them. Sintel and Big Buck Bunny were
+  described with their cast lists. Tears of Steel's cast list (Thom, Celia,
+  Barley, the Captain) was added after its shipped track was written, so that
+  track still describes its people by what can be seen.
+- **The playback half is a library.** `vega-described-track` packages the
+  scheduler and the accessibility voice for any React Native for Vega player,
+  with a patch for Amazon's multi-TV app sample included (the patch applies
+  cleanly; it has not yet been run on a device inside the sample).
+- **A continuity pass, off by default.** `ALOUD_CONTINUITY=1` sends the
+  finished track, the caption lines and the cast list to a text model, which
+  may only make names, articles and references consistent. Every revision is
+  re-spoken, re-measured into its gap and re-gated, and the original sentence
+  is kept beside it. No shipped track has been through it yet.
+
+## How this differs from other AI audio description
+
+AI-written description is not new. 3Play Media sells AI-enabled description
+with human review to universities and enterprises (US patent 12,142,047).
+Verbit and Audible Sight sell AI description to organisations, with a person
+able to edit it. ViddyScribe writes description into uploaded videos and has a
+Realtime mode for YouTube in the browser. YouDescribe gives volunteers AI
+draft scripts to refine. These are good tools, and most have more polish than
+aloud. What aloud adds is narrower: it is a television player as well as a
+writer. The track plays on Fire TV through a native Vega app that a blind
+viewer can operate alone, a scheduler refuses any description the remaining
+silence cannot hold, and the overlap with dialogue is measured against the
+film's own production stems. We found no other tool that publishes such a
+figure, which is not the same as saying none exists.
 
 ## Where it goes
 
@@ -151,6 +177,8 @@ pipeline together. That makes two paths to viewers:
 - **The aloud app on the Fire TV Appstore**, with a shelf of open and
   public-domain film described out of the box: a catalogue a blind viewer
   can browse, set up and watch without help.
+- **Audio description for every Vega app.** `vega-described-track` lets any
+  React Native for Vega player play a described track, whoever wrote it.
 - **Tracks for catalogue owners.** FAST channels and independent distributors
   run the same pipeline on their own titles, review the track if they want a
   person to sign off, and ship it beside the film as standard WebVTT.
@@ -169,8 +197,8 @@ pipeline together. That makes two paths to viewers:
 - **Voice**: Kokoro 82M on CPU (macOS `say` also supported).
 - **Listening**: a hand-built speech-band and syllable-rhythm detector, Silero
   VAD, caption files.
-- Python 3.12+, numpy, ffmpeg. 168 Python tests, 80
-  JavaScript tests (57 Jest, 23 scheduler).
+- Python 3.12+, numpy, ffmpeg. Python tests in `tests/`, 57 Jest and 23
+  scheduler tests in `tv/`.
 
 ## Run it
 
