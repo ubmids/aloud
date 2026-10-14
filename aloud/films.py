@@ -93,10 +93,16 @@ TITLES = [
         # No dialogue at all: the whole film is a gap, cut up by its shots.
         credit="(c) copyright 2008, Blender Foundation | www.bigbuckbunny.org",
         genre="Family comedy", year=2008, minutes=10, poster_at=75.0,
-        cast=("Bunny: a big, round, fluffy grey-and-white rabbit. Frank: a "
-              "brown flying squirrel, the bullies' leader. Rinky: a red "
-              "squirrel. Gimera: a grey chinchilla. Frank, Rinky and Gimera "
-              "are the three bullies."),
+        # Only the title names anyone: the film has no dialogue, and its
+        # three bullies are named in the credits alone. Naming them anyway
+        # went wrong twice on the way here (the describer called the
+        # chinchilla "Bunny", then swapped the two squirrels), so they are
+        # described by what a viewer sees, as the brief asks for anyone the
+        # film has not named.
+        cast=("Bunny: a huge, fat, fluffy white rabbit, much bigger than "
+              "everyone else; the only rabbit. Nobody else is named: "
+              "describe the three small bullies by how they look (a flying "
+              "squirrel, a red squirrel, a grey chinchilla)."),
     ),
     Title(
         id="sintel-trailer",

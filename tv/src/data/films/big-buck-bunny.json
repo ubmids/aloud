@@ -4,14 +4,14 @@
   "source": "big_buck_bunny_720p_h264.mov",
   "describer": "qwen3-vl-4b (local, llama.cpp on CPU)",
   "voice": "Kokoro 82M (af_heart)",
-  "announcement": "Big Buck Bunny. Family comedy, 2008, 10 minutes. 50 descriptions.",
+  "announcement": "Big Buck Bunny. Family comedy, 2008, 10 minutes. 48 descriptions.",
   "credit": "(c) copyright 2008, Blender Foundation | www.bigbuckbunny.org",
   "licence": "Creative Commons Attribution 3.0",
   "cues": [
     {
       "start": 0.5,
-      "end": 8.862,
-      "text": "A vast, soft pink cloud dominates the sky above a line of green trees, with a faint bird silhouette visible against the pale horizon.",
+      "end": 8.308,
+      "text": "A vast, pink-hued cloud dominates the sky above a line of green trees, with faint birds visible in the distant, pale upper right.",
       "audio": "cue-001.m4a",
       "gap": [
         0.5,
@@ -20,8 +20,8 @@
     },
     {
       "start": 12.43,
-      "end": 15.517,
-      "text": "A serene stream flows through vibrant grass and flowers.",
+      "end": 14.573,
+      "text": "A stream flows through grass and flowers.",
       "audio": "cue-002.m4a",
       "gap": [
         12.43,
@@ -30,8 +30,8 @@
     },
     {
       "start": 17.83,
-      "end": 19.987,
-      "text": "A small purple owl perches on a branch.",
+      "end": 20.235,
+      "text": "A small purple owl perches on a tree branch.",
       "audio": "cue-003.m4a",
       "gap": [
         17.83,
@@ -40,8 +40,8 @@
     },
     {
       "start": 23.042,
-      "end": 33.533,
-      "text": "A large tree with moss-covered roots and a dark hollow stands in a sunlit meadow, surrounded by vibrant green grass dotted with small purple flowers and scattered rocks.",
+      "end": 33.675,
+      "text": "A mossy, grassy mound with a dark hole at its center, nestled beneath a large tree with exposed roots, surrounded by vibrant green grass and scattered purple flowers.",
       "audio": "cue-004.m4a",
       "gap": [
         23.042,
@@ -50,8 +50,8 @@
     },
     {
       "start": 50.95,
-      "end": 54.854,
-      "text": "A large grey rabbit stretches contentedly near a mossy tree root.",
+      "end": 54.831,
+      "text": "Bunny stretches contentedly beside a mossy mound with a dark hole.",
       "audio": "cue-005.m4a",
       "gap": [
         50.95,
@@ -60,8 +60,8 @@
     },
     {
       "start": 56.083,
-      "end": 58.773,
-      "text": "A fluffy white rabbit looks up at a bright blue sky.",
+      "end": 59.525,
+      "text": "Bunny lifts its head, eyes closed, toward the bright blue sky.",
       "audio": "cue-006.m4a",
       "gap": [
         56.083,
@@ -70,8 +70,8 @@
     },
     {
       "start": 60.667,
-      "end": 68.06,
-      "text": "The fluffy white rabbit, previously stretching, now looks up with one eye open, smiling gently under a bright blue sky.",
+      "end": 67.716,
+      "text": "Bunny\u2019s eyes open slightly as it looks upward, still smiling, beneath a leafy tree branch against a bright blue sky.",
       "audio": "cue-007.m4a",
       "gap": [
         60.667,
@@ -80,8 +80,8 @@
     },
     {
       "start": 69.417,
-      "end": 72.137,
-      "text": "A large white rabbit stretches in a grassy field.",
+      "end": 72.488,
+      "text": "Bunny stretches contentedly in a sunlit green field.",
       "audio": "cue-008.m4a",
       "gap": [
         69.417,
@@ -90,8 +90,8 @@
     },
     {
       "start": 73.458,
-      "end": 76.623,
-      "text": "The fluffy white rabbit smiles gently, one eye open.",
+      "end": 78.73,
+      "text": "Bunny smiles gently, nose near pale blue flowers, eyes half-closed in contentment.",
       "audio": "cue-009.m4a",
       "gap": [
         73.458,
@@ -100,8 +100,8 @@
     },
     {
       "start": 79.958,
-      "end": 88.142,
-      "text": "The fluffy white rabbit, smiling gently with one eye open, watches a purple butterfly flutter near its ear in a sunlit grassy field.",
+      "end": 89.193,
+      "text": "Bunny stands in a sunlit green field, smiling as a purple butterfly hovers near its ear, with distant trees and mountains under a bright blue sky.",
       "audio": "cue-010.m4a",
       "gap": [
         79.958,
@@ -110,8 +110,8 @@
     },
     {
       "start": 102.25,
-      "end": 109.833,
-      "text": "A brown-furred creature with pointed ears peers down from a tree branch, observing a white rabbit sitting on green grass below.",
+      "end": 109.703,
+      "text": "A flying squirrel, perched on a tree branch, watches Bunny below, who holds a red apple, surrounded by green grass and leaves.",
       "audio": "cue-011.m4a",
       "gap": [
         102.25,
@@ -120,8 +120,8 @@
     },
     {
       "start": 112.667,
-      "end": 117.038,
-      "text": "The white rabbit lifts its paws toward the purple butterfly hovering above.",
+      "end": 116.58,
+      "text": "Bunny turns, waving a paw as a purple butterfly floats nearby.",
       "audio": "cue-012.m4a",
       "gap": [
         112.667,
@@ -130,8 +130,8 @@
     },
     {
       "start": 117.958,
-      "end": 124.871,
-      "text": "A red squirrel with wide eyes stands beside a grey chinchilla holding an acorn, as a third squirrel approaches.",
+      "end": 124.252,
+      "text": "A red squirrel and a grey chinchilla stand in the grass, the squirrel holding a nut, both looking toward Bunny.",
       "audio": "cue-013.m4a",
       "gap": [
         117.958,
@@ -140,8 +140,8 @@
     },
     {
       "start": 126.875,
-      "end": 133.881,
-      "text": "The white rabbit, seated by a tree, watches a purple butterfly hover above its head, now slightly lower in the air.",
+      "end": 134.155,
+      "text": "Bunny, a large white rabbit, smiles as a purple butterfly hovers near his head, perched on the tree trunk behind him.",
       "audio": "cue-014.m4a",
       "gap": [
         126.875,
@@ -149,20 +149,10 @@
       ]
     },
     {
-      "start": 146.375,
-      "end": 151.637,
-      "text": "The white rabbit sits curled on the grass, near a leafy bush, motionless under bright sunlight.",
-      "audio": "cue-015.m4a",
-      "gap": [
-        146.375,
-        156.0
-      ]
-    },
-    {
       "start": 156.0,
-      "end": 160.053,
-      "text": "The white rabbit stands in a sunlit field, looking upward with wide eyes.",
-      "audio": "cue-016.m4a",
+      "end": 159.514,
+      "text": "Bunny stands in a grassy field, looking upward with wide eyes.",
+      "audio": "cue-015.m4a",
       "gap": [
         156.0,
         160.833
@@ -170,29 +160,19 @@
     },
     {
       "start": 160.833,
-      "end": 168.093,
-      "text": "A brown squirrel with wide eyes perches on a rock, a red squirrel laughs behind it, and a grey chinchilla smiles nearby.",
-      "audio": "cue-017.m4a",
+      "end": 167.333,
+      "text": "A flying squirrel, a red squirrel, and a grey chinchilla peer from behind a rock, all laughing with wide eyes.",
+      "audio": "cue-016.m4a",
       "gap": [
         160.833,
         169.69
       ]
     },
     {
-      "start": 183.99,
-      "end": 186.802,
-      "text": "A brown squirrel grips a rock with a fierce expression.",
-      "audio": "cue-018.m4a",
-      "gap": [
-        183.99,
-        189.333
-      ]
-    },
-    {
       "start": 189.333,
-      "end": 193.717,
-      "text": "A large white rabbit stands in a sunlit field, surrounded by scattered fruit.",
-      "audio": "cue-019.m4a",
+      "end": 192.773,
+      "text": "Bunny stands in a grassy field, surrounded by scattered fruit.",
+      "audio": "cue-017.m4a",
       "gap": [
         189.333,
         194.53
@@ -200,9 +180,9 @@
     },
     {
       "start": 199.833,
-      "end": 201.801,
-      "text": "A red squirrel peeks from behind a tree.",
-      "audio": "cue-020.m4a",
+      "end": 203.058,
+      "text": "The red squirrel jumps forward, eyes wide and teeth bared.",
+      "audio": "cue-018.m4a",
       "gap": [
         199.833,
         204.167
@@ -210,9 +190,9 @@
     },
     {
       "start": 204.167,
-      "end": 209.667,
-      "text": "A large white rabbit stands in a sunlit field, its paws clasped together, looking surprised.",
-      "audio": "cue-021.m4a",
+      "end": 206.886,
+      "text": "Bunny stands in a grassy field, hands clasped.",
+      "audio": "cue-019.m4a",
       "gap": [
         204.167,
         211.65
@@ -220,9 +200,9 @@
     },
     {
       "start": 214.75,
-      "end": 218.162,
-      "text": "A red squirrel peers from behind a tree, its eye wide open.",
-      "audio": "cue-022.m4a",
+      "end": 217.245,
+      "text": "The red squirrel lunges forward, eyes wide.",
+      "audio": "cue-020.m4a",
       "gap": [
         214.75,
         220.5
@@ -230,9 +210,9 @@
     },
     {
       "start": 226.25,
-      "end": 232.074,
-      "text": "The large white rabbit, startled, flinches back from the tree as two spiky acorns fall nearby.",
-      "audio": "cue-023.m4a",
+      "end": 233.894,
+      "text": "Bunny stands in a grassy field, arms flung wide, mouth open in a startled gasp as two spiky acorns fall from above.",
+      "audio": "cue-021.m4a",
       "gap": [
         226.25,
         235.25
@@ -240,9 +220,9 @@
     },
     {
       "start": 242.042,
-      "end": 245.511,
-      "text": "The large white rabbit leaps across the sunlit grassy field.",
-      "audio": "cue-024.m4a",
+      "end": 245.615,
+      "text": "Bunny leaps through tall grass, then vanishes behind a tree trunk.",
+      "audio": "cue-022.m4a",
       "gap": [
         242.042,
         246.59
@@ -250,9 +230,9 @@
     },
     {
       "start": 251.51,
-      "end": 253.568,
-      "text": "A white rabbit grips a tree trunk tightly.",
-      "audio": "cue-025.m4a",
+      "end": 253.693,
+      "text": "Bunny grips a tree trunk with both paws.",
+      "audio": "cue-023.m4a",
       "gap": [
         251.51,
         254.31
@@ -260,9 +240,9 @@
     },
     {
       "start": 268.41,
-      "end": 270.572,
-      "text": "The large white rabbit pulls a green rope.",
-      "audio": "cue-026.m4a",
+      "end": 270.147,
+      "text": "Bunny grips a green rope tightly.",
+      "audio": "cue-024.m4a",
       "gap": [
         268.41,
         271.07
@@ -272,7 +252,7 @@
       "start": 287.85,
       "end": 290.214,
       "text": "Three small animals peek from behind a rock.",
-      "audio": "cue-027.m4a",
+      "audio": "cue-025.m4a",
       "gap": [
         287.85,
         290.75
@@ -280,9 +260,9 @@
     },
     {
       "start": 296.33,
-      "end": 303.737,
-      "text": "A green rope, tied with yellow knots, is secured around a thick, textured tree trunk with dappled sunlight casting shadows.",
-      "audio": "cue-028.m4a",
+      "end": 301.537,
+      "text": "A green rope is tied tightly around a tree trunk, with a single leaf attached to its end.",
+      "audio": "cue-026.m4a",
       "gap": [
         296.33,
         305.208
@@ -290,19 +270,29 @@
     },
     {
       "start": 305.208,
-      "end": 309.282,
-      "text": "Three small animals run along a dirt path through a sunlit grassy field.",
-      "audio": "cue-029.m4a",
+      "end": 310.829,
+      "text": "The flying squirrel, red squirrel, and grey chinchilla run along a dirt path through a grassy field.",
+      "audio": "cue-027.m4a",
       "gap": [
         305.208,
         312.5
       ]
     },
     {
+      "start": 312.5,
+      "end": 313.979,
+      "text": "The red squirrel holds a nut.",
+      "audio": "cue-028.m4a",
+      "gap": [
+        312.5,
+        317.208
+      ]
+    },
+    {
       "start": 317.208,
-      "end": 320.229,
-      "text": "Three animated rodents stand on a sunlit dirt path.",
-      "audio": "cue-030.m4a",
+      "end": 320.276,
+      "text": "The red squirrel holds a nut, the flying squirrel looks up.",
+      "audio": "cue-029.m4a",
       "gap": [
         317.208,
         322.167
@@ -310,9 +300,9 @@
     },
     {
       "start": 322.167,
-      "end": 330.641,
-      "text": "A twisted green rope with yellow knots hangs diagonally, framed against a softly blurred forest backdrop of tree trunks and dappled sunlight.",
-      "audio": "cue-031.m4a",
+      "end": 329.215,
+      "text": "A twisted green vine hangs in focus against a softly blurred forest background of trees and dappled sunlight.",
+      "audio": "cue-030.m4a",
       "gap": [
         322.167,
         334.333
@@ -320,9 +310,9 @@
     },
     {
       "start": 334.333,
-      "end": 338.881,
-      "text": "A close-up of a brown animated rabbit with wide eyes and protruding teeth.",
-      "audio": "cue-032.m4a",
+      "end": 338.369,
+      "text": "A red squirrel with large green eyes and prominent teeth stares forward.",
+      "audio": "cue-031.m4a",
       "gap": [
         334.333,
         339.75
@@ -330,9 +320,9 @@
     },
     {
       "start": 339.75,
-      "end": 348.588,
-      "text": "A grey-furred chinchilla with pink ears sits on a rock, holding a red apple, as small red mushrooms with purple caps grow near a mossy stone.",
-      "audio": "cue-033.m4a",
+      "end": 344.432,
+      "text": "A grey chinchilla sits on a rock, holding a nut, its fur dark and ears perked.",
+      "audio": "cue-032.m4a",
       "gap": [
         339.75,
         372.708
@@ -340,9 +330,9 @@
     },
     {
       "start": 372.708,
-      "end": 376.801,
-      "text": "A dark bird soars above the forest canopy against a clear blue sky.",
-      "audio": "cue-034.m4a",
+      "end": 376.065,
+      "text": "A dark shape streaks across the sky above the forest canopy.",
+      "audio": "cue-033.m4a",
       "gap": [
         372.708,
         378.333
@@ -350,9 +340,9 @@
     },
     {
       "start": 378.333,
-      "end": 387.375,
-      "text": "A small, brown and white animated squirrel with large, wide eyes stands on rocky ground near a massive tree trunk, its tail curled upward.",
-      "audio": "cue-035.m4a",
+      "end": 385.788,
+      "text": "A flying squirrel with wide, startled eyes and a brown-and-white body stands on rocks near a tree trunk, its tail twitching.",
+      "audio": "cue-034.m4a",
       "gap": [
         378.333,
         390.792
@@ -360,19 +350,39 @@
     },
     {
       "start": 390.792,
-      "end": 396.379,
-      "text": "The brown and white animated squirrel leaps from a tree branch, then lands with a startled expression.",
-      "audio": "cue-036.m4a",
+      "end": 396.507,
+      "text": "A red squirrel perches on a tree branch, eyes narrowed and tail upright, surveying the scene below.",
+      "audio": "cue-035.m4a",
       "gap": [
         390.792,
         399.13
       ]
     },
     {
-      "start": 412.83,
-      "end": 418.967,
-      "text": "The brown and white animated squirrel perches on a tree branch, eyes fixed on a red apple hanging nearby.",
+      "start": 402.07,
+      "end": 405.156,
+      "text": "The flying squirrel spreads its arms wide on a tree branch.",
+      "audio": "cue-036.m4a",
+      "gap": [
+        402.07,
+        406.21
+      ]
+    },
+    {
+      "start": 408.125,
+      "end": 410.192,
+      "text": "The flying squirrel glides through the sky.",
       "audio": "cue-037.m4a",
+      "gap": [
+        408.125,
+        410.75
+      ]
+    },
+    {
+      "start": 412.83,
+      "end": 419.393,
+      "text": "A red squirrel balances on a branch, eyes narrowed, watching a peach hang nearby as leaves rustle in the breeze.",
+      "audio": "cue-038.m4a",
       "gap": [
         412.83,
         420.67
@@ -382,7 +392,7 @@
       "start": 423.81,
       "end": 426.016,
       "text": "Leaves swirl in the sunlit forest clearing.",
-      "audio": "cue-038.m4a",
+      "audio": "cue-039.m4a",
       "gap": [
         423.81,
         426.45
@@ -390,9 +400,9 @@
     },
     {
       "start": 427.03,
-      "end": 429.427,
-      "text": "A small white creature stands on a dirt path.",
-      "audio": "cue-039.m4a",
+      "end": 429.484,
+      "text": "A large white rabbit stands on a dirt path.",
+      "audio": "cue-040.m4a",
       "gap": [
         427.03,
         430.69
@@ -400,9 +410,9 @@
     },
     {
       "start": 437.05,
-      "end": 438.451,
-      "text": "The squirrel leaps through the air.",
-      "audio": "cue-040.m4a",
+      "end": 438.94,
+      "text": "A flying squirrel glides through the air.",
+      "audio": "cue-041.m4a",
       "gap": [
         437.05,
         440.17
@@ -410,9 +420,9 @@
     },
     {
       "start": 444.83,
-      "end": 449.611,
-      "text": "Sharp pencil points stand in a row, blurred green forest and tree trunk behind.",
-      "audio": "cue-041.m4a",
+      "end": 450.516,
+      "text": "Sharp pencil points stand upright in a row, facing forward, against a sunlit forest backdrop.",
+      "audio": "cue-042.m4a",
       "gap": [
         444.83,
         451.75
@@ -420,29 +430,19 @@
     },
     {
       "start": 451.75,
-      "end": 456.581,
-      "text": "A brown squirrel with wide eyes perches on a branch, facing a large white rabbit.",
-      "audio": "cue-042.m4a",
+      "end": 456.823,
+      "text": "A red squirrel perches on a branch, eyes wide, as the large white rabbit approaches.",
+      "audio": "cue-043.m4a",
       "gap": [
         451.75,
         458.292
       ]
     },
     {
-      "start": 458.292,
-      "end": 466.214,
-      "text": "The white rabbit, large and fluffy, holds the brown squirrel by its head, their faces close as the squirrel\u2019s wide eye stares upward.",
-      "audio": "cue-043.m4a",
-      "gap": [
-        458.292,
-        471.333
-      ]
-    },
-    {
       "start": 471.333,
-      "end": 475.81,
-      "text": "The white rabbit\u2019s face fills the frame, eyes wide and mouth slightly upturned.",
-      "audio": "cue-044.m4a",
+      "end": 476.883,
+      "text": "The large white rabbit smiles broadly, its brown eyes fixed forward with a knowing expression.",
+      "audio": "cue-045.m4a",
       "gap": [
         471.333,
         478.01
@@ -450,9 +450,9 @@
     },
     {
       "start": 480.167,
-      "end": 482.474,
-      "text": "The brown squirrel\u2019s wide eyes fill the frame.",
-      "audio": "cue-045.m4a",
+      "end": 482.223,
+      "text": "The red squirrel\u2019s eyes widen in fear.",
+      "audio": "cue-046.m4a",
       "gap": [
         480.167,
         483.833
@@ -460,9 +460,9 @@
     },
     {
       "start": 483.833,
-      "end": 488.959,
-      "text": "A white rabbit stands in a grassy field, holding a string to a kite flying high in the sky.",
-      "audio": "cue-046.m4a",
+      "end": 488.904,
+      "text": "The large white rabbit stands in a grassy field, holding a string to a flying squirrel kite.",
+      "audio": "cue-047.m4a",
       "gap": [
         483.833,
         491.25
@@ -472,37 +472,17 @@
       "start": 492.67,
       "end": 494.913,
       "text": "On screen: Peach Open Movie Team.",
-      "audio": "cue-047.m4a",
+      "audio": "cue-048.m4a",
       "gap": [
         492.67,
         495.59
       ]
     },
     {
-      "start": 534.25,
-      "end": 543.568,
-      "text": "A grey cartoon mouse with pink ears holds a green apple, positioned centrally against a dark green textured background with scrolling white credit text.",
-      "audio": "cue-048.m4a",
-      "gap": [
-        534.25,
-        553.25
-      ]
-    },
-    {
-      "start": 574.41,
-      "end": 578.869,
-      "text": "A pink butterfly flutters near white text on a textured brown background.",
-      "audio": "cue-049.m4a",
-      "gap": [
-        574.41,
-        580.917
-      ]
-    },
-    {
       "start": 580.917,
-      "end": 591.487,
-      "text": "A cartoon squirrel with pink ears and wide eyes hangs upside down from a stick, suspended in a bright blue sky with fluffy white clouds, as a purple bird flies past.",
-      "audio": "cue-050.m4a",
+      "end": 589.02,
+      "text": "The red squirrel, eyes wide with fear, flies overhead as the flying squirrel glides through the sky, its arms spread wide on the kite.",
+      "audio": "cue-049.m4a",
       "gap": [
         580.917,
         596.33
