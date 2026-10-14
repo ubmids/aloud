@@ -172,6 +172,11 @@ def test_regate_takes_a_refused_cue_off_a_shipped_track():
         assert os.path.getsize(os.path.join(app, "assets", "films", "sintel-trailer",
                                             "announce.m4a")) > 0
         assert regate(app, "sintel-trailer", synth=Voice()) == []
+        # A reviewer can refuse what no word list catches.
+        gone = regate(app, "sintel-trailer", synth=Voice(), drop=[30.0])
+        assert [c["text"] for c in gone] == ["Snow falls on the pass."], gone
+        with open(os.path.join(data, "sintel-trailer.json")) as f:
+            assert json.load(f)["announcement"].endswith("1 descriptions.")
     finally:
         shutil.rmtree(d, ignore_errors=True)
     print("PASS regate takes a refused cue off a shipped track and recounts")

@@ -98,7 +98,7 @@ def publish(out_dir: str, id: str, app: str = "tv", film: str | None = None,
     return data
 
 
-def regate(app: str, id: str, synth=None) -> list:
+def regate(app: str, id: str, synth=None, drop=()) -> list:
     """Bring a track that is already on the shelf under the sentence gate.
 
     For a title that is not being re-described: each cue the gate refuses is
@@ -106,14 +106,20 @@ def regate(app: str, id: str, synth=None) -> list:
     what the pipeline would have done. The other cues keep their times and
     their files. The shelf announcement is re-spoken with the new count.
     Returns the cues removed; an empty list means nothing changed.
+
+    `drop` is the start times of cues a reviewer has refused outright, for
+    what no word list can catch: a model that describes a man in a film with
+    no people in it. Matched to the hundredth of a second.
     """
     title = BY_ID[id]
     dest = os.path.join(app, "src", "data", "films", f"{id}.json")
     with open(dest) as f:
         data = json.load(f)
     keep, removed = [], []
+    refused = {round(float(t), 2) for t in drop}
     for c in data["cues"]:
-        (removed if unfit(c.get("text", "")) else keep).append(c)
+        out = unfit(c.get("text", "")) or round(c["start"], 2) in refused
+        (removed if out else keep).append(c)
     if not removed:
         return []
     root = os.path.join(app, "assets", "films", id)
@@ -142,10 +148,14 @@ def main(argv=None):
     ap.add_argument("--film", help="also encode this film into the app")
     ap.add_argument("--regate", action="store_true",
                     help="apply the sentence gate to the track already in the app")
+    ap.add_argument("--drop", type=float, action="append", default=[],
+                    metavar="START", help="with --regate: also remove the cue "
+                    "starting at START seconds, refused in review")
     a = ap.parse_args(argv)
     if a.regate:
-        for c in regate(a.app, a.id):
-            print(f"removed {c['start']}s: {unfit(c['text'])}: {c['text']}")
+        for c in regate(a.app, a.id, drop=a.drop):
+            why = unfit(c["text"]) or "refused in review"
+            print(f"removed {c['start']}s: {why}: {c['text']}")
         return 0
     if not a.out_dir:
         ap.error("out_dir is required unless --regate")
