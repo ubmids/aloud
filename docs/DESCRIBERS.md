@@ -77,6 +77,43 @@ into `tv/`. Answers are cached per frame, word budget, brief and model under
 `$TMPDIR/aloud-films/<id>/out/described.cache.json`, so a rerun after a rate
 limit resumes rather than restarts, and a different model is asked afresh.
 
+## Tears of Steel with its cast, and the continuity pass
+
+Tears of Steel's shipped track was written before it had a cast list. To
+re-describe it with the names its dialogue uses (Thom, Celia, Barley, the
+Captain) and then run the continuity pass over the result, on a Mac with the
+films fetched:
+
+```bash
+pip install -r requirements.txt kokoro-onnx soundfile
+mkdir -p ~/.cache/aloud/kokoro && cd ~/.cache/aloud/kokoro && \
+  curl -LO https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx && \
+  curl -LO https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin && cd -
+export ALOUD_TTS=kokoro            # the shelf's voice; without it a Mac uses `say`
+export GEMINI_API_KEY=...          # or ALOUD_LLM_BASE_URL / _API_KEY / _MODEL
+export ALOUD_CONTINUITY=1          # the continuity pass, with the same model
+python3 -m aloud.films build --only tears-of-steel
+python3 -m aloud.evaluate "$TMPDIR/aloud-films/tears-of-steel/tears_of_steel_720p.mov" \
+  --stems TOS_DVDSTEREOMIX.aif "TOS_MUSIC+FX_NO_DIALOGUE.aif" \
+  --captions "$TMPDIR/aloud-films/tears-of-steel/TOS-en.srt" \
+  --track "$TMPDIR/aloud-films/tears-of-steel/out/description.json"
+```
+
+The track then records `describer` (the vision model) and `revised_by` (the
+continuity model), and every revised cue keeps what the describer first wrote
+as `draft`. Re-check the overlap figure with the evaluate line before quoting
+it, and update the counts in README.md and docs/SUBMISSION.md.
+
+The pass is off unless `ALOUD_CONTINUITY=1`. It sends the whole cue list, the
+caption lines and the cast list to a text model and asks only for
+consistency: the same words for the same person or thing, a cast name once
+the person can be told, articles, present tense, nothing added. A revision
+is kept only if it passes the sentence gate, names no one the cue or the cast
+list did not, is at most two words longer, and, re-spoken and re-measured,
+still ends inside the cue's gap. Otherwise the original stays. It is tested
+with a fake model (`tests/test_continuity.py`); no shipped track has been
+through it.
+
 ## The voice
 
 `aloud/synth.py` speaks with macOS `say` where it exists and otherwise with
@@ -93,7 +130,7 @@ actually said, never an estimate.
 
 From `aloud/caption.py`, in short: present tense; only what is visible; no
 interpretation, no emotions named, nothing that can be heard; no character
-names; people described by what can be seen of them; legible on-screen text
+names unless the title has a cast list, and then only those; people described by what can be seen of them; legible on-screen text
 read as "On screen:" and the words; the most important new thing first; one
 sentence; about N words, where N comes from the gap. When the describer can
 take them it is also shown a second frame a second later in the same shot, so

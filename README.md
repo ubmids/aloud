@@ -228,6 +228,7 @@ Tests: `for t in tests/test_*.py; do python3 $t; done`, and in `tv/`,
 - [docs/DESCRIBERS.md](docs/DESCRIBERS.md): providers, the local model, regenerating
 - [docs/FRICTION_LOG.md](docs/FRICTION_LOG.md): building a media app on Vega OS
 - [docs/ENGINEERING.md](docs/ENGINEERING.md): the build notebook, calibration, mutation testing
+- [docs/UPSTREAM_PR.md](docs/UPSTREAM_PR.md): the prepared PR adding description to Amazon's multi-TV sample
 - [docs/MAC_CHECKLIST.md](docs/MAC_CHECKLIST.md): building and checking on the Vega Virtual Device (macOS or Ubuntu)
 
 ## Credits
