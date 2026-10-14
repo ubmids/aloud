@@ -115,7 +115,8 @@ def describe_film(video: str, *, captioner=None, synth=None,
                   out_dir: str | None = None, align: str = "start",
                   captions: str | None = None, split: bool = True,
                   memory: int = 3, quiet: bool = True,
-                  max_failures: int = 5, cast: str | None = None) -> Result:
+                  max_failures: int = 5, cast: str | None = None,
+                  continuity=None) -> Result:
     """Describe `video` and return the track.
 
     `captions` is the title's own SRT or WebVTT file, if it has one. Every cue
@@ -124,6 +125,9 @@ def describe_film(video: str, *, captioner=None, synth=None,
     says what is new instead of reintroducing the same man every cue.
     `cast` names the title's characters as the film names them (see
     films.Title.cast), for a describer that takes it.
+    `continuity` is a text model for the continuity pass (continuity.py);
+    None means use one from the environment if `ALOUD_CONTINUITY=1`, and
+    False means never.
     """
     from .caption import ask_version, captioner_from_env, repeats, unfit
 
@@ -288,6 +292,21 @@ def describe_film(video: str, *, captioner=None, synth=None,
 
     track.describer = label
     track.voice = getattr(synth, "name", type(synth).__name__)
+
+    from . import continuity as cont
+    if continuity is None and cont.enabled():
+        continuity = cont.rewriter_from_env()
+        if continuity is None:
+            raise RuntimeError("ALOUD_CONTINUITY=1 but no text model is "
+                               "configured (see docs/DESCRIBERS.md)")
+    if continuity and track.cues and not is_stub:
+        from .captions import lines
+        log = cont.revise(track, rewriter=continuity, synth=synth, cast=cast,
+                          dialogue=lines(captions) if captions else (),
+                          out_dir=cues_dir)
+        for c, outcome in log:
+            if outcome != "unchanged":
+                _log(quiet, f"continuity {c.start:7.2f}s  {outcome}: {c.text}")
     problems = track.validate(gaps)
     if problems:
         raise ValueError("the pipeline produced an unsafe track:\n  "

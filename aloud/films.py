@@ -60,6 +60,18 @@ SINTEL_CAST = ("Sintel: a young woman with short red hair, who carries a "
                "staff and later a spear. Scales: a small baby dragon. Any "
                "full-grown dragon is just 'a dragon'.")
 
+# Every name here is said in the film's own English subtitles ("You're a
+# jerk, Thom.", "Look Celia", "How's it looking, Barley?", "Captain!"). Who
+# looks like whom is from the film and its published cast; check it against
+# the picture before regenerating (docs/OWNER_TODO.md lists the moments).
+TOS_CAST = ("Thom: as a young man, on a bridge with Celia in the opening; "
+            "forty years later, a grey-haired old man. Celia: as a young "
+            "woman, she has a robotic hand; forty years later she is the "
+            "giant robot. Barley: the team's technician at the console, a "
+            "young man with curly hair and glasses. The Captain: the team's "
+            "leader, a man with a mechanical eye. Anyone else, including the "
+            "soldiers, is described by what can be seen.")
+
 TITLES = [
     Title(
         id="tears-of-steel",
@@ -71,6 +83,7 @@ TITLES = [
                "TOS_MUSIC%2BFX_NO_DIALOGUE.aif"),
         credit="(CC) Blender Foundation | mango.blender.org",
         genre="Science fiction", year=2012, minutes=12, poster_at=250.0,
+        cast=TOS_CAST,
     ),
     Title(
         id="sintel",

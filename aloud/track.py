@@ -23,6 +23,8 @@ class Cue:
     text: str
     audio: str | None = None
     gap: tuple[float, float] | None = None
+    # What the describer first wrote, when the continuity pass revised it.
+    draft: str | None = None
 
     @property
     def duration(self) -> float:
@@ -37,6 +39,8 @@ class Track:
     # and the first question a reviewer asks is what wrote it.
     describer: str = ""
     voice: str = ""
+    # The model that revised it for continuity, if any did.
+    revised_by: str = ""
 
     def validate(self, gaps, tolerance: float = 0.01) -> list[str]:
         """Every problem with this track, as plain sentences. Empty means good."""
@@ -80,12 +84,17 @@ class Track:
             out["describer"] = self.describer
         if self.voice:
             out["voice"] = self.voice
-        return {
-            **out,
-            "cues": [{"start": round(c.start, 3), "end": round(c.end, 3),
-                      "text": c.text, "audio": c.audio,
-                      "gap": list(c.gap) if c.gap else None} for c in self.cues],
-        }
+        if self.revised_by:
+            out["revised_by"] = self.revised_by
+
+        def cue(c):
+            d = {"start": round(c.start, 3), "end": round(c.end, 3),
+                 "text": c.text, "audio": c.audio,
+                 "gap": list(c.gap) if c.gap else None}
+            if c.draft:
+                d["draft"] = c.draft
+            return d
+        return {**out, "cues": [cue(c) for c in self.cues]}
 
     def write(self, vtt_path: str | None = None, json_path: str | None = None,
               gaps=None) -> None:

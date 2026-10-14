@@ -38,3 +38,20 @@ def speech_spans(path: str, *, lead: float = 0.4,
     with open(path, encoding="utf-8-sig", errors="replace") as f:
         spans = parse(f.read())
     return [(max(0.0, a - lead), b + tail) for a, b in spans]
+
+
+def lines(path: str) -> list[tuple[float, float, str]]:
+    """(start, end, words) for every caption, for a pass that reads the
+    dialogue as well as its timing (see continuity.py)."""
+    with open(path, encoding="utf-8-sig", errors="replace") as f:
+        text = f.read()
+    out = []
+    for block in re.split(r"\n\s*\n", text.replace("\r", "")):
+        m = _CUE.search(block)
+        if not m:
+            continue
+        g = m.groups()
+        words = " ".join(l.strip() for l in block[m.end():].splitlines()
+                         if l.strip())
+        out.append((_seconds(*g[:4]), _seconds(*g[4:]), words))
+    return sorted(out)
