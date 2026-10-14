@@ -409,6 +409,17 @@ def test_the_brief_asks_for_the_world_not_the_camera():
     print("PASS the brief rules out camera talk and comparisons")
 
 
+def test_the_brief_gives_no_example_person_to_copy():
+    """The brief once said "for example 'the grey-haired man'", and a 4B model
+    describing Big Buck Bunny, a film with no people in it, wrote "The
+    grey-haired man holds the red squirrel". An example person in the brief
+    is a person the model can put in the picture."""
+    from aloud.caption import CONTEXT, SYSTEM
+    for brief in (SYSTEM, CONTEXT):
+        assert "grey-haired" not in brief and "for example '" not in brief, brief
+    print("PASS the brief has no example person to copy into a frame")
+
+
 def test_a_second_sentence_is_dropped():
     assert clean("A man runs. He stops at the door.") == "A man runs."
     assert clean("Mr. Smith waits") == "Mr. Smith waits."

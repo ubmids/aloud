@@ -168,7 +168,7 @@ pipeline together. That makes two paths to viewers:
 - **Voice**: Kokoro 82M on CPU (macOS `say` also supported).
 - **Listening**: a hand-built speech-band and syllable-rhythm detector, Silero
   VAD, caption files.
-- Python 3.12+, numpy, ffmpeg. 167 Python tests, 80
+- Python 3.12+, numpy, ffmpeg. 168 Python tests, 80
   JavaScript tests (57 Jest, 23 scheduler).
 
 ## Run it

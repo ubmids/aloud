@@ -71,8 +71,8 @@ MOTION = (
 # know.
 CONTEXT = (
     " The listener has already heard the descriptions given below. Do not "
-    "repeat them; say what is new. Refer back to people already described by "
-    "what was said about them, for example 'the grey-haired man'."
+    "repeat them; say what is new. Refer back to anyone already described "
+    "by the words already used for them, rather than describing them afresh."
 )
 
 
