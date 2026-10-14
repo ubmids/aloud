@@ -36,18 +36,25 @@ in their second language. aloud is a way of watching with your ears.
 
 1. **The shelf speaks.** Each title is read aloud as it takes focus, in the
    same voice that will describe the film: *"Tears of Steel. Science fiction,
-   2012, 12 minutes. 46 descriptions."* If VoiceView is on, aloud
-   stays quiet and lets the screen reader read the same words.
+   2012, 12 minutes. 45 descriptions."* Every setting does the same, on the
+   shelf and under the film: *"Voice level, loud. The film drops well back, so
+   every word is clear."* when it takes focus, and its new value when select
+   changes it. If VoiceView is on, aloud stays quiet and lets the screen
+   reader read the same words.
 2. **Select plays it, described.** The first description lands
    11.6 seconds in. The screen shows the schedule: the dialogue as a bar,
    the silences cut out of it, and each description sitting inside one.
+   "Picture: Full screen" turns it into an ordinary television player for
+   whoever else is watching: the film fills the screen, the description being
+   said shows as a caption, and the controls fade until a key is pressed.
 3. **Missed something? Press Menu.** The film pauses, aloud says the last
    description again, and the film carries on. It works with narration off
    too, so one viewer on the sofa hears the film as it was made and another
    asks what is on screen when they need to, with one button. On the lighter
    "only what changed most" setting, two presses in two minutes tell aloud it
-   is leaving out too much: it goes back to saying everything, and says so.
-4. **Remote and voice do the rest.** Narration on or off, voice level (the film
+   is leaving out too much: it goes back to saying everything, and the
+   setting's help line says why.
+4. **The remote does the rest.** Narration on or off, voice level (the film
    dips further under the voice as you turn it up), how much is said,
    play/pause, ten-second skips, and Back to the shelf on the same title.
    The player also asks Vega for media-control focus so that Alexa transport
@@ -55,8 +62,8 @@ in their second language. aloud is a way of watching with your ears.
    treat voice transport as untested.
 
 Four open films from the Blender Foundation are on the shelf: **Tears of
-Steel** (12 min, 46 descriptions), **Sintel** (15 min, 49 descriptions), the
-family comedy **Big Buck Bunny** (10 min, 50 descriptions, and not one word of
+Steel** (12 min, 45 descriptions), **Sintel** (15 min, 47 descriptions), the
+family comedy **Big Buck Bunny** (10 min, 48 descriptions, and not one word of
 dialogue, so aloud narrates over the score) and the Sintel trailer.
 
 ## What makes it work
@@ -80,7 +87,7 @@ dialogue, so aloud narrates over the score) and the Sintel trailer.
   is synthesised and measured before it is placed, and the track refuses to be
   written if any cue would leave its gap. Measured against the production
   stems, the shipped Tears of Steel track touches dialogue for **0.9 seconds**
-  in 2.9 minutes of narration: five touches of under 0.4 s each, none of them
+  in 2.8 minutes of narration: five touches of under 0.4 s each, none of them
   on a captioned line. Two fall in the battle with no caption near them
   (uncaptioned shouts, or effects the two masters mix differently).
 
@@ -103,15 +110,46 @@ is a standard timed track (WebVTT and JSON) made **ahead of time, not live**, a
 person can still review or correct it before it airs, and the device does no
 inference at all.
 
+## What sets aloud apart
+
+- **A native Vega app, not a web page.** React Native for Vega end to end: the
+  film plays through `w3cmedia`'s `Video`, and every description through a
+  second `AudioPlayer` that Vega is told is accessibility speech, so the
+  platform can tell the voice from the film it describes.
+- **A safety number anyone can reproduce.** Overlap with dialogue is measured
+  against the film's own production stems, not against the detector that
+  placed the cues: `python3 -m aloud.evaluate` on Tears of Steel gives 0.9
+  seconds in 12 minutes, and an independent re-run from fresh downloads got
+  the same figure.
+- **An open model on an ordinary CPU.** Every shipped track was written by
+  Qwen3-VL 4B through llama.cpp, with no key, no GPU and no per-title cloud
+  bill (timings under "Where it goes"), so describing a back catalogue costs
+  electricity.
+- **The whole app speaks.** Titles, every setting and every value change are
+  read out in the description voice, so the shelf, the settings and the film
+  are one experience for someone who cannot see the screen. With VoiceView on,
+  aloud steps aside.
+- **A track a person can check, and a gate before it ships.** The output is
+  standard WebVTT and JSON. Before a cue is spoken or published it must sit
+  inside its gap, finish its sentence, and be about the picture rather than
+  the camera; characters are named only from the film's own cast list.
+- **The playback half is a library.** `vega-described-track` gives any React
+  Native for Vega player the same scheduler and accessibility voice, with a
+  patch for Amazon's multi-TV app sample. (PENDING: Subomi makes
+  github.com/ubmids/vega-described-track public; it is private today.)
+
 ## Where it goes
 
-A described track is a small file made once per title: Tears of Steel took
-about twenty minutes on one ordinary CPU with an open model, and costs
-the television nothing to play. That makes two paths to viewers:
+A described track is a small file made once per title, and costs the
+television nothing to play. Measured on 14 October 2026 on a shared 24-core
+Linux box with no GPU (8 threads for the model, other jobs running):
+Sintel (15 minutes of film) took 33 minutes to describe and Big Buck Bunny
+(10 minutes) 14, each with about 5 GB of memory for the model and the
+pipeline together. That makes two paths to viewers:
 
 - **The aloud app on the Fire TV Appstore**, with a shelf of open and
-  public-domain film described out of the box, the first catalogue a blind
-  viewer can browse and watch without help.
+  public-domain film described out of the box: a catalogue a blind viewer
+  can browse, set up and watch without help.
 - **Tracks for catalogue owners.** FAST channels and independent distributors
   run the same pipeline on their own titles, review the track if they want a
   person to sign off, and ship it beside the film as standard WebVTT.
@@ -121,16 +159,17 @@ the television nothing to play. That makes two paths to viewers:
 - **Vega OS / React Native for Vega**: `@amazon-devices/react-native-kepler`,
   `@amazon-devices/react-native-w3cmedia` (`Video` for the film, `AudioPlayer`
   with `USAGE_ACCESSIBILITY` for the voice), `TVFocusGuideView` and
-  `useTVEventHandler` for the remote, Kepler media controls for voice
-  transport, `BackHandler`, `AccessibilityInfo` for VoiceView.
+  `useTVEventHandler` for the remote, `BackHandler`, `AccessibilityInfo` for
+  VoiceView, and a request for Kepler media-control focus (voice transport,
+  untested on a device).
 - **Vision**: Qwen3-VL 4B on llama.cpp (CPU) wrote every shipped track.
   Gemini and OpenAI-compatible endpoints are supported in code, untested
   against the live services.
 - **Voice**: Kokoro 82M on CPU (macOS `say` also supported).
 - **Listening**: a hand-built speech-band and syllable-rhythm detector, Silero
   VAD, caption files.
-- Python 3.12+, numpy, ffmpeg. 151 Python tests, 62
-  JavaScript tests.
+- Python 3.12+, numpy, ffmpeg. 167 Python tests, 80
+  JavaScript tests (57 Jest, 23 scheduler).
 
 ## Run it
 

@@ -47,12 +47,15 @@ Missed a description, or watching with narration off beside someone who does
 not need it? Press **Menu**: the film pauses, aloud says what is on screen, and
 the film carries on. On the lighter "only what changed most" setting, two
 presses in two minutes tell aloud it is leaving out too much, and it goes back
-to saying everything and says why. Narration on or off, voice level, how much is said,
-play/pause, skips and Back are all on the remote. (The player also requests
-Vega media-control focus for Alexa transport; that is untested on a device, so
-it is not shown.) One voice speaks the menu and the
-film, so a viewer who cannot see the screen gets one continuous experience
-rather than a menu and then a film.
+to saying everything, and its help line says why. Narration on or off, voice
+level, how much is said, play/pause, skips and Back are all on the remote, and
+every setting says its name and value aloud when the remote reaches it and
+when select changes it. (The player also requests Vega media-control focus for
+Alexa transport; that is untested on a device, so it is not shown.) One voice
+speaks the shelf, the settings and the film, so a viewer who cannot see the
+screen gets one continuous experience rather than a menu and then a film. For
+everyone else on the sofa, "Picture: Full screen" turns the player into an
+ordinary television player with the description as a caption.
 
 ### Who it is for
 
@@ -76,6 +79,26 @@ and plays it on the device. The track is made **ahead of time, not live**, as a
 standard WebVTT/JSON file, so a person can still review it before it airs, and
 the television does no inference at all.
 
+### What sets it apart
+
+- **Native Vega, end to end.** React Native for Vega, `w3cmedia`'s `Video`
+  for the film and a second `AudioPlayer` classified as accessibility speech
+  for the voice; not a web page in a WebView.
+- **A reproducible safety number.** Overlap with dialogue is measured against
+  the film's own production stems, not the detector that placed the cues:
+  0.9 s in 12 minutes of *Tears of Steel*, reproduced independently from
+  fresh downloads.
+- **An open model on a CPU.** No key, no GPU, no per-title cloud bill:
+  *Sintel* took 33 minutes to describe on a shared CPU.
+- **The whole app speaks.** Titles, settings and every value change, in the
+  description voice; VoiceView, if on, takes over.
+- **Reviewable, and gated.** Standard WebVTT/JSON. A cue must sit in its gap,
+  finish its sentence, and be about the picture rather than the camera, or it
+  is not spoken and not shipped. Characters are named only from the film's
+  own cast list.
+- **The player is a library.** `vega-described-track` (Open Source mini,
+  below) gives any React Native for Vega player the same scheduler and voice.
+
 ### How it works
 
 1. **Listen for speech, three ways.** A hand-built speech-band and
@@ -87,9 +110,12 @@ the television does no inference at all.
 2. **Describe what changed.** For each gap where the picture has changed, a
    vision-language model is shown two frames of the shot and the last three
    things said, and asked for one present-tense sentence of about the number of
-   words the gap can hold. On-screen text is read out. Long action sequences
-   are split at hard cuts. Black frames, and sentences about the film rather
-   than of it, are refused.
+   words the gap can hold. Characters are named from the title's cast list,
+   as the film names them, and nobody else is named. On-screen text is read
+   out. Long action sequences are split at hard cuts. Black frames, sentences
+   that stop before their noun, and sentences about the film rather than in it
+   (the camera, close-ups, logos, credits) are refused, in the pipeline and
+   again when the track is published into the app.
 3. **Measure, then place.** Each description is synthesised and measured, never
    estimated, and placed inside its gap. The track refuses to be written if any
    cue would leave its gap.
@@ -101,10 +127,10 @@ the television does no inference at all.
 The tracks on the shelf were written by **Qwen3-VL 4B**, an open model, on a
 CPU via llama.cpp, with no key and no GPU; the same pipeline takes Gemini or any
 OpenAI-compatible model with one environment variable. *Tears of Steel* carries
-46 descriptions (2.9 minutes of narration), of which
+45 descriptions (2.8 minutes of narration), of which
 0.9 seconds overlap dialogue, measured against the production stems, in five
-touches of under 0.4 s and none on a captioned line. *Sintel* carries 49 and
-the family comedy *Big Buck Bunny*, which has no dialogue at all, 50.
+touches of under 0.4 s and none on a captioned line. *Sintel* carries 47 and
+the family comedy *Big Buck Bunny*, which has no dialogue at all, 48.
 
 ### Challenges
 

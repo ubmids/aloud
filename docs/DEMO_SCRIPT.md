@@ -39,14 +39,16 @@ first 20 seconds.
 
 Press Back to the shelf. On screen: the shelf on the Vega Virtual Device.
 
-- Press **right**: *"Sintel. Fantasy, 2010, 15 minutes. 49 descriptions."* is
+- Press **right**: *"Sintel. Fantasy, 2010, 15 minutes. 47 descriptions."* is
   heard. **Right** again: *"Big Buck Bunny. Family comedy, 2008, 10
   minutes..."*, the family title, with no dialogue at all. Press **left** twice:
   *"Tears of Steel..."*. Each press cuts off the last.
 - Say (voiceover, short): "Every title is read out as you reach it, in the same
   voice that will describe the film. If VoiceView is on, aloud steps aside."
-- Press **down** to *Voice level*, select twice: Normal, Loud. Up, select Tears
-  of Steel.
+- Press **down** to *Voice level*: *"Voice level, normal. The film dips under
+  each description."* is heard. Select: *"Voice level, loud..."*. Every
+  setting speaks like this, so this beat shows a blind viewer can find and
+  change settings alone. Up, select Tears of Steel.
 - In the player: show a description at Loud with the film dipping under it.
 - Turn **Narration off**, let a few seconds of film play, then press **Menu**:
   the film pauses, aloud says what is on screen, the film carries on. Voiceover
@@ -56,6 +58,9 @@ Press Back to the shelf. On screen: the shelf on the Vega Virtual Device.
   changed most", press Menu twice; the setting flips back to "Everything" and
   says why. Voiceover: "Ask twice, and it says more."
 - Narration back on, skip back ten seconds and let a description fire again.
+- Optional: *Picture* to *Full screen*: the film fills the screen and the
+  description shows as a caption. Voiceover: "And for everyone else on the
+  sofa, it's just a film." 
 - If "Alexa, pause" worked on the Virtual Device (see MAC_CHECKLIST), do it
   here. If not, do not show it.
 
@@ -99,7 +104,10 @@ viewer whose eyesight is going."
 
 ## 2:20 to 2:45: close
 
-Back to black, with a description playing over it (any vivid cue from Sintel).
+Back to black, with a description playing over it: Sintel at 4:44, *"Sintel
+runs up a broken stone staircase toward distant ruins."* (checked against the
+frame at 4:46. Avoid the 5:28 cue: it says Scales "flies toward" Sintel's hand
+when a larger dragon is carrying him away.)
 Then: "Close your eyes. aloud tells you what you are missing, in the
 silences between the lines." End card: **aloud** · Fire TV · Vega OS · github.com/ubmids/aloud.
 

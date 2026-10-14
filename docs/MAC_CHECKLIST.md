@@ -60,6 +60,11 @@ If the package is rejected for size, drop the trailer from `FILMS` in
 - [ ] The big panel updates with each focus: poster, genre/year/minutes,
       synopsis, "N descriptions, M minutes of narration", the describer and
       voice line, and the credit.
+- [ ] **Every setting speaks.** Down to "Voice level": you hear "Voice level,
+      normal. The film dips under each description." Select: "Voice level,
+      loud. ..." Same for Narration and "Read the menu aloud" (which answers
+      even when turned off). If silent, check `/pkg/assets/ui/*.m4a` made it
+      into the package (they live in `tv/assets/ui/`).
 - [ ] D-pad down reaches the three settings; up returns to the row. If down
       does nothing, wrap the two `TVFocusGuideView`s' `autoFocus` in
       `destinations` (see `Home.tsx`).
@@ -94,6 +99,13 @@ If the package is rejected for size, drop the trailer from `FILMS` in
       changed most", then press Menu twice within two minutes: the setting
       flips back to "Everything" and its help line reads "You asked twice in
       two minutes, so everything is said again."
+- [ ] The four player settings speak on focus and on select, like the
+      shelf's ("Picture, with the voice panel. ...").
+- [ ] **Picture: Full screen.** The film fills the screen, the description
+      being said shows as a caption bottom left, the controls fade after five
+      seconds and come back on any key. Back to "With the voice panel"
+      restores the layout. If the picture does not resize, note it: the fix
+      is to key the `Video` on the mode so it remounts.
 - [ ] Big Buck Bunny has no dialogue at all: descriptions run through the
       score, and the film dips under each one.
 - [ ] Rewind / fast-forward (or skip) moves 10 seconds; a description that

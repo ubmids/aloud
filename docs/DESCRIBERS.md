@@ -22,9 +22,18 @@ swapped for something else.
 
 The tracks in `tv/src/data/films/` were written by **Qwen3-VL 4B Instruct**
 (Q4_K_M GGUF, about 3 GB with its vision projector) running on a CPU through
-llama.cpp, on a shared 24-core Linux box with no GPU: about 7 seconds per
-description. Every track file names its describer and its voice, and the app
-shows both on the title's panel.
+llama.cpp, on a shared 24-core Linux box with no GPU. Sintel and Big Buck
+Bunny were re-described on 14 October 2026 with the sentence gate and each
+title's cast list (`cast` in `aloud/films.py`): 33 and 14 minutes wall clock
+with 8 model threads while other jobs ran, roughly 15 to 20 seconds per
+request at that load. Big Buck Bunny names only Bunny: the film has no
+dialogue, and naming its three bullies from the credits led the model to put
+the wrong name on the wrong animal. One Big Buck Bunny cue was refused in
+review ("The grey-haired man holds the red squirrel...", in a film with no
+people; `python3 -m aloud.publish --regate --id big-buck-bunny --drop 458.292`).
+Tears of Steel and the trailer keep their earlier tracks; Tears of Steel had
+one cue taken off by the gate (`python3 -m aloud.publish --regate`). Every track file names its describer
+and its voice, and the app shows both on the title's panel.
 
 ```bash
 # the model (about 2.5GB) and its vision projector (about 0.45GB)
