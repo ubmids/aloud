@@ -3,7 +3,7 @@
 **Films that describe themselves, on Fire TV.**
 
 Pick a film with the remote and aloud reads each title to you as you move
-across the shelf. Press play, and in every silence between the lines a voice
+across the shelf. Press play, and in the silences between the lines a voice
 tells you what is on screen: *"Through a circular viewport, a large, steampunk-style airship hovers above a cityscape."*
 Never over a captioned line: on Tears of Steel the whole track overlaps
 dialogue by 0.9 seconds in 12 minutes, measured against the film's production
@@ -125,14 +125,15 @@ inference at all.
   Qwen3-VL 4B through llama.cpp, with no key, no GPU and no per-title cloud
   bill (timings under "Where it goes"), so describing a back catalogue costs
   electricity.
-- **The whole app speaks.** Titles, every setting and every value change are
+- **The whole app speaks.** Titles, every setting and every change you make to one are
   read out in the description voice, so the shelf, the settings and the film
   are one experience for someone who cannot see the screen. With VoiceView on,
   aloud steps aside.
 - **A track a person can check, and a gate before it ships.** The output is
   standard WebVTT and JSON. Before a cue is spoken or published it must sit
   inside its gap, finish its sentence, and be about the picture rather than
-  the camera; characters are named only from the film's own cast list.
+  the camera; characters are named only from each title's cast list, as
+  the film itself names them.
 - **The playback half is a library.** `vega-described-track` gives any React
   Native for Vega player the same scheduler and accessibility voice, with a
   patch for Amazon's multi-TV app sample. (PENDING: Subomi makes

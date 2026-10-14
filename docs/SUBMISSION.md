@@ -27,7 +27,7 @@ aloud
 
 ## Elevator pitch (200 characters)
 
-Films that describe themselves on Fire TV. In each silence between lines, a
+Films that describe themselves on Fire TV. In the silences between lines, a
 voice tells you what a vision model saw on screen, measured to fit the gap.
 Watch with your ears.
 
@@ -37,7 +37,7 @@ Watch with your ears.
 
 aloud is a Fire TV app, built on Vega OS, that lets you watch a film with your
 ears. The shelf reads each title aloud as the remote moves across it. Press
-play and, in every silence between the lines, a voice tells you what is on
+play and, in the silences between the lines, a voice tells you what is on
 screen: *"Through a circular viewport, a large, steampunk-style airship hovers above a cityscape."* Each description is measured into a silence (on
 *Tears of Steel*, 0.9 seconds of overlap with dialogue in 12 minutes, none on a
 captioned line), and the film dips a little under the voice so every word is
@@ -90,12 +90,12 @@ the television does no inference at all.
   fresh downloads.
 - **An open model on a CPU.** No key, no GPU, no per-title cloud bill:
   *Sintel* took 33 minutes to describe on a shared CPU.
-- **The whole app speaks.** Titles, settings and every value change, in the
+- **The whole app speaks.** Titles, settings and every change you make, in the
   description voice; VoiceView, if on, takes over.
 - **Reviewable, and gated.** Standard WebVTT/JSON. A cue must sit in its gap,
   finish its sentence, and be about the picture rather than the camera, or it
-  is not spoken and not shipped. Characters are named only from the film's
-  own cast list.
+  is not spoken and not shipped. Characters are named only from each title's
+  cast list, as the film itself names them.
 - **The player is a library.** `vega-described-track` (Open Source mini,
   below) gives any React Native for Vega player the same scheduler and voice.
 
