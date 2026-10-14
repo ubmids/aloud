@@ -4,7 +4,7 @@
   "source": "big_buck_bunny_720p_h264.mov",
   "describer": "qwen3-vl-4b (local, llama.cpp on CPU)",
   "voice": "Kokoro 82M (af_heart)",
-  "announcement": "Big Buck Bunny. Family comedy, 2008, 10 minutes. 48 descriptions.",
+  "announcement": "Big Buck Bunny. Family comedy, 2008, 10 minutes. 47 descriptions.",
   "credit": "(c) copyright 2008, Blender Foundation | www.bigbuckbunny.org",
   "licence": "Creative Commons Attribution 3.0",
   "cues": [
@@ -296,16 +296,6 @@
       "gap": [
         317.208,
         322.167
-      ]
-    },
-    {
-      "start": 322.167,
-      "end": 329.215,
-      "text": "A twisted green vine hangs in focus against a softly blurred forest background of trees and dappled sunlight.",
-      "audio": "cue-030.m4a",
-      "gap": [
-        322.167,
-        334.333
       ]
     },
     {

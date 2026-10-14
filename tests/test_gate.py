@@ -24,7 +24,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from aloud.budget import dangles
 from aloud.caption import clean, meta, unfit
-from aloud.publish import publish, regate
+from aloud.publish import announce, publish, regate
 
 from test_publish import Voice, tone
 
@@ -180,6 +180,63 @@ def test_regate_takes_a_refused_cue_off_a_shipped_track():
     finally:
         shutil.rmtree(d, ignore_errors=True)
     print("PASS regate takes a refused cue off a shipped track and recounts")
+
+
+def test_the_lens_and_the_crew_list_are_caught():
+    # Each of these shipped before the rule existed.
+    for said in ("A bald man grips a knife, confronting Sintel whose red hair "
+                 "is blurred as she holds a staff.",
+                 "A blurred foreground post frames a street with buildings.",
+                 "A young man with dark hair looks off-camera.",
+                 "A twisted green vine hangs in focus against a forest.",
+                 "A parchment with a dragon sketch rests beside credits."):
+        assert unfit(said) == "it is about the film, not in it", said
+    for said in ("On screen: Produced by TON ROOSENDAAL.",
+                 "On screen: Music by Jan Morgenstern.",
+                 "On screen: credits list names like Claudio Andaur."):
+        assert unfit(said) == "it reads out the credits", said
+    # The film's own titles are still read.
+    for said in ("On screen: 40 YEARS LATER.",
+                 "On screen: THE BLENDER FOUNDATION PRESENTS.",
+                 "On screen: Peach Open Movie Team.",
+                 "A photographer raises a camera."):
+        assert unfit(said) is None, said
+    print("PASS camera talk by another name and crew credits are refused")
+
+
+def test_regate_can_leave_the_spoken_title_for_later():
+    d = tempfile.mkdtemp()
+    try:
+        app = os.path.join(d, "app")
+        data = os.path.join(app, "src", "data", "films")
+        root = os.path.join(app, "assets", "films", "sintel-trailer")
+        os.makedirs(data)
+        os.makedirs(os.path.join(root, "cues"))
+        with open(os.path.join(root, "announce.m4a"), "wb") as f:
+            f.write(b"old voice")
+        track = {"id": "sintel-trailer", "announcement": "old", "cues": [
+            {"start": 1.0, "end": 2.0, "text": "Snow falls.", "audio": None,
+             "gap": [1.0, 3.0]},
+            {"start": 5.0, "end": 6.0, "text": "A man looks off-camera.",
+             "audio": None, "gap": [5.0, 7.0]}]}
+        with open(os.path.join(data, "sintel-trailer.json"), "w") as f:
+            json.dump(track, f)
+
+        class Mute:
+            def speak(self, *a, **k):
+                raise AssertionError("respoke without being asked to")
+
+        removed = regate(app, "sintel-trailer", synth=Mute(), respeak=False)
+        assert [c["start"] for c in removed] == [5.0]
+        with open(os.path.join(data, "sintel-trailer.json")) as f:
+            assert json.load(f)["announcement"].endswith("1 descriptions.")
+        assert open(os.path.join(root, "announce.m4a"), "rb").read() == b"old voice"
+        said = announce(app, "sintel-trailer", synth=Voice())
+        assert said.endswith("1 descriptions."), said
+        assert open(os.path.join(root, "announce.m4a"), "rb").read() != b"old voice"
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+    print("PASS regate can leave the spoken title to be re-said in the shelf's voice")
 
 
 def test_every_cue_on_the_shelf_passes_the_gate():

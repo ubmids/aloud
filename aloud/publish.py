@@ -98,7 +98,7 @@ def publish(out_dir: str, id: str, app: str = "tv", film: str | None = None,
     return data
 
 
-def regate(app: str, id: str, synth=None, drop=()) -> list:
+def regate(app: str, id: str, synth=None, drop=(), respeak: bool = True) -> list:
     """Bring a track that is already on the shelf under the sentence gate.
 
     For a title that is not being re-described: each cue the gate refuses is
@@ -110,6 +110,10 @@ def regate(app: str, id: str, synth=None, drop=()) -> list:
     `drop` is the start times of cues a reviewer has refused outright, for
     what no word list can catch: a model that describes a man in a film with
     no people in it. Matched to the hundredth of a second.
+
+    `respeak=False` updates the announcement's words but leaves its audio,
+    for a machine without the voice the shelf was made with; `announce`
+    re-speaks it later, so the shelf never mixes two voices.
     """
     title = BY_ID[id]
     dest = os.path.join(app, "src", "data", "films", f"{id}.json")
@@ -130,14 +134,25 @@ def regate(app: str, id: str, synth=None, drop=()) -> list:
                 os.remove(path)
     data["cues"] = keep
     data["announcement"] = announcement(title, len(keep))
-    synth = synth or Synth()
-    work = tempfile.mkdtemp(prefix="aloud-regate-")
-    spoken = synth.speak(data["announcement"], out_dir=work)
-    _m4a(spoken.path, os.path.join(root, "announce.m4a"))
     with open(dest, "w") as f:
         json.dump(data, f, indent=2)
         f.write("\n")
+    if respeak:
+        announce(app, id, synth=synth)
     return removed
+
+
+def announce(app: str, id: str, synth=None) -> str:
+    """Speak a shelf title's announcement again, from the words in its track
+    file, so the spoken count always matches the cues that ship."""
+    dest = os.path.join(app, "src", "data", "films", f"{id}.json")
+    with open(dest) as f:
+        said = json.load(f)["announcement"]
+    synth = synth or Synth()
+    work = tempfile.mkdtemp(prefix="aloud-announce-")
+    spoken = synth.speak(said, out_dir=work)
+    _m4a(spoken.path, os.path.join(app, "assets", "films", id, "announce.m4a"))
+    return said
 
 
 def main(argv=None):
@@ -151,9 +166,17 @@ def main(argv=None):
     ap.add_argument("--drop", type=float, action="append", default=[],
                     metavar="START", help="with --regate: also remove the cue "
                     "starting at START seconds, refused in review")
+    ap.add_argument("--no-respeak", action="store_true",
+                    help="with --regate: update the announcement's words only; "
+                    "run --announce later with the shelf's voice")
+    ap.add_argument("--announce", action="store_true",
+                    help="re-speak the title's announcement from its track file")
     a = ap.parse_args(argv)
+    if a.announce:
+        print(f"{a.id}: {announce(a.app, a.id)}")
+        return 0
     if a.regate:
-        for c in regate(a.app, a.id, drop=a.drop):
+        for c in regate(a.app, a.id, drop=a.drop, respeak=not a.no_respeak):
             why = unfit(c["text"]) or "refused in review"
             print(f"removed {c['start']}s: {why}: {c['text']}")
         return 0

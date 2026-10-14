@@ -152,8 +152,25 @@ META = re.compile(
     r"\bcredits? (?:roll|scroll|text|appear)|"
     r"\b(?:fills?|enters?|leaves?|exits?|in|out of|of) the frame\b|"
     r"\b(?:angle|tracking|wide|aerial|establishing|long|medium) shot\b|"
-    r"\banimated\b|\bcartoon\b|\bcgi\b|\bcomputer-generated\b",
+    r"\banimated\b|\bcartoon\b|\bcgi\b|\bcomputer-generated\b|"
+    # The lens, by another name. "...confronting Sintel whose red hair is
+    # blurred", "A blurred foreground post frames a street", "looks
+    # off-camera", "hangs in focus against a softly blurred forest": each
+    # shipped, and each describes the photography rather than the world.
+    r"\bblurr(?:ed|y|ing)\b|\b(?:in|out of|soft) focus\b|\boff-?camera\b|"
+    # "rests beside credits on a weathered wooden surface": the brief says
+    # never mention credits, and the end-credit artwork is not the story.
+    r"\bcredits\b",
     re.IGNORECASE)
+
+# The film's own words may be read out ("On screen: 40 YEARS LATER."), but
+# not its crew list. "On screen: Produced by TON ROOSENDAAL." was spoken over
+# the closing battle of Tears of Steel, and "On screen: credits list names
+# like ..." is not the words on screen at all, but a summary of them.
+CREDIT_READING = re.compile(
+    r"^on screen:.*(?:\b(?:produced|directed|written|edited|composed|music|"
+    r"screenplay|story|executive producer)\b(?:\s+\w+)?\s+by\b|"
+    r"\bcredits?\b|\bnames like\b)", re.IGNORECASE)
 
 
 def meta(text: str) -> bool:
@@ -175,6 +192,8 @@ def unfit(text: str) -> str | None:
         return "it stops before its noun"
     if meta(text):
         return "it is about the film, not in it"
+    if CREDIT_READING.search((text or "").strip()):
+        return "it reads out the credits"
     return None
 
 

@@ -4,7 +4,7 @@
   "source": "Sintel.2010.720p.mkv",
   "describer": "qwen3-vl-4b (local, llama.cpp on CPU)",
   "voice": "Kokoro 82M (af_heart)",
-  "announcement": "Sintel. Fantasy, 2010, 15 minutes. 47 descriptions.",
+  "announcement": "Sintel. Fantasy, 2010, 15 minutes. 41 descriptions.",
   "credit": "(c) copyright Blender Foundation | durian.blender.org",
   "licence": "Creative Commons Attribution 3.0",
   "cues": [
@@ -56,16 +56,6 @@
       "gap": [
         61.41,
         64.73
-      ]
-    },
-    {
-      "start": 65.39,
-      "end": 70.874,
-      "text": "A bald man grips a knife, confronting Sintel whose red hair is blurred as she holds a staff.",
-      "audio": "cue-006.m4a",
-      "gap": [
-        65.39,
-        74.042
       ]
     },
     {
@@ -249,26 +239,6 @@
       ]
     },
     {
-      "start": 328.167,
-      "end": 332.434,
-      "text": "Scales, the small baby dragon, flies toward Sintel\u2019s outstretched hand.",
-      "audio": "cue-025.m4a",
-      "gap": [
-        328.167,
-        333.55
-      ]
-    },
-    {
-      "start": 349.75,
-      "end": 355.115,
-      "text": "Sintel\u2019s boots strike the dusty ground as she runs, motion blurred, across the ruined terrain.",
-      "audio": "cue-026.m4a",
-      "gap": [
-        349.75,
-        361.23
-      ]
-    },
-    {
       "start": 390.29,
       "end": 393.144,
       "text": "A red-haired girl peeks from behind bamboo stalks.",
@@ -446,36 +416,6 @@
       "gap": [
         721.67,
         747.49
-      ]
-    },
-    {
-      "start": 791.83,
-      "end": 803.258,
-      "text": "On screen: credits list names like Claudio Andaur, Juan Redondo, and Guillaume Canino, displayed on a wooden surface beside a carved staff, a broken leather strap, and a dragon's head.",
-      "audio": "cue-045.m4a",
-      "gap": [
-        791.83,
-        806.69
-      ]
-    },
-    {
-      "start": 821.05,
-      "end": 825.818,
-      "text": "A parchment with a dragon sketch rests beside credits on a weathered wooden surface.",
-      "audio": "cue-046.m4a",
-      "gap": [
-        821.05,
-        828.47
-      ]
-    },
-    {
-      "start": 875.63,
-      "end": 883.816,
-      "text": "A parchment sketch of Sintel with red hair and a staff lies on weathered wood beside credits, a broken leather strap, and a dragon's head.",
-      "audio": "cue-047.m4a",
-      "gap": [
-        875.63,
-        887.87
       ]
     }
   ]

@@ -4,7 +4,7 @@
   "source": "tears_of_steel_720p.mov",
   "describer": "qwen3-vl-4b (local, llama.cpp on CPU)",
   "voice": "Kokoro 82M (af_heart)",
-  "announcement": "Tears of Steel. Science fiction, 2012, 12 minutes. 45 descriptions.",
+  "announcement": "Tears of Steel. Science fiction, 2012, 12 minutes. 42 descriptions.",
   "credit": "(CC) Blender Foundation | mango.blender.org",
   "licence": "Creative Commons Attribution 3.0",
   "cues": [
@@ -139,16 +139,6 @@
       ]
     },
     {
-      "start": 257.917,
-      "end": 261.932,
-      "text": "A blurred foreground post frames a street with buildings and green trees.",
-      "audio": "cue-014.m4a",
-      "gap": [
-        257.917,
-        263.67
-      ]
-    },
-    {
       "start": 264.75,
       "end": 268.135,
       "text": "A young man walks down a cobblestone street, looking at his phone.",
@@ -176,16 +166,6 @@
       "gap": [
         305.41,
         310.583
-      ]
-    },
-    {
-      "start": 328.41,
-      "end": 332.25,
-      "text": "A young man with dark hair looks off-camera, his expression neutral.",
-      "audio": "cue-019.m4a",
-      "gap": [
-        328.41,
-        333.31
       ]
     },
     {
@@ -406,16 +386,6 @@
       "gap": [
         589.0,
         590.61
-      ]
-    },
-    {
-      "start": 596.03,
-      "end": 598.433,
-      "text": "On screen: Produced by TON ROOSENDAAL.",
-      "audio": "cue-042.m4a",
-      "gap": [
-        596.03,
-        599.87
       ]
     },
     {
