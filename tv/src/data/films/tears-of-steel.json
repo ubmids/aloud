@@ -4,7 +4,7 @@
   "source": "tears_of_steel_720p.mov",
   "describer": "qwen3-vl-4b (local, llama.cpp on CPU)",
   "voice": "Kokoro 82M (af_heart)",
-  "announcement": "Tears of Steel. Science fiction, 2012, 12 minutes. 46 descriptions.",
+  "announcement": "Tears of Steel. Science fiction, 2012, 12 minutes. 45 descriptions.",
   "credit": "(CC) Blender Foundation | mango.blender.org",
   "licence": "Creative Commons Attribution 3.0",
   "cues": [
@@ -176,16 +176,6 @@
       "gap": [
         305.41,
         310.583
-      ]
-    },
-    {
-      "start": 310.583,
-      "end": 314.609,
-      "text": "A young man in a patterned jacket looks at a woman with her back to the camera.",
-      "audio": "cue-018.m4a",
-      "gap": [
-        310.583,
-        315.45
       ]
     },
     {

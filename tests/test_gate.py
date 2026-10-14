@@ -24,7 +24,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from aloud.budget import dangles
 from aloud.caption import clean, meta, unfit
-from aloud.publish import publish
+from aloud.publish import publish, regate
 
 from test_publish import Voice, tone
 
@@ -136,6 +136,60 @@ def test_publish_refuses_a_cue_that_would_be_read_out_broken():
         finally:
             shutil.rmtree(d, ignore_errors=True)
     print("PASS publish refuses a cue that stops early or talks about the film")
+
+
+def test_regate_takes_a_refused_cue_off_a_shipped_track():
+    """A track shipped before the gate existed is brought under it without
+    re-describing the film: the refused cue and its audio go, the rest keep
+    their times and their files, and the shelf announcement is re-spoken with
+    the new count."""
+    d = tempfile.mkdtemp()
+    try:
+        app = os.path.join(d, "app")
+        data = os.path.join(app, "src", "data", "films")
+        cues = os.path.join(app, "assets", "films", "sintel-trailer", "cues")
+        os.makedirs(data)
+        os.makedirs(cues)
+        track = {"id": "sintel-trailer", "announcement": "old", "cues": []}
+        for i, text in enumerate(("A dragon circles a tower.",
+                                  "A young man looks at a woman with her back to the camera.",
+                                  "Snow falls on the pass."), 1):
+            name = f"cue-{i:03d}.m4a"
+            open(os.path.join(cues, name), "wb").write(b"x")
+            track["cues"].append({"start": i * 10.0, "end": i * 10.0 + 2,
+                                  "text": text, "audio": name,
+                                  "gap": [i * 10.0, i * 10.0 + 3]})
+        with open(os.path.join(data, "sintel-trailer.json"), "w") as f:
+            json.dump(track, f)
+        removed = regate(app, "sintel-trailer", synth=Voice())
+        assert [c["text"] for c in removed] == [
+            "A young man looks at a woman with her back to the camera."], removed
+        with open(os.path.join(data, "sintel-trailer.json")) as f:
+            after = json.load(f)
+        assert [c["audio"] for c in after["cues"]] == ["cue-001.m4a", "cue-003.m4a"]
+        assert sorted(os.listdir(cues)) == ["cue-001.m4a", "cue-003.m4a"]
+        assert after["announcement"].endswith("2 descriptions."), after["announcement"]
+        assert os.path.getsize(os.path.join(app, "assets", "films", "sintel-trailer",
+                                            "announce.m4a")) > 0
+        assert regate(app, "sintel-trailer", synth=Voice()) == []
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+    print("PASS regate takes a refused cue off a shipped track and recounts")
+
+
+def test_every_cue_on_the_shelf_passes_the_gate():
+    here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    films = os.path.join(here, "tv", "src", "data", "films")
+    refused = []
+    for name in sorted(os.listdir(films)):
+        with open(os.path.join(films, name)) as f:
+            d = json.load(f)
+        for c in d["cues"]:
+            if unfit(c["text"]):
+                refused.append((name, c["start"], unfit(c["text"]), c["text"]))
+        assert d["announcement"].endswith(f"{len(d['cues'])} descriptions."), name
+    assert not refused, refused
+    print("PASS every cue on the shelf passes the gate, and every count is right")
 
 
 if __name__ == "__main__":

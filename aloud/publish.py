@@ -20,6 +20,7 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
 
 from .caption import unfit
 from .films import BY_ID, announcement, encode
@@ -97,13 +98,57 @@ def publish(out_dir: str, id: str, app: str = "tv", film: str | None = None,
     return data
 
 
+def regate(app: str, id: str, synth=None) -> list:
+    """Bring a track that is already on the shelf under the sentence gate.
+
+    For a title that is not being re-described: each cue the gate refuses is
+    taken off, with its audio, and the gap it sat in is left silent, which is
+    what the pipeline would have done. The other cues keep their times and
+    their files. The shelf announcement is re-spoken with the new count.
+    Returns the cues removed; an empty list means nothing changed.
+    """
+    title = BY_ID[id]
+    dest = os.path.join(app, "src", "data", "films", f"{id}.json")
+    with open(dest) as f:
+        data = json.load(f)
+    keep, removed = [], []
+    for c in data["cues"]:
+        (removed if unfit(c.get("text", "")) else keep).append(c)
+    if not removed:
+        return []
+    root = os.path.join(app, "assets", "films", id)
+    for c in removed:
+        if c.get("audio"):
+            path = os.path.join(root, "cues", c["audio"])
+            if os.path.exists(path):
+                os.remove(path)
+    data["cues"] = keep
+    data["announcement"] = announcement(title, len(keep))
+    synth = synth or Synth()
+    work = tempfile.mkdtemp(prefix="aloud-regate-")
+    spoken = synth.speak(data["announcement"], out_dir=work)
+    _m4a(spoken.path, os.path.join(root, "announce.m4a"))
+    with open(dest, "w") as f:
+        json.dump(data, f, indent=2)
+        f.write("\n")
+    return removed
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="aloud.publish")
-    ap.add_argument("out_dir")
+    ap.add_argument("out_dir", nargs="?")
     ap.add_argument("--id", required=True, choices=sorted(BY_ID))
     ap.add_argument("--app", default="tv")
     ap.add_argument("--film", help="also encode this film into the app")
+    ap.add_argument("--regate", action="store_true",
+                    help="apply the sentence gate to the track already in the app")
     a = ap.parse_args(argv)
+    if a.regate:
+        for c in regate(a.app, a.id):
+            print(f"removed {c['start']}s: {unfit(c['text'])}: {c['text']}")
+        return 0
+    if not a.out_dir:
+        ap.error("out_dir is required unless --regate")
     d = publish(a.out_dir, a.id, a.app, a.film)
     print(f"{a.id}: {len(d['cues'])} cues, described by {d['describer']}, "
           f"read by {d['voice']}")

@@ -59,7 +59,7 @@ matters.
 
 ## The shipped track
 
-46 descriptions, 171.9 seconds of speech. Measured against the stems, 5 of them touch dialogue, for **0.9 seconds** in total: 0.02 s at 54 s, 0.22 s at 432 s, 0.37 s at 479 s, 0.07 s at 499 s and 0.22 s at 567 s. Three are the tail of a line, a few tenths of a second past where the caption file says it ends. The other two, at 479 s and 499 s in the battle, have no caption near them: either uncaptioned shouts, or effects the two masters mix differently. Nothing in the track lands on a captioned line.
+45 descriptions, 167.9 seconds of speech (46 and 171.9 s until 14 October 2026, when the sentence gate took off one cue that described "a woman with her back to the camera"; the five touches below are unchanged). Measured against the stems, 5 of them touch dialogue, for **0.9 seconds** in total: 0.02 s at 54 s, 0.22 s at 432 s, 0.37 s at 479 s, 0.07 s at 499 s and 0.22 s at 567 s. Three are the tail of a line, a few tenths of a second past where the caption file says it ends. The other two, at 479 s and 499 s in the battle, have no caption near them: either uncaptioned shouts, or effects the two masters mix differently. Nothing in the track lands on a captioned line.
 
 ## Reproducing
 
