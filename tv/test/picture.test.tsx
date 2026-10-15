@@ -28,10 +28,18 @@ const mockFilm = {
   play: jest.fn(function (this: any) { this.paused = false; }),
   pause: jest.fn(function (this: any) { this.paused = true; }),
 };
+// Every Video the player mounts, with the size and source it was given.
+const mockMounts: {width: number; height: number; props: any}[] = [];
 jest.mock('@amazon-devices/react-native-w3cmedia', () => {
   const R = require('react');
   return {
     Video: R.forwardRef((props: any, ref: any) => {
+      const me = R.useRef(null);
+      if (me.current === null) {
+        me.current = {width: props.width, height: props.height, props};
+        mockMounts.push(me.current);
+      }
+      me.current.props = props;
       R.useEffect(() => { if (typeof ref === 'function') ref(mockFilm); }, [ref]);
       return null;
     }),
@@ -69,6 +77,7 @@ const merged = (style: any): any => Array.isArray(style)
 const opacity = (el: any) => merged(el.props.style).opacity ?? 1;
 
 beforeEach(() => {
+  mockMounts.length = 0;
   jest.useFakeTimers();
   mockFilm.currentTime = 0;
   mockFilm.paused = false;
@@ -120,4 +129,34 @@ test('back to the panel, everything returns and stays', () => {
   expect(getByTestId('cue-area')).toBeTruthy();
   expect(getByTestId('timeline')).toBeTruthy();
   expect(opacity(getByTestId('controls'))).toBe(1);
+});
+
+test('a new picture size is a new surface, and the film carries on where it was', () => {
+  // Seen on the Vega Virtual Device: Video takes its size once, so full
+  // screen left the film at its panel size in the middle of a black screen.
+  const {getByTestId} = open();
+  fireEvent(getByTestId('stage'), 'layout',
+            {nativeEvent: {layout: {width: 1250, height: 700}}});
+  const panel = mockMounts.at(-1)!;
+  expect(panel).toMatchObject({width: 1250, height: 700});
+  act(() => panel.props.onComponentDidMount());
+  act(() => jest.advanceTimersByTime(300));
+  expect(mockMounts.at(-1)!.props.src).toBe('/pkg/assets/films/tears-of-steel/film.mp4');
+  mockFilm.currentTime = 101.5;
+  act(() => mockMounts.at(-1)!.props.onTimeUpdate());
+
+  fireEvent.press(getByTestId('toggle-picture'));
+  fireEvent(getByTestId('stage'), 'layout',
+            {nativeEvent: {layout: {width: 1920, height: 1080}}});
+  const full = mockMounts.at(-1)!;
+  expect(full).not.toBe(panel);
+  expect(full).toMatchObject({width: 1920, height: 1080});
+  // Not handed the film before its surface is ready.
+  expect(full.props.src).toBeUndefined();
+  act(() => full.props.onComponentDidMount());
+  act(() => jest.advanceTimersByTime(300));
+  expect(full.props.src).toBe('/pkg/assets/films/tears-of-steel/film.mp4');
+  mockFilm.currentTime = 0;
+  act(() => full.props.onLoadedMetadata());
+  expect(mockFilm.currentTime).toBe(101.5);
 });

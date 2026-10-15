@@ -89,8 +89,33 @@ export const Player = ({
   const [playing, setPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [stage, setStage] = useState({width: 0, height: 0});
-  const [source, setSource] = useState<string | undefined>(undefined);
+  // The film's URI, tagged with the surface it was attached to (see
+  // `surface` below): a source is only ever handed to the surface it was
+  // attached for, never to a fresh one before that one is ready.
+  const [source, setSource] = useState<{uri: string; surface: string} | null>(null);
   const [failure, setFailure] = useState<string | null>(null);
+
+  /**
+   * One `Video` per picture size.
+   *
+   * `Video` takes its width and height once, when its surface is created, and
+   * ignores them after that: on the Vega Virtual Device, "Picture: Full
+   * screen" grew the stage to the whole screen and left the film playing at
+   * its panel size in the middle of it. So the player is keyed on the size it
+   * was given. A new size is a new surface; the film is attached to it the
+   * same way as the first time (after the player says it is ready), and
+   * carries on from where it was.
+   */
+  const surface = `${stage.width}x${stage.height}`;
+  const surfaceRef = useRef(surface);
+  const lastTime = useRef(0);
+  lastTime.current = time;
+  const resumeAt = useRef<number | null>(null);
+  useEffect(() => {
+    if (surfaceRef.current === surface) return;
+    surfaceRef.current = surface;
+    if (lastTime.current > 0) resumeAt.current = lastTime.current;
+  }, [surface]);
 
   const speaker = useRef<Speaker>(shared);
   speaker.current = shared;
@@ -316,12 +341,24 @@ export const Player = ({
    * there is no public callback for surface attachment to wait on.
    */
   const handlePlayerReady = useCallback(() => {
-    setTimeout(() => setSource(film), 250);
+    const ready = surfaceRef.current;
+    setTimeout(() => setSource({uri: film, surface: ready}), 250);
   }, [film]);
 
   const handleMetadata = useCallback(() => {
     const el = videoRef.current;
     if (el && isFinite(el.duration)) setDuration(el.duration);
+    // A remount for a new picture size carries on from where the film was.
+    const at = resumeAt.current;
+    resumeAt.current = null;
+    if (el && at !== null && at > 0) {
+      try {
+        el.currentTime = at;
+        onTimeUpdate(at, false);
+      } catch {
+        // Starting again from the top is the worst case, and Back recovers it.
+      }
+    }
     // Hand Vega's media controls to this player, so the voice remote's
     // "Alexa, pause" and "Alexa, rewind" reach the film. The w3cmedia player
     // answers those commands itself once it has focus; the descriptions follow
@@ -338,7 +375,7 @@ export const Player = ({
     } catch {
       setFailure('The film could not be played.');
     }
-  }, [component]);
+  }, [component, onTimeUpdate]);
 
   const handleEnded = useCallback(() => {
     setPlaying(false);
@@ -409,12 +446,13 @@ export const Player = ({
           accessibilityLabel={`The film: ${title.title}.`}>
           {stage.width > 0 && stage.height > 0 ? (
             <Video
+              key={surface}
               ref={(r: unknown) => {
                 videoRef.current = r as HTMLVideoElement | null;
               }}
               width={stage.width}
               height={stage.height}
-              src={source}
+              src={source && source.surface === surface ? source.uri : undefined}
               scalingmode="fit"
               onComponentDidMount={handlePlayerReady}
               onTimeUpdate={tick}
