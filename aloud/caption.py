@@ -192,7 +192,11 @@ META = re.compile(
     r"\bblurr(?:ed|y|ing)\b|\b(?:in|out of|soft) focus\b|\boff-?camera\b|"
     # "rests beside credits on a weathered wooden surface": the brief says
     # never mention credits, and the end-credit artwork is not the story.
-    r"\bcredits\b",
+    r"\bcredits\b|"
+    # "The scene shifts to a futuristic, dilapidated interior...": Qwen2.5-VL
+    # narrating the edit. Where the scene goes is worth saying; that it went
+    # is the film talking about itself.
+    r"\b(?:the )?scene (?:shifts|changes|cuts|transitions|fades|switches)\b",
     re.IGNORECASE)
 
 # The film's own words may be read out ("On screen: 40 YEARS LATER."), but

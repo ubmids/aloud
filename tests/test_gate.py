@@ -254,6 +254,20 @@ def test_every_cue_on_the_shelf_passes_the_gate():
     print("PASS every cue on the shelf passes the gate, and every count is right")
 
 
+
+def test_a_sentence_narrating_the_edit_is_caught():
+    """Qwen2.5-VL 7B, Tears of Steel 0:45: "The scene shifts to a futuristic,
+    dilapidated interior with "40 YEARS LATER" text." The interior is worth a
+    gap; "the scene shifts" is the film talking about itself."""
+    for said in ("The scene shifts to a futuristic, dilapidated interior.",
+                 "The scene changes to a rooftop at night.",
+                 "Scene transitions to a burning street."):
+        assert meta(said), said
+    for fine in ("A battle scene rages in the square.",
+                 "Robots cross a ruined square."):
+        assert not meta(fine), fine
+    print("PASS a sentence narrating the edit is caught")
+
 if __name__ == "__main__":
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for fn in fns:
