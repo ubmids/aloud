@@ -20,14 +20,15 @@ import sys
 
 import numpy as np
 
-# Two categorical slots, validated together against the app's ground (dark
-# mode, OKLab CVD separation 26.8, normal-vision 31.8, both >= 3:1 contrast).
-GROUND = "#0b0908"
-INK = "#f7f1ea"
-INK_MUTED = "#a4907f"
-RULE = "#2a211c"
-DIALOGUE = "#3987e5"
-VOICE = "#d95926"
+# The Signal tokens from design/DESIGN.md, so the figure and the app agree:
+# dialogue is the app's mid-tone (3.3:1 on the ground), aloud is caption
+# yellow (13.6:1), and the two sit in separate lanes, so neither depends on hue.
+GROUND = "#0B0B0A"
+INK = "#F4F3EE"
+INK_MUTED = "#A3A29B"
+RULE = "#3A3A37"
+DIALOGUE = "#63635F"
+VOICE = "#FFD23F"
 
 ROW_S = 250.0          # at most this much film a row
 WIDTH = 1200
@@ -68,7 +69,7 @@ def draw(cues: list[dict], dialogue: list[tuple[float, float]], duration: float,
     spoken = sum(c["end"] - c["start"] for c in cues)
     out = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{WIDTH}" height="{height}" '
-        f'viewBox="0 0 {WIDTH} {height}" font-family="Helvetica, Arial, sans-serif" '
+        f'viewBox="0 0 {WIDTH} {height}" font-family="Atkinson Hyperlegible Next, Helvetica, Arial, sans-serif" '
         f'role="img" aria-labelledby="t d">',
         f'<title id="t">{html.escape(title)}: dialogue and descriptions</title>',
         f'<desc id="d">{len(cues)} descriptions, {spoken:.0f} seconds of narration, '
