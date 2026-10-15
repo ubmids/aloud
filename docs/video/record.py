@@ -164,6 +164,7 @@ def where_now(film: str, crop: str) -> float | None:
     for f in os.listdir(d):
         os.remove(os.path.join(d, f))
     console(f"screenrecord screenshot {d}")
+    time.sleep(1.0)        # the console returns before the PNG is fully written
     shots = [os.path.join(d, f) for f in os.listdir(d) if f.endswith(".png")]
     if not shots:
         return None

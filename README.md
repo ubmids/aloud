@@ -1,6 +1,6 @@
 # aloud
 
-![aloud on the Vega Virtual Device: Tears of Steel playing, the description being spoken under the picture, the settings beside it.](design/assets/gallery/02-player.png)
+![aloud on the Vega Virtual Device, 1:12 into Tears of Steel: the film, and under it the description being spoken, "The flying ship hovers above the sprawling city below.", with the settings beside it.](docs/images/vvd-player.jpg)
 
 **A Fire TV that tells you what is on screen, in the gaps between the dialogue.**
 

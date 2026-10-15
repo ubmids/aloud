@@ -17,7 +17,7 @@ entry 19).
 | 4 | (from `03-player.mp4`) | 1:35 | the schedule strip under the film while a description fills its gap; crop it in the edit | no |
 | 5 | `card-01` to `card-06`, `lower-third.png`, `caption.png`, `thumbnail-*.png` | throughout, YouTube thumbnail | the Signal cards from `design/assets/` (designed and rendered by the design pass; `render.py cards` copies them here) | no |
 | 6 | `tos-without.mp4`, `tos-with.mp4` | viewer session | Tears of Steel 1:31 to 2:10 over black: the film's own sound, then with aloud | no (played to the viewer) |
-| 7 | `design/assets/gallery/*.png` | Devpost gallery, README | VVD screenshots of the Signal build at 1920x1080 (design pass) | no |
+| 7 | `docs/images/vvd-player.jpg`, `vvd-fullscreen.jpg` | Devpost gallery, README | real Vega Virtual Device stills of the Signal build, 1920x1080. `design/assets/gallery/` holds design renders (HTML, not device stills): caption them as renders, or replace them with device stills | no |
 | 8 | Subomi to camera, A1 and A2 | 0:20, 2:33 | see PEOPLE.md | **Subomi** |
 | 9 | Voiceover | 0:27 to 2:33 | lines in SCRIPT.md | **Subomi** (voice) |
 | 10 | The viewer session | 1:05 | see PEOPLE.md | **blind or low-vision viewer** |

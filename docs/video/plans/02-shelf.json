@@ -1,11 +1,39 @@
-{"level": "normal",
- "note": "times are focus changes measured from the recording (frame differences)",
+{
+ "level": "normal",
  "events": [
-  {"t": 3.3, "clip": "tv/assets/films/sintel/announce.m4a", "until": 8.2},
-  {"t": 8.2, "clip": "tv/assets/films/big-buck-bunny/announce.m4a", "until": 12.9},
-  {"t": 12.9, "clip": "tv/assets/films/sintel/announce.m4a", "until": 16.6},
-  {"t": 16.6, "clip": "tv/assets/films/tears-of-steel/announce.m4a", "until": 22.2},
-  {"t": 22.2, "clip": "tv/assets/ui/narration-on.m4a", "until": 27.0},
-  {"t": 27.0, "clip": "tv/assets/ui/level-normal.m4a", "until": 32.3},
-  {"t": 32.3, "clip": "tv/assets/ui/density-full.m4a"}
- ]}
+  {
+   "t": 3.6,
+   "clip": "tv/assets/films/sintel/announce.m4a",
+   "until": 15.6
+  },
+  {
+   "t": 15.6,
+   "clip": "tv/assets/films/big-buck-bunny/announce.m4a",
+   "until": 23.0
+  },
+  {
+   "t": 23.0,
+   "clip": "tv/assets/films/sintel/announce.m4a",
+   "until": 29.3
+  },
+  {
+   "t": 29.3,
+   "clip": "tv/assets/films/tears-of-steel/announce.m4a",
+   "until": 36.6
+  },
+  {
+   "t": 36.6,
+   "clip": "tv/assets/ui/narration-on.m4a",
+   "until": 42.2
+  },
+  {
+   "t": 42.2,
+   "clip": "tv/assets/ui/level-normal.m4a",
+   "until": 47.7
+  },
+  {
+   "t": 47.7,
+   "clip": "tv/assets/ui/density-full.m4a"
+  }
+ ]
+}
