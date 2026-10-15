@@ -57,8 +57,14 @@ def cast_names(cast: str | None) -> set:
     names = set()
     for m in re.finditer(r"(?:^|[.;]\s+)(?:The\s+)?([A-Z][\w']*(?:\s[A-Z][\w']*)?):",
                          cast or ""):
-        names.add(m.group(1))
+        if m.group(1) not in _HEADINGS:
+            names.add(m.group(1))
     return names
+
+
+# Cast lists also carry notes that are not people ("Machines: a flying ship
+# ..."), written the same way.
+_HEADINGS = {"Machines", "Places", "Others", "Note"}
 
 
 # Capitalised words that are not names.
