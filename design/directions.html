@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>aloud design directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;600;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400;1,6..72,500&family=Public+Sans:wght@400;600;700&family=Archivo:wdth,wght@62..125,400..800&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* page chrome, light */
+  --page-bg:#F6F5F1; --page-raised:#FFFFFF; --page-ink:#161615; --page-soft:#4A4945; --page-line:#DDDBD4; --page-mark:#FFD23F; --page-mark-ink:#161615;
+
+  /* Signal */
+  --sig-ground:#0B0B0A; --sig-raised:#171716; --sig-recess:#000000; --sig-line:#3A3A37;
+  --sig-ink:#F4F3EE; --sig-soft:#C8C7C0; --sig-muted:#A3A29B; --sig-voice:#FFD23F; --sig-onvoice:#0B0B0A;
+  --sig-dialogue:#63635F; --sig-alert:#FF8A7A; --sig-scrim:rgba(0,0,0,.85);
+  --sig-l-ground:#F7F6F1; --sig-l-ink:#111110; --sig-l-soft:#3B3B38; --sig-l-muted:#5C5B56; --sig-l-voiceink:#6B5200; --sig-l-dialogue:#86857E;
+
+  /* Liner notes */
+  --lin-ground:#0E0D0C; --lin-raised:#1A1917; --lin-recess:#000000; --lin-line:#34312C;
+  --lin-ink:#EFEAE0; --lin-soft:#BDB6A9; --lin-muted:#9A9387; --lin-voice:#EFEAE0; --lin-onvoice:#0E0D0C;
+  --lin-dialogue:#66625A; --lin-alert:#F29B8B; --lin-scrim:rgba(14,13,12,.88);
+  --lin-l-ground:#F3EFE6; --lin-l-ink:#191714; --lin-l-soft:#45413A; --lin-l-muted:#635E55; --lin-l-dialogue:#877F72;
+
+  /* Meter */
+  --met-ground:#0F1213; --met-raised:#1A1F21; --met-recess:#000000; --met-line:#2E3638;
+  --met-ink:#EEF2F1; --met-soft:#B6C0BF; --met-muted:#8E9A99; --met-voice:#C8F23C; --met-onvoice:#0F1213;
+  --met-dialogue:#5A6664; --met-alert:#FF8F80; --met-scrim:rgba(15,18,19,.88); --met-lvl-off:#7D8786;
+  --met-l-ground:#F2F4F3; --met-l-ink:#101415; --met-l-soft:#3A4446; --met-l-muted:#586466; --met-l-voiceink:#3F5A00; --met-l-dialogue:#7F8987;
+
+  /* stand-in film frames (the real gallery uses real frames) */
+  --sc-metal:#1D1A18; --sc-rim:#3A332E; --sc-dusk:#D9B07E; --sc-dusk2:#B98A5C; --sc-city:#4F4038; --sc-ship:#2B2420; --sc-shiplit:#E8C79A;
+  --sc-snowsky:#AFC0CC; --sc-snow:#E9EEF1; --sc-rock:#6E7E8A; --sc-figure:#7A2E1F;
+  --sc-sky:#9FD3F0; --sc-hill:#5DA147; --sc-hill2:#4A8A39; --sc-trunk:#6B4A2F; --sc-leaf:#3F6E2E; --sc-bunny:#E9E4DC;
+  --sc-sun:#FFE3A3; --sc-gold:#F2B35B; --sc-dune:#D98E3A; --sc-dune2:#B9702C;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --page-bg:#121211; --page-raised:#1B1B1A; --page-ink:#F1F0EB; --page-soft:#BDBCB5; --page-line:#2E2E2B; --page-mark:#FFD23F; --page-mark-ink:#121211;
+  }
+}
+:root[data-theme="dark"]{
+  --page-bg:#121211; --page-raised:#1B1B1A; --page-ink:#F1F0EB; --page-soft:#BDBCB5; --page-line:#2E2E2B; --page-mark:#FFD23F; --page-mark-ink:#121211;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--page-bg);color:var(--page-ink);font-family:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",system-ui,sans-serif;font-size:17px;line-height:1.55;overflow-x:hidden}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+@media (min-width:700px){.wrap{padding:0 32px}}
+header.top{padding-top:40px;padding-bottom:24px;border-bottom:1px solid var(--page-line)}
+.kicker{font-size:15px;color:var(--page-soft);font-weight:600}
+h1{font-size:clamp(34px,6vw,60px);line-height:1.04;font-weight:800;letter-spacing:-.01em;margin:8px 0 14px}
+h2{font-size:clamp(26px,4vw,40px);line-height:1.1;font-weight:800;margin-bottom:6px}
+h3{font-size:19px;font-weight:800;margin:28px 0 10px}
+p{max-width:68ch}
+p+p{margin-top:10px}
+.lede{font-size:19px;color:var(--page-soft);max-width:60ch}
+.toggle{position:fixed;right:12px;top:12px;z-index:5;font:600 14px/1 inherit;font-family:inherit;padding:10px 12px;background:var(--page-raised);color:var(--page-ink);border:1px solid var(--page-line);border-radius:0;cursor:pointer}
+.toggle:focus-visible,a:focus-visible{outline:3px solid var(--page-ink);outline-offset:2px}
+a{color:var(--page-ink)}
+section{padding:40px 0;border-bottom:1px solid var(--page-line)}
+.rec{display:inline-block;background:var(--page-mark);color:var(--page-mark-ink);font-weight:800;font-size:14px;padding:4px 10px;margin-left:8px;vertical-align:middle}
+.grid2{display:grid;gap:20px}
+@media (min-width:900px){.grid2{grid-template-columns:1fr 1fr}}
+.cap{font-size:14px;color:var(--page-soft);margin-top:8px}
+ol.find{padding-left:22px;max-width:76ch}
+ol.find li{margin:8px 0}
+ol.find b{font-weight:800}
+.dirhead{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;margin-bottom:6px}
+.dirhead .n{font-size:15px;font-weight:600;color:var(--page-soft)}
+.screens{display:grid;gap:22px;margin-top:22px}
+@media (min-width:1000px){.screens{grid-template-columns:3fr 2fr}.screens .wide{grid-column:1/-1}}
+.facts{display:grid;gap:18px;margin-top:18px}
+@media (min-width:760px){.facts{grid-template-columns:1fr 1fr 1fr}}
+.facts div{border-top:2px solid var(--page-ink);padding-top:8px}
+.facts h4{font-size:15px;font-weight:800;margin-bottom:4px}
+.facts p{font-size:15px;color:var(--page-soft)}
+.sw{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.sw span{display:flex;flex-direction:column;justify-content:flex-end;width:116px;height:76px;padding:6px 8px;font:600 12px/1.3 "Atkinson Hyperlegible Mono",ui-monospace,monospace}
+table.cmp{border-collapse:collapse;width:100%;font-size:15px;margin-top:12px}
+table.cmp th,table.cmp td{text-align:left;padding:8px 10px 8px 0;border-bottom:1px solid var(--page-line);vertical-align:top}
+.scroll{overflow-x:auto}
+footer{padding:32px 0 60px;color:var(--page-soft);font-size:14px}
+
+/* ---------- shared TV mock machinery: 1 design px = calc(1 * var(--u)) ---------- */
+.tv{position:relative;width:100%;aspect-ratio:16/9;container-type:inline-size;overflow:hidden}
+.thumb{position:relative;width:100%;aspect-ratio:3/2;container-type:inline-size;overflow:hidden}
+.s{position:absolute;inset:0;--u:calc(100cqw / 1920);--t:calc(100cqw / 1500)}
+.ab{position:absolute}
+.pic{position:absolute;overflow:hidden;display:block}
+.pic svg{width:100%;height:100%;display:block}
+.strip{position:absolute;overflow:hidden;background:var(--dlg)}
+.strip .g{position:absolute;top:0;bottom:0;background:var(--sil)}
+.strip .v{position:absolute;top:30%;bottom:30%;background:var(--vc)}
+.strip .g.live .v{top:0;bottom:0}
+.strip .ph{position:absolute;top:0;bottom:0;width:3px;margin-left:-1px;background:var(--ph)}
+.mono{font-variant-numeric:tabular-nums}
+
+/* ---------- Direction A: Signal ---------- */
+.sig{background:var(--sig-ground);color:var(--sig-ink);font-family:"Atkinson Hyperlegible Next",system-ui,sans-serif;--dlg:var(--sig-dialogue);--ph:var(--sig-ink);--sil:var(--sig-recess);--vc:var(--sig-voice)}
+.sig .mono{font-family:"Atkinson Hyperlegible Mono",ui-monospace,monospace}
+.sig .wm{left:calc(96 * var(--u));top:calc(54 * var(--u));display:flex;align-items:center;gap:calc(16 * var(--u));font-size:calc(44 * var(--u));font-weight:800;line-height:1}
+.sig .gm{display:flex;align-items:center;gap:calc(6 * var(--u))}
+.sig .gm i{display:block;height:calc(20 * var(--u));background:var(--sig-dialogue)}
+.sig .gm b{display:block;height:calc(34 * var(--u));width:calc(30 * var(--u));background:var(--sig-voice)}
+.sig .meta{font-size:calc(28 * var(--u));line-height:calc(40 * var(--u));color:var(--sig-soft)}
+.sig .disp{font-size:calc(80 * var(--u));line-height:calc(84 * var(--u));font-weight:800}
+.sig .body{font-size:calc(28 * var(--u));line-height:calc(40 * var(--u));color:var(--sig-soft)}
+.sig .lead{font-size:calc(34 * var(--u));line-height:calc(44 * var(--u));font-weight:600}
+.sig .lab{font-size:calc(24 * var(--u));line-height:calc(32 * var(--u));font-weight:600;color:var(--sig-muted)}
+.sig .tile{width:calc(352 * var(--u));background:var(--sig-raised)}
+.sig .tile .pic{position:relative;width:calc(352 * var(--u));height:calc(198 * var(--u))}
+.sig .tile .tb{height:calc(76 * var(--u));padding:calc(10 * var(--u)) calc(18 * var(--u));font-size:calc(30 * var(--u));line-height:calc(32 * var(--u));font-weight:600}
+.sig .tile .tb small{display:block;font-size:calc(24 * var(--u));line-height:calc(28 * var(--u));color:var(--sig-muted);font-weight:400}
+.sig .tile.f{outline:calc(6 * var(--u)) solid var(--sig-ink);transform:scale(1.04);transform-origin:center bottom}
+.sig .tile.f .tb{background:var(--sig-ink);color:var(--sig-ground)}
+.sig .tile.f .tb small{color:var(--sig-ground)}
+.sig .set{width:calc(400 * var(--u));height:calc(88 * var(--u));background:var(--sig-raised);padding:calc(8 * var(--u)) calc(22 * var(--u))}
+.sig .set .lab{display:block}
+.sig .set .val{font-size:calc(34 * var(--u));line-height:calc(44 * var(--u));font-weight:600}
+.sig .set.f{background:var(--sig-ink);color:var(--sig-ground);outline:calc(6 * var(--u)) solid var(--sig-ink);outline-offset:calc(6 * var(--u))}
+.sig .set.f .lab{color:var(--sig-ground)}
+.sig .cue{font-size:calc(46 * var(--u));line-height:calc(60 * var(--u));font-weight:600}
+.sig .vbar{width:calc(8 * var(--u));background:var(--sig-voice)}
+.sig .vlab{font-size:calc(24 * var(--u));line-height:calc(32 * var(--u));font-weight:600;color:var(--sig-voice)}
+.sig .vset{width:calc(480 * var(--u));height:calc(92 * var(--u));padding:calc(10 * var(--u)) calc(20 * var(--u));background:var(--sig-raised)}
+.sig .vset .val{font-size:calc(30 * var(--u));line-height:calc(40 * var(--u));font-weight:600}
+.sig .vset.f{background:var(--sig-ink);color:var(--sig-ground)}
+.sig .vset.f .lab{color:var(--sig-ground)}
+.sig .caption{background:var(--sig-scrim);border-left:calc(8 * var(--u)) solid var(--sig-voice);padding:calc(16 * var(--u)) calc(26 * var(--u));font-size:calc(46 * var(--u));line-height:calc(60 * var(--u));font-weight:600;color:var(--sig-ink)}
+
+/* ---------- Direction B: Liner notes ---------- */
+.lin{background:var(--lin-ground);color:var(--lin-ink);font-family:"Public Sans",system-ui,sans-serif;--dlg:var(--lin-dialogue);--ph:var(--lin-ink);--sil:var(--lin-recess);--vc:var(--lin-voice)}
+.lin .serif{font-family:"Newsreader",Georgia,serif}
+.lin .wm{left:calc(96 * var(--u));top:calc(48 * var(--u));font-family:"Newsreader",Georgia,serif;font-style:italic;font-size:calc(56 * var(--u));line-height:1;font-weight:500}
+.lin .strap{right:calc(96 * var(--u));top:calc(66 * var(--u));font-size:calc(24 * var(--u));color:var(--lin-muted)}
+.lin .row{left:calc(96 * var(--u));width:calc(780 * var(--u));height:calc(104 * var(--u));display:flex;align-items:center;justify-content:space-between;padding:0 calc(24 * var(--u));border-bottom:calc(2 * var(--u)) solid var(--lin-line)}
+.lin .row .t{font-family:"Newsreader",Georgia,serif;font-size:calc(56 * var(--u));line-height:1;font-weight:400}
+.lin .row .m{font-size:calc(24 * var(--u));color:var(--lin-muted);font-variant-numeric:tabular-nums}
+.lin .row.f{background:var(--lin-ink);color:var(--lin-ground);border-bottom-color:var(--lin-ink);outline:calc(6 * var(--u)) solid var(--lin-ink)}
+.lin .row.f .m{color:var(--lin-ground)}
+.lin .q{font-family:"Newsreader",Georgia,serif;font-style:italic;font-size:calc(40 * var(--u));line-height:calc(52 * var(--u));font-weight:400}
+.lin .lab{font-size:calc(24 * var(--u));line-height:calc(32 * var(--u));color:var(--lin-muted);font-weight:600}
+.lin .body{font-size:calc(28 * var(--u));line-height:calc(40 * var(--u));color:var(--lin-soft)}
+.lin .opts{display:flex;gap:calc(16 * var(--u))}
+.lin .opt{font-size:calc(28 * var(--u));line-height:calc(40 * var(--u));padding:calc(14 * var(--u)) calc(22 * var(--u));color:var(--lin-soft);background:var(--lin-raised)}
+.lin .opt b{color:var(--lin-ink);font-weight:600}
+.lin .opt.f{background:var(--lin-ink);color:var(--lin-ground);outline:calc(6 * var(--u)) solid var(--lin-ink)}
+.lin .opt.f b{color:var(--lin-ground)}
+.lin .cue{font-family:"Newsreader",Georgia,serif;font-style:italic;font-size:calc(50 * var(--u));line-height:calc(62 * var(--u));font-weight:400}
+
+/* ---------- Direction C: Meter ---------- */
+.met{background:var(--met-ground);color:var(--met-ink);font-family:"Archivo",system-ui,sans-serif;font-stretch:100%;--dlg:var(--met-dialogue);--ph:var(--met-ink);--sil:var(--met-recess);--vc:var(--met-voice)}
+.met .x{font-stretch:125%}
+.met .wm{left:calc(96 * var(--u));top:calc(50 * var(--u));font-size:calc(46 * var(--u));line-height:1;font-weight:800;font-stretch:125%;display:flex;align-items:center;gap:calc(14 * var(--u))}
+.met .wm i{display:block;width:calc(14 * var(--u));height:calc(40 * var(--u));background:var(--met-voice)}
+.met .disp{font-size:calc(76 * var(--u));line-height:calc(80 * var(--u));font-weight:800;font-stretch:112%}
+.met .meta{font-size:calc(26 * var(--u));line-height:calc(36 * var(--u));color:var(--met-soft);font-weight:500}
+.met .body{font-size:calc(28 * var(--u));line-height:calc(40 * var(--u));color:var(--met-soft)}
+.met .lab{font-size:calc(24 * var(--u));line-height:calc(32 * var(--u));color:var(--met-muted);font-weight:600}
+.met .tile{width:calc(400 * var(--u));background:var(--met-raised)}
+.met .tile .pic{position:relative;width:calc(400 * var(--u));height:calc(225 * var(--u))}
+.met .tile .tb{padding:calc(12 * var(--u)) calc(18 * var(--u)) calc(16 * var(--u));font-size:calc(28 * var(--u));line-height:calc(34 * var(--u));font-weight:700}
+.met .tile .fp{position:relative;height:calc(14 * var(--u));margin-top:calc(10 * var(--u))}
+.met .tile.f{outline:calc(6 * var(--u)) solid var(--met-ink);transform:scale(1.04);transform-origin:center bottom}
+.met .lvl{display:flex;gap:calc(6 * var(--u));margin-top:calc(8 * var(--u))}
+.met .lvl i{display:block;width:calc(40 * var(--u));height:calc(16 * var(--u));background:var(--met-dialogue)}
+.met .lvl i.on{background:var(--met-ink)}
+.met .set{width:calc(300 * var(--u));padding:calc(12 * var(--u)) calc(20 * var(--u)) calc(16 * var(--u));background:var(--met-raised)}
+.met .set .val{font-size:calc(30 * var(--u));line-height:calc(40 * var(--u));font-weight:700}
+.met .set.f{background:var(--met-ink);color:var(--met-ground);outline:calc(6 * var(--u)) solid var(--met-ink)}
+.met .set.f .lab{color:var(--met-ground)}
+.met .set.f .lvl i{background:var(--met-lvl-off)}
+.met .set.f .lvl i.on{background:var(--met-ground)}
+.met .cue{font-size:calc(44 * var(--u));line-height:calc(58 * var(--u));font-weight:600}
+.met .vlab{font-size:calc(24 * var(--u));line-height:calc(32 * var(--u));font-weight:700;color:var(--met-voice)}
+</style>
+</head>
+<body>
+<button class="toggle" type="button" id="themeBtn" aria-label="Switch light or dark page">Light / dark</button>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <clipPath id="port"><circle cx="80" cy="45" r="33"/></clipPath>
+    <symbol id="sc-tos" viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice">
+      <rect width="160" height="90" style="fill:var(--sc-metal)"/>
+      <g clip-path="url(#port)">
+        <rect width="160" height="90" style="fill:var(--sc-dusk)"/>
+        <rect y="52" width="160" height="38" style="fill:var(--sc-dusk2)"/>
+        <path d="M47 78V60h6v-6h5v10h4V56h7v8h5V50h6v12h5v-7h6v9h5V58h7v20z" style="fill:var(--sc-city)"/>
+        <ellipse cx="82" cy="34" rx="22" ry="7" style="fill:var(--sc-ship)"/>
+        <rect x="76" y="40" width="12" height="4" style="fill:var(--sc-ship)"/>
+        <rect x="70" y="32" width="24" height="1.4" style="fill:var(--sc-shiplit)"/>
+      </g>
+      <circle cx="80" cy="45" r="34.5" style="fill:none;stroke:var(--sc-rim);stroke-width:3"/>
+    </symbol>
+    <symbol id="sc-sintel" viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice">
+      <rect width="160" height="90" style="fill:var(--sc-snowsky)"/>
+      <path d="M0 70 30 30 48 50 70 18 100 58 120 36 160 72V90H0z" style="fill:var(--sc-rock)"/>
+      <path d="M30 30 38 41 33 40 27 44zM70 18 80 31 72 30 64 35zM120 36 128 45 121 44 115 47z" style="fill:var(--sc-snow)"/>
+      <path d="M0 78 50 66 110 74 160 68V90H0z" style="fill:var(--sc-snow)"/>
+      <rect x="86" y="62" width="3" height="9" style="fill:var(--sc-figure)"/>
+    </symbol>
+    <symbol id="sc-bunny" viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice">
+      <rect width="160" height="90" style="fill:var(--sc-sky)"/>
+      <ellipse cx="50" cy="96" rx="110" ry="36" style="fill:var(--sc-hill2)"/>
+      <ellipse cx="120" cy="100" rx="90" ry="38" style="fill:var(--sc-hill)"/>
+      <rect x="116" y="26" width="8" height="40" style="fill:var(--sc-trunk)"/>
+      <circle cx="120" cy="24" r="20" style="fill:var(--sc-leaf)"/>
+      <ellipse cx="66" cy="66" rx="10" ry="8" style="fill:var(--sc-bunny)"/>
+      <rect x="61" y="50" width="3" height="10" rx="1.5" style="fill:var(--sc-bunny)"/>
+      <rect x="67" y="49" width="3" height="11" rx="1.5" style="fill:var(--sc-bunny)"/>
+    </symbol>
+    <symbol id="sc-trailer" viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice">
+      <rect width="160" height="90" style="fill:var(--sc-gold)"/>
+      <circle cx="112" cy="40" r="12" style="fill:var(--sc-sun)"/>
+      <path d="M0 62C40 50 70 58 100 64S150 60 160 56V90H0z" style="fill:var(--sc-dune)"/>
+      <path d="M0 76C50 66 90 74 160 70V90H0z" style="fill:var(--sc-dune2)"/>
+      <rect x="54" y="58" width="2.4" height="7" style="fill:var(--sc-figure)"/>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="top wrap">
+  <div class="kicker">aloud · Fire TV design pass · Phase 1</div>
+  <h1>Three directions for a film you can hear</h1>
+  <p class="lede">Each direction below is applied to aloud's real screens (the shelf and the player, at 1920 by 1080, inside the Fire TV safe area) and to the Devpost thumbnail. Copy, counts and timings come from the Tears of Steel track on the shelf at commit bab4335 (re-described today); if the track changes, the words in the mocks change and the design does not. Film frames are drawn stand-ins; the real gallery uses Virtual Device screenshots.</p>
+  <p class="lede" style="margin-top:12px"><b style="color:var(--page-ink)">Recommendation: Signal.</b> Reasons at the end. Binding rules live in <code>design/DESIGN.md</code>.</p>
+</header>
+
+<main class="wrap">
+
+<section id="audit">
+  <h2>What reads as generic today</h2>
+  <p>The current app is better than most: its contrast is deliberate, nothing is said with hue alone, and every setting explains itself in plain words. These are the places it still looks assembled rather than designed, worst first. Measured from <code>tv/src/theme.ts</code> and the screen styles, rendered at 1920 by 1080.</p>
+  <ol class="find">
+    <li><b>The player is a developer dashboard.</b> The film gets about 745 by 420 pixels, 15% of the screen. The schedule strip, a full-width orange "lens" bar and four 400 px setting cards take the rest, and the lens bar is the brightest object on screen, brighter than the film.</li>
+    <li><b>Rounded bordered cards for everything.</b> Eleven surfaces (hero, four tiles, four settings, stage, voice panel) share the same 14 to 16 px radius and 2 px border. Settings get the same visual weight as films.</li>
+    <li><b>No typeface, no mark.</b> No font family is set, so the app gets the platform default; the video cards use Avenir Next, so the app and the video do not match. The wordmark is 34 px bold system text, smaller than a tile title.</li>
+    <li><b>Small tracked capitals.</b> Every label and eyebrow ("DESCRIBED FILMS", "PRESS SELECT TO PLAY", "WHERE EVERY DESCRIPTION SITS") are 17 px uppercase with 3 to 4 px tracking. That is below the 24 px ten-foot floor, and capitals remove the word shapes low-vision readers rely on.</li>
+    <li><b>The timeline fails its own rule.</b> Dialogue <code>#4a3b33</code> against a silence <code>#070505</code> is 1.9:1; WCAG asks 3:1 for graphics that carry meaning. The README figure draws dialogue in blue (<code>#3987e5</code>) and says 46 descriptions; the app says 45.</li>
+    <li><b>Warm black with a terracotta orange.</b> <code>#ff7a45</code> on brown-black with tan secondary text is the default "tasteful dark mode" palette. It also means the voice colour, focus and the lens all share one orange.</li>
+    <li><b>Developer strings in front of viewers.</b> "qwen3-vl-4b (local, llama.cpp on CPU), read by Kokoro 82M (af_heart)" sits on the shelf hero. The provenance is right; the voice code is not for a viewer.</li>
+    <li><b>Inside the overscan.</b> The safe area is 64 by 44 px; the Fire TV margin is 5%, 96 by 54 px at 1080p.</li>
+    <li><b>Nothing to show yet.</b> No thumbnail, no README hero image, no gallery screenshots. A judge who scores from images alone currently sees text.</li>
+  </ol>
+</section>
+
+<!-- =============================== A: SIGNAL =============================== -->
+<section id="signal">
+  <div class="dirhead"><span class="n">Direction A</span><h2>Signal</h2><span class="rec">Recommended</span></div>
+  <p class="lede">Broadcast access vernacular: the black and caption yellow that every audio description and subtitle viewer already knows, set in Atkinson Hyperlegible, the face the Braille Institute drew for low vision. Square edges, focus by inversion, the gap mark as the logo.</p>
+
+  <div class="screens">
+    <figure class="wide">
+      <div class="tv"><div class="s sig" role="img" aria-label="Signal: the shelf, Tears of Steel focused">
+        <div class="ab wm"><span class="gm"><i style="width:calc(30 * var(--u))"></i><b></b><i style="width:calc(18 * var(--u))"></i></span>aloud</div>
+        <div class="ab lab" style="right:calc(96 * var(--u));top:calc(60 * var(--u))">4 films, all described</div>
+        <div class="pic" style="left:calc(1000 * var(--u));top:0;width:calc(920 * var(--u));height:calc(560 * var(--u))"><svg><use href="#sc-tos"/></svg></div>
+        <div class="ab" style="left:calc(96 * var(--u));top:calc(150 * var(--u));width:calc(820 * var(--u))">
+          <div class="meta">Science fiction, 2012, 12 minutes</div>
+          <div class="disp" style="margin-top:calc(6 * var(--u))">Tears of Steel</div>
+          <div class="body" style="margin-top:calc(14 * var(--u))">In a future Amsterdam overrun by robots, a band of scientists and soldiers restage one moment from the past to save the world.</div>
+          <div class="lead" style="margin-top:calc(22 * var(--u));display:flex;align-items:center;gap:calc(14 * var(--u))"><span class="gm" style="display:flex;gap:calc(5 * var(--u));align-items:center"><i style="display:block;width:calc(18 * var(--u));height:calc(14 * var(--u));background:var(--sig-dialogue)"></i><b style="display:block;width:calc(22 * var(--u));height:calc(24 * var(--u));background:var(--sig-voice)"></b><i style="display:block;width:calc(12 * var(--u));height:calc(14 * var(--u));background:var(--sig-dialogue)"></i></span>45 descriptions, 2.2 minutes of narration</div>
+          <div class="lab" style="margin-top:calc(8 * var(--u))">Described ahead of time by Claude Haiku 4.5. Read by Kokoro.</div>
+        </div>
+        <div class="ab lab" style="left:calc(96 * var(--u));top:calc(564 * var(--u));color:var(--sig-soft)">Described films</div>
+        <div class="ab" style="left:calc(96 * var(--u));top:calc(628 * var(--u));display:flex;gap:calc(32 * var(--u))">
+          <div class="tile f"><div class="pic"><svg><use href="#sc-tos"/></svg></div><div class="tb">Tears of Steel<small>Select to play</small></div></div>
+          <div class="tile"><div class="pic"><svg><use href="#sc-sintel"/></svg></div><div class="tb">Sintel<small class="mono">41 descriptions</small></div></div>
+          <div class="tile"><div class="pic"><svg><use href="#sc-bunny"/></svg></div><div class="tb">Big Buck Bunny<small class="mono">47 descriptions</small></div></div>
+          <div class="tile"><div class="pic"><svg><use href="#sc-trailer"/></svg></div><div class="tb">Sintel trailer<small class="mono">4 descriptions</small></div></div>
+        </div>
+        <div class="ab" style="left:calc(96 * var(--u));top:calc(938 * var(--u));display:flex;gap:calc(24 * var(--u))">
+          <div class="set"><span class="lab">Narration</span><div class="val">On</div></div>
+          <div class="set"><span class="lab">Voice level</span><div class="val">Normal</div></div>
+          <div class="set"><span class="lab">How much is said</span><div class="val">Everything</div></div>
+          <div class="set"><span class="lab">Read the menu aloud</span><div class="val">On</div></div>
+        </div>
+      </div></div>
+      <figcaption class="cap">Shelf. Words on solid ground, the picture bleeds right with a hard edge. Focus: 6 px ink frame, the title bar inverts, a 1.04 lift. Unfocused tiles stay at full strength. Settings are one compact row; the focused one inverts and shows its help line.</figcaption>
+    </figure>
+
+    <figure class="wide">
+      <div class="tv"><div class="s sig" role="img" aria-label="Signal: the player, a description being spoken">
+        <div class="pic" style="left:calc(96 * var(--u));top:calc(54 * var(--u));width:calc(1216 * var(--u));height:calc(684 * var(--u));background:var(--sig-recess)"><svg><use href="#sc-tos"/></svg></div>
+        <div class="ab" style="left:calc(1344 * var(--u));top:calc(54 * var(--u));width:calc(480 * var(--u))">
+          <div style="display:flex;align-items:center;gap:calc(12 * var(--u));font-size:calc(32 * var(--u));font-weight:800;line-height:1"><span class="gm"><i style="width:calc(22 * var(--u));height:calc(14 * var(--u))"></i><b style="width:calc(20 * var(--u));height:calc(24 * var(--u))"></b><i style="width:calc(12 * var(--u));height:calc(14 * var(--u))"></i></span>aloud</div>
+          <div style="font-size:calc(52 * var(--u));line-height:calc(60 * var(--u));font-weight:800;margin-top:calc(26 * var(--u))">Tears of Steel</div>
+          <div class="lab" style="color:var(--sig-soft);margin-top:calc(6 * var(--u))"><span aria-hidden="true">▶</span> Playing · <span class="mono">1:12 of 12:14</span></div>
+          <div class="lab mono" style="margin-top:calc(2 * var(--u))">5 of 45 descriptions said</div>
+          <div style="display:flex;flex-direction:column;gap:calc(12 * var(--u));margin-top:calc(30 * var(--u))">
+            <div class="vset f"><span class="lab">Narration</span><div class="val">On</div></div>
+            <div class="vset"><span class="lab">Voice level</span><div class="val">Normal</div></div>
+            <div class="vset"><span class="lab">How much is said</span><div class="val">Everything</div></div>
+            <div class="vset"><span class="lab">Picture</span><div class="val">With the description</div></div>
+          </div>
+          <div class="lab" style="margin-top:calc(14 * var(--u));color:var(--sig-soft)">Menu says the last one again.</div>
+        </div>
+        <div class="ab" style="left:calc(96 * var(--u));top:calc(770 * var(--u));display:flex;gap:calc(26 * var(--u))">
+          <div class="vbar" style="height:calc(96 * var(--u))"></div>
+          <div>
+            <div class="vlab">aloud is describing</div>
+            <div class="cue" style="width:calc(1150 * var(--u))">The flying ship hovers above the sprawling city below.</div>
+          </div>
+        </div>
+        <div class="strip" data-film="tos" data-live="4" style="left:calc(96 * var(--u));top:calc(950 * var(--u));width:calc(1728 * var(--u));height:calc(32 * var(--u))"></div>
+                <div class="ab lab mono" style="left:calc(96 * var(--u));top:calc(990 * var(--u))">0:00</div>
+        <div class="ab lab" style="left:calc(300 * var(--u));top:calc(990 * var(--u));color:var(--sig-soft)">Gap 5 of 45: 3.0 seconds of description in 4.2 seconds of quiet</div>
+        <div class="ab lab mono" style="right:calc(96 * var(--u));top:calc(990 * var(--u))">12:14</div>
+      </div></div>
+      <figcaption class="cap">Player. The film takes 40% of the screen (it has 15% today). The description sits under the picture like a caption, with a yellow bar only while it is spoken. The schedule becomes a 32 px strip from the real track; the lens shrinks to one sentence.</figcaption>
+    </figure>
+
+    <figure>
+      <div class="tv"><div class="s sig" role="img" aria-label="Signal: full screen picture with the description as a caption">
+        <div class="pic" style="left:0;top:0;width:calc(1920 * var(--u));height:calc(1080 * var(--u))"><svg><use href="#sc-tos"/></svg></div>
+        <div class="ab caption" style="left:calc(96 * var(--u));bottom:calc(150 * var(--u));max-width:calc(1100 * var(--u))">The flying ship hovers above the sprawling city below.</div>
+      </div></div>
+      <figcaption class="cap">Full screen for the rest of the sofa: solid caption box at 85% black, yellow edge, inside the safe area, BBC caption rules.</figcaption>
+    </figure>
+
+    <figure>
+      <div class="thumb"><div class="s sig" role="img" aria-label="Signal: thumbnail">
+        <div class="ab" style="left:calc(96 * var(--t));top:calc(90 * var(--t));font-size:calc(200 * var(--t));line-height:1;font-weight:800;letter-spacing:calc(-2 * var(--t))">aloud</div>
+        <div class="ab" style="left:calc(96 * var(--t));top:calc(370 * var(--t));font-size:calc(76 * var(--t));line-height:calc(84 * var(--t));font-weight:800;width:calc(1200 * var(--t))">Films that describe themselves.</div>
+        <div class="ab" style="left:calc(96 * var(--t));top:calc(640 * var(--t));width:calc(1308 * var(--t));height:calc(120 * var(--t));display:flex;align-items:center;gap:calc(10 * var(--t))"><i style="display:block;width:calc(70 * var(--t));height:calc(64 * var(--t));background:var(--sig-dialogue)"></i><i style="display:block;width:calc(40 * var(--t));height:calc(90 * var(--t));background:var(--sig-dialogue)"></i><i style="display:block;width:calc(96 * var(--t));height:calc(120 * var(--t));background:var(--sig-dialogue)"></i><i style="display:block;width:calc(28 * var(--t));height:calc(70 * var(--t));background:var(--sig-dialogue)"></i><i style="display:block;width:calc(64 * var(--t));height:calc(100 * var(--t));background:var(--sig-dialogue)"></i><i style="display:block;width:calc(48 * var(--t));height:calc(56 * var(--t));background:var(--sig-dialogue)"></i><i style="display:block;width:calc(110 * var(--t));height:calc(96 * var(--t));background:var(--sig-dialogue)"></i><i style="display:block;width:calc(36 * var(--t));height:calc(72 * var(--t));background:var(--sig-dialogue)"></i><span style="display:flex;align-items:center;flex:none;width:calc(520 * var(--t));height:calc(120 * var(--t));padding:0 calc(34 * var(--t))"><b style="display:block;width:100%;height:calc(120 * var(--t));background:var(--sig-voice)"></b></span><i style="display:block;width:calc(58 * var(--t));height:calc(88 * var(--t));background:var(--sig-dialogue)"></i><i style="display:block;width:calc(34 * var(--t));height:calc(60 * var(--t));background:var(--sig-dialogue)"></i><i style="display:block;width:calc(90 * var(--t));height:calc(110 * var(--t));background:var(--sig-dialogue)"></i></div>
+        <div class="ab" style="left:calc(96 * var(--t));top:calc(820 * var(--t));font-size:calc(44 * var(--t));font-weight:600;color:var(--sig-soft)">Fire TV · Vega OS</div>
+      </div></div>
+      <figcaption class="cap">Thumbnail, 3:2. Eight words. The gap mark is the picture: dialogue, a silence, the voice fitted inside it.</figcaption>
+    </figure>
+  </div>
+
+  <div class="sw" aria-label="Signal palette">
+    <span style="background:var(--sig-ground);color:var(--sig-ink)">ground<br>#0B0B0A</span>
+    <span style="background:var(--sig-raised);color:var(--sig-ink)">raised<br>#171716</span>
+    <span style="background:var(--sig-ink);color:var(--sig-ground)">ink 17.7<br>#F4F3EE</span>
+    <span style="background:var(--sig-ground);color:var(--sig-soft);outline:1px solid var(--page-line)">inkSoft 11.6<br>#C8C7C0</span>
+    <span style="background:var(--sig-ground);color:var(--sig-muted);outline:1px solid var(--page-line)">inkMuted 7.7<br>#A3A29B</span>
+    <span style="background:var(--sig-voice);color:var(--sig-onvoice)">voice 13.6<br>#FFD23F</span>
+    <span style="background:var(--sig-dialogue);color:var(--sig-ink)">dialogue 3.3<br>#63635F</span>
+    <span style="background:var(--sig-l-ground);color:var(--sig-l-voiceink);outline:1px solid var(--page-line)">light voiceInk 6.9<br>#6B5200</span>
+  </div>
+  <div class="facts">
+    <div><h4>Type</h4><p>Atkinson Hyperlegible Next 400/600/800, Mono for timecodes. Scale 80, 52, 46, 34, 28, 24. Sentence case only.</p></div>
+    <div><h4>For this audience</h4><p>Highest voice contrast of the three (13.6:1). Yellow on black is what AD and caption users already read as "access", so it signals competence, not charity.</p></div>
+    <div><h4>Risk</h4><p>Yellow and black can tip into hazard tape. Kept in check by using yellow only for the voice and leaving 90% of every screen black and ink.</p></div>
+  </div>
+</section>
+
+<!-- =============================== B: LINER NOTES =============================== -->
+<section id="liner">
+  <div class="dirhead"><span class="n">Direction B</span><h2>Liner notes</h2></div>
+  <p class="lede">Film culture, not software. A monochrome bone and black programme, where aloud's voice is set in italic serif like a line of prose, and there is no accent colour at all: the voice is a typeface, not a hue. Titles are a spoken list, not a poster wall.</p>
+
+  <div class="screens">
+    <figure class="wide">
+      <div class="tv"><div class="s lin" role="img" aria-label="Liner notes: the shelf as a list of titles">
+        <div class="ab wm">aloud</div>
+        <div class="ab strap">Films that describe themselves</div>
+        <div class="ab lab" style="left:calc(96 * var(--u));top:calc(170 * var(--u))">Described films</div>
+        <div class="ab row f" style="top:calc(214 * var(--u))"><span class="t">Tears of Steel</span><span class="m">12 min · 45 descriptions</span></div>
+        <div class="ab row" style="top:calc(330 * var(--u))"><span class="t">Sintel</span><span class="m">15 min · 41 descriptions</span></div>
+        <div class="ab row" style="top:calc(434 * var(--u))"><span class="t">Big Buck Bunny</span><span class="m">10 min · 47 descriptions</span></div>
+        <div class="ab row" style="top:calc(538 * var(--u))"><span class="t">Sintel, the trailer</span><span class="m">1 min · 4 descriptions</span></div>
+        <div class="pic" style="left:calc(984 * var(--u));top:calc(170 * var(--u));width:calc(840 * var(--u));height:calc(472 * var(--u))"><svg><use href="#sc-tos"/></svg></div>
+        <div class="ab" style="left:calc(984 * var(--u));top:calc(670 * var(--u));width:calc(840 * var(--u))">
+          <div class="lab">The first thing aloud says, at <span style="font-variant-numeric:tabular-nums">0:11</span></div>
+          <div class="q" style="margin-top:calc(6 * var(--u))">Bright industrial lights blaze intensely within a metal framework structure overhead.</div>
+        </div>
+        <div class="ab body" style="left:calc(96 * var(--u));top:calc(680 * var(--u));width:calc(780 * var(--u))">Science fiction, 2012. Scientists and soldiers in a future Amsterdam restage one moment from the past to save the world.</div>
+        <div class="ab opts" style="left:calc(96 * var(--u));top:calc(880 * var(--u))">
+          <div class="opt">Narration <b>On</b></div>
+          <div class="opt">Voice <b>Normal</b></div>
+          <div class="opt">Said <b>Everything</b></div>
+          <div class="opt">Menu read aloud <b>On</b></div>
+        </div>
+      </div></div>
+      <figcaption class="cap">Shelf. The titles are the menu, read top to bottom like a programme; focus is a full bone bar with dark type. The right side offers a taste: the film's first description, in the voice's italic.</figcaption>
+    </figure>
+
+    <figure class="wide">
+      <div class="tv"><div class="s lin" role="img" aria-label="Liner notes: the player, description as italic prose">
+        <div class="pic" style="left:calc(288 * var(--u));top:calc(54 * var(--u));width:calc(1344 * var(--u));height:calc(756 * var(--u))"><svg><use href="#sc-tos"/></svg></div>
+        <div class="strip" data-film="tos" data-live="4" style="left:calc(288 * var(--u));top:calc(832 * var(--u));width:calc(1344 * var(--u));height:calc(10 * var(--u))"></div>
+        <div class="ab cue" style="left:calc(288 * var(--u));top:calc(864 * var(--u));width:calc(1344 * var(--u))">The flying ship hovers above the sprawling city below.</div>
+        <div class="ab lab" style="left:calc(96 * var(--u));top:calc(54 * var(--u));width:calc(170 * var(--u));line-height:calc(30 * var(--u))">Tears of Steel<br><span style="font-variant-numeric:tabular-nums">1:12</span></div>
+        <div class="ab lab" style="right:calc(96 * var(--u));top:calc(54 * var(--u));width:calc(170 * var(--u));text-align:right;line-height:calc(30 * var(--u))">Down: settings<br>Menu: again</div>
+      </div></div>
+      <figcaption class="cap">Player. The film takes 49% of the screen and sits centred like a projection; the description is set beneath it as italic prose. Settings slide up on Down. The schedule is a hairline.</figcaption>
+    </figure>
+
+    <figure>
+      <div class="thumb"><div class="s lin" role="img" aria-label="Liner notes: thumbnail" style="background:var(--lin-l-ground);color:var(--lin-l-ink)">
+        <div class="ab serif" style="left:calc(110 * var(--t));top:calc(120 * var(--t));width:calc(1280 * var(--t));font-size:calc(128 * var(--t));line-height:calc(132 * var(--t));font-style:italic;font-weight:400">Films that describe themselves.</div>
+        <div class="ab" style="left:calc(110 * var(--t));top:calc(560 * var(--t));width:calc(1280 * var(--t));height:calc(16 * var(--t));display:flex">
+          <i style="display:block;flex:5;background:var(--lin-l-dialogue)"></i><i style="display:block;flex:1"></i><i style="display:block;flex:5;background:var(--lin-l-ink)"></i><i style="display:block;flex:1"></i><i style="display:block;flex:4;background:var(--lin-l-dialogue)"></i>
+        </div>
+        <div class="ab serif" style="left:calc(110 * var(--t));top:calc(780 * var(--t));font-size:calc(96 * var(--t));font-style:italic;font-weight:500;line-height:1">aloud</div>
+        <div class="ab" style="right:calc(110 * var(--t));top:calc(812 * var(--t));font-size:calc(40 * var(--t));font-weight:600;color:var(--lin-l-soft)">on Fire TV</div>
+      </div></div>
+      <figcaption class="cap">Thumbnail, 3:2, the only light one: a book jacket in a gallery of dark screenshots.</figcaption>
+    </figure>
+
+    <figure>
+      <div class="tv"><div class="s lin" role="img" aria-label="Liner notes: full screen caption">
+        <div class="pic" style="left:0;top:0;width:calc(1920 * var(--u));height:calc(1080 * var(--u))"><svg><use href="#sc-tos"/></svg></div>
+        <div class="ab cue" style="left:calc(96 * var(--u));bottom:calc(150 * var(--u));max-width:calc(1200 * var(--u));background:var(--lin-scrim);padding:calc(16 * var(--u)) calc(28 * var(--u))">The flying ship hovers above the sprawling city below.</div>
+      </div></div>
+      <figcaption class="cap">Full screen. The caption keeps the italic so a sighted viewer can tell aloud from a subtitle.</figcaption>
+    </figure>
+  </div>
+
+  <div class="sw" aria-label="Liner notes palette">
+    <span style="background:var(--lin-ground);color:var(--lin-ink)">ground<br>#0E0D0C</span>
+    <span style="background:var(--lin-raised);color:var(--lin-ink)">raised<br>#1A1917</span>
+    <span style="background:var(--lin-ink);color:var(--lin-ground)">bone 16.2<br>#EFEAE0</span>
+    <span style="background:var(--lin-ground);color:var(--lin-soft);outline:1px solid var(--page-line)">inkSoft 9.6<br>#BDB6A9</span>
+    <span style="background:var(--lin-ground);color:var(--lin-muted);outline:1px solid var(--page-line)">inkMuted 6.4<br>#9A9387</span>
+    <span style="background:var(--lin-dialogue);color:var(--lin-ink)">dialogue 3.2<br>#66625A</span>
+    <span style="background:var(--lin-l-ground);color:var(--lin-l-ink);outline:1px solid var(--page-line)">paper 15.6<br>#F3EFE6</span>
+  </div>
+  <div class="facts">
+    <div><h4>Type</h4><p>Newsreader (italic for every description, roman for titles), Public Sans for controls. The voice is recognisable without colour at all.</p></div>
+    <div><h4>For this audience</h4><p>Treats the films and their viewers as an audience for cinema. Monochrome is safe for every kind of colour blindness by construction.</p></div>
+    <div><h4>Risk</h4><p>A serif italic at 50 px is slower for some low-vision readers than a hyperlegible sans, and a list shelf shows less picture to a sighted judge.</p></div>
+  </div>
+</section>
+
+<!-- =============================== C: METER =============================== -->
+<section id="meter">
+  <div class="dirhead"><span class="n">Direction C</span><h2>Meter</h2></div>
+  <p class="lede">Sound you can see. Studio graphite and a level-meter green: every film carries its own dialogue fingerprint, settings read as meters, and the wide Archivo face gives aloud the confidence of broadcast graphics.</p>
+
+  <div class="screens">
+    <figure class="wide">
+      <div class="tv"><div class="s met" role="img" aria-label="Meter: the shelf with dialogue fingerprints">
+        <div class="pic" style="left:calc(860 * var(--u));top:0;width:calc(1060 * var(--u));height:calc(600 * var(--u))"><svg><use href="#sc-tos"/></svg></div>
+        <div class="ab wm"><i></i>aloud</div>
+        <div class="ab" style="left:calc(96 * var(--u));top:calc(150 * var(--u));width:calc(720 * var(--u))">
+          <div class="meta">Science fiction · 2012 · 12 min</div>
+          <div class="disp" style="margin-top:calc(4 * var(--u))">Tears of Steel</div>
+          <div class="body" style="margin-top:calc(14 * var(--u))">Scientists and soldiers in a future Amsterdam restage one moment from the past to save the world.</div>
+          <div class="lab" style="margin-top:calc(22 * var(--u));color:var(--met-soft)">Where the 45 descriptions sit</div>
+          <div class="strip" data-film="tos" style="position:relative;width:calc(720 * var(--u));height:calc(28 * var(--u));margin-top:calc(8 * var(--u))"></div>
+        </div>
+        <div class="ab" style="left:calc(96 * var(--u));top:calc(640 * var(--u));display:flex;gap:calc(30 * var(--u))">
+          <div class="tile f"><div class="pic"><svg><use href="#sc-tos"/></svg></div><div class="tb">Tears of Steel<div class="strip fp" data-film="tos"></div></div></div>
+          <div class="tile"><div class="pic"><svg><use href="#sc-sintel"/></svg></div><div class="tb">Sintel<div class="strip fp" data-film="sintel"></div></div></div>
+          <div class="tile"><div class="pic"><svg><use href="#sc-bunny"/></svg></div><div class="tb">Big Buck Bunny<div class="strip fp" data-film="bunny"></div></div></div>
+          <div class="tile"><div class="pic"><svg><use href="#sc-trailer"/></svg></div><div class="tb">Sintel trailer<div class="strip fp" data-film="trailer"></div></div></div>
+        </div>
+      </div></div>
+      <figcaption class="cap">Shelf. Each tile carries the real shape of its track, so a viewer can see that Big Buck Bunny, with no dialogue at all, is the most described. Settings sit one row down (shown in the player).</figcaption>
+    </figure>
+
+    <figure class="wide">
+      <div class="tv"><div class="s met" role="img" aria-label="Meter: the player with meters">
+        <div class="pic" style="left:calc(96 * var(--u));top:calc(54 * var(--u));width:calc(1387 * var(--u));height:calc(780 * var(--u))"><svg><use href="#sc-tos"/></svg></div>
+        <div class="ab" style="left:calc(1515 * var(--u));top:calc(54 * var(--u));width:calc(309 * var(--u));display:flex;flex-direction:column;gap:calc(12 * var(--u))">
+          <div class="set f" style="width:calc(309 * var(--u))"><span class="lab">Narration</span><div class="val">On</div></div>
+          <div class="set" style="width:calc(309 * var(--u))"><span class="lab">Voice level</span><div class="lvl"><i class="on"></i><i class="on"></i><i></i></div></div>
+          <div class="set" style="width:calc(309 * var(--u))"><span class="lab">How much</span><div class="lvl"><i class="on"></i><i class="on"></i><i class="on"></i></div></div>
+          <div class="set" style="width:calc(309 * var(--u))"><span class="lab">Picture</span><div class="val">Panel</div></div>
+        </div>
+        <div class="ab" style="left:calc(96 * var(--u));top:calc(860 * var(--u));width:calc(1387 * var(--u))">
+          <div class="vlab">Describing · gap 5 of 45</div>
+          <div class="cue">The flying ship hovers above the sprawling city below.</div>
+        </div>
+        <div class="strip" data-film="tos" data-live="4" data-from="10" data-to="150" style="left:calc(1515 * var(--u));top:calc(900 * var(--u));width:calc(309 * var(--u));height:calc(60 * var(--u))"></div>
+        <div class="ab lab" style="left:calc(1515 * var(--u));top:calc(970 * var(--u))">0:10 to 2:30</div>
+      </div></div>
+      <figcaption class="cap">Player. The film takes 52%. Voice level and density read as three-step meters; the strip zooms to the two minutes around now, so a gap is wide enough to see filling.</figcaption>
+    </figure>
+
+    <figure>
+      <div class="thumb"><div class="s met" role="img" aria-label="Meter: thumbnail">
+        <div class="ab" style="left:calc(96 * var(--t));top:calc(96 * var(--t));font-size:calc(210 * var(--t));line-height:1;font-weight:800;font-stretch:125%">aloud</div>
+        <div class="ab" style="left:calc(96 * var(--t));top:calc(350 * var(--t));font-size:calc(64 * var(--t));line-height:calc(72 * var(--t));font-weight:700;font-stretch:112%;width:calc(1300 * var(--t))">Films that describe themselves, on Fire TV.</div>
+        <div class="strip" data-film="tos" style="left:calc(96 * var(--t));top:calc(700 * var(--t));width:calc(1308 * var(--t));height:calc(150 * var(--t))"></div>
+      </div></div>
+      <figcaption class="cap">Thumbnail, 3:2. The strip is the whole of Tears of Steel, drawn from the shipped track.</figcaption>
+    </figure>
+
+    <figure>
+      <div class="tv"><div class="s met" role="img" aria-label="Meter: full screen caption">
+        <div class="pic" style="left:0;top:0;width:calc(1920 * var(--u));height:calc(1080 * var(--u))"><svg><use href="#sc-tos"/></svg></div>
+        <div class="ab cue" style="left:calc(96 * var(--u));bottom:calc(150 * var(--u));max-width:calc(1150 * var(--u));background:var(--met-scrim);padding:calc(16 * var(--u)) calc(26 * var(--u));border-left:calc(8 * var(--u)) solid var(--met-voice)">The flying ship hovers above the sprawling city below.</div>
+      </div></div>
+      <figcaption class="cap">Full screen, with the meter green as the caption edge.</figcaption>
+    </figure>
+  </div>
+
+  <div class="sw" aria-label="Meter palette">
+    <span style="background:var(--met-ground);color:var(--met-ink)">ground<br>#0F1213</span>
+    <span style="background:var(--met-raised);color:var(--met-ink)">raised<br>#1A1F21</span>
+    <span style="background:var(--met-ink);color:var(--met-ground)">ink 16.7<br>#EEF2F1</span>
+    <span style="background:var(--met-ground);color:var(--met-soft);outline:1px solid var(--page-line)">inkSoft 10.1<br>#B6C0BF</span>
+    <span style="background:var(--met-ground);color:var(--met-muted);outline:1px solid var(--page-line)">inkMuted 6.5<br>#8E9A99</span>
+    <span style="background:var(--met-voice);color:var(--met-onvoice)">voice 14.5<br>#C8F23C</span>
+    <span style="background:var(--met-dialogue);color:var(--met-ink)">dialogue 3.2<br>#5A6664</span>
+  </div>
+  <div class="facts">
+    <div><h4>Type</h4><p>Archivo at 125% width for the wordmark and titles, 100% for text. Tabular figures throughout.</p></div>
+    <div><h4>For this audience</h4><p>Makes the invisible product visible to the sighted half of the sofa and to judges; the fingerprints are real data, so they double as proof.</p></div>
+    <div><h4>Risk</h4><p>Closest to a tool aesthetic, the thing the audit already flags. Green on graphite also sits near the "AI dashboard" look.</p></div>
+  </div>
+</section>
+
+<section id="recommendation">
+  <h2>Recommendation: Signal</h2>
+  <div class="scroll">
+  <table class="cmp">
+    <thead><tr><th></th><th>Signal</th><th>Liner notes</th><th>Meter</th></tr></thead>
+    <tbody>
+      <tr><td>Voice colour contrast</td><td>13.6:1</td><td>16.2:1 (no hue)</td><td>14.5:1</td></tr>
+      <tr><td>Film share of player</td><td>40%</td><td>49%</td><td>52%</td></tr>
+      <tr><td>Built for low vision</td><td>Yes, by its typeface</td><td>Partly: italic serif cues</td><td>Partly</td></tr>
+      <tr><td>Thumbnail at 320 px</td><td>Strongest</td><td>Distinct, light</td><td>Good</td></tr>
+      <tr><td>Phase 2 cost</td><td>Tokens plus five components</td><td>New list shelf and settings sheet</td><td>New meter components</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p style="margin-top:16px">Signal is the only direction whose look comes from the audience rather than from us. Atkinson Hyperlegible was drawn for low-vision readers, and black with caption yellow is the colour of access on television already, so a judge reads "this is for blind and low-vision viewers, made with care" before reading a word, and a low-vision viewer gets the highest contrast voice of the three. It also has the smallest Phase 2 risk on a deadline: it changes <code>theme.ts</code> and five components, and leaves the focus model and every behaviour alone.</p>
+  <p>Two borrowings are worth keeping whichever is chosen: the per-film dialogue fingerprint from Meter (real data, under each tile) and the first-description preview from Liner notes (one real line on the shelf).</p>
+</section>
+
+</main>
+<footer class="wrap">Film frames on this page are drawn stand-ins. Tears of Steel, Sintel and Big Buck Bunny are (CC) Blender Foundation, CC BY 3.0; descriptions quoted are from aloud's shipped tracks. Contrast figures from <code>design/contrast.py</code>.</footer>
+
+<script>
+(function(){
+  var root=document.documentElement,btn=document.getElementById('themeBtn');
+  try{var saved=localStorage.getItem('aloud-theme');if(saved)root.setAttribute('data-theme',saved);}catch(e){}
+  btn.addEventListener('click',function(){
+    var cur=root.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    var next=cur==='dark'?'light':'dark';root.setAttribute('data-theme',next);
+    try{localStorage.setItem('aloud-theme',next);}catch(e){}
+  });
+  // gap, end of gap, end of speech, in seconds: the shipped tracks (tv/src/data/films)
+  var F={
+    tos:{d:734,g:[[11.6,18.4,16.4],[18.4,22.4,20.7],[45.4,49.5,47.2],[63.4,69.9,68.7],[69.9,74.1,72.9],[74.1,79.4,78.0],[79.4,83.9,81.3],[84.9,87.2,86.6],[96.5,98.5,98.0],[102.4,107.9,106.7],[121.3,126.0,125.3],[138.4,145.9,144.2],[159.2,160.6,160.3],[163.6,172.4,169.6],[174.1,176.0,175.5],[188.5,190.4,190.0],[217.4,222.4,220.3],[228.9,230.4,229.7],[248.4,250.4,249.9],[253.5,257.9,256.6],[269.4,271.8,270.7],[274.3,278.5,277.7],[281.5,283.8,283.0],[289.5,291.4,291.0],[310.6,315.4,314.2],[328.4,333.3,330.8],[335.5,338.4,337.6],[368.9,370.9,370.4],[375.4,377.2,376.7],[399.0,406.4,404.7],[411.4,418.4,416.1],[423.4,427.4,426.2],[431.8,436.7,435.8],[461.8,468.3,466.8],[479.0,485.4,482.6],[487.9,492.4,491.1],[495.4,498.7,497.4],[499.4,501.4,500.9],[512.9,517.5,516.1],[522.4,524.8,523.9],[527.7,533.5,532.4],[539.5,542.1,541.6],[543.2,554.6,550.8],[567.4,573.1,571.7],[711.6,713.7,712.8]]},
+    sintel:{d:888,g:[[3.5,18.9,6.1],[19.7,21.5,21.2],[46.6,49.0,48.4],[54.0,57.3,56.7],[61.4,64.7,64.0],[74.0,81.5,80.0],[81.5,86.8,85.2],[88.5,101.2,97.9],[145.4,148.3,147.8],[156.3,159.4,158.2],[175.7,180.1,177.9],[180.1,184.4,181.9],[184.4,189.8,188.8],[189.8,194.6,193.7],[194.6,205.5,202.1],[215.7,217.8,217.3],[219.5,227.7,224.4],[259.9,264.7,263.5],[269.7,275.6,273.8],[284.4,288.9,288.2],[300.4,303.1,302.0],[307.9,313.1,311.3],[322.9,328.2,327.1],[390.3,394.0,393.1],[396.9,400.8,399.5],[418.2,420.3,419.9],[421.2,431.6,428.5],[483.7,502.5,494.3],[519.5,536.3,528.9],[541.1,547.1,545.7],[547.1,557.0,554.9],[564.4,566.7,565.7],[571.6,576.7,574.3],[582.0,595.5,592.4],[611.9,621.0,619.2],[630.2,646.2,639.6],[655.1,659.6,658.6],[662.5,684.4,673.0],[684.4,702.0,694.2],[702.6,710.0,708.9],[721.7,747.5,727.3]]},
+    bunny:{d:596,g:[[0.5,11.9,8.3],[12.4,16.5,14.6],[17.8,21.2,20.2],[23.0,50.2,33.7],[51.0,56.1,54.8],[56.1,60.7,59.5],[60.7,69.4,67.7],[69.4,73.5,72.5],[73.5,80.0,78.7],[80.0,92.7,89.2],[102.2,112.7,109.7],[112.7,118.0,116.6],[118.0,126.3,124.3],[126.9,137.6,134.2],[156.0,160.8,159.5],[160.8,169.7,167.3],[189.3,194.5,192.8],[199.8,204.2,203.1],[204.2,211.7,206.9],[214.8,220.5,217.2],[226.2,235.2,233.9],[242.0,246.6,245.6],[251.5,254.3,253.7],[268.4,271.1,270.1],[287.9,290.8,290.2],[296.3,305.2,301.5],[305.2,312.5,310.8],[312.5,317.2,314.0],[317.2,322.2,320.3],[334.3,339.8,338.4],[339.8,372.7,344.4],[372.7,378.3,376.1],[378.3,390.8,385.8],[390.8,399.1,396.5],[402.1,406.2,405.2],[408.1,410.8,410.2],[412.8,420.7,419.4],[423.8,426.4,426.0],[427.0,430.7,429.5],[437.1,440.2,438.9],[444.8,451.8,450.5],[451.8,458.3,456.8],[471.3,478.0,476.9],[480.2,483.8,482.2],[483.8,491.2,488.9],[492.7,495.6,494.9],[580.9,596.3,589.0]]},
+    trailer:{d:52,g:[[5.8,11.9,9.9],[16.5,18.4,17.6],[25.2,35.2,32.3],[38.4,41.8,41.2]]}
+  };
+  document.querySelectorAll('.strip[data-film]').forEach(function(el){
+    var f=F[el.dataset.film]; if(!f) return;
+    var from=+(el.dataset.from||0), to=+(el.dataset.to||f.d), span=to-from, live=el.dataset.live!=null?+el.dataset.live:-1;
+    var pct=function(t){return ((t-from)/span*100)+'%';};
+    f.g.forEach(function(c,i){
+      if(c[1]<from||c[0]>to) return;
+      var g=document.createElement('i'); g.className='g'+(i===live?' live':'');
+      g.style.left=pct(c[0]); g.style.width=Math.max((c[1]-c[0])/span*100,0.25)+'%';
+      var v=document.createElement('b'); v.className='v'; v.style.left='0'; v.style.width=((c[2]-c[0])/(c[1]-c[0])*100)+'%';
+      g.appendChild(v); el.appendChild(g);
+      if(i===live){var p=document.createElement('i');p.className='ph';p.style.left=pct(c[0]+(c[2]-c[0])*0.55);el.appendChild(p);}
+    });
+  });
+})();
+</script>
+</body>
+</html>
