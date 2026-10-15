@@ -32,7 +32,8 @@ judge. Design for a capable adult choosing a film, not a patient being helped.
 2. **Readable from three metres.** No text below 24 px at 1080p (the Android
    TV floor of 12 sp on a 960 by 540 canvas). Labels are sentence case, never
    tracked-out capitals, because capitals erase word shape. A description is
-   set at 44 px or larger with at most 42 characters a line. Test: grep the
+   set at 46 px (36 px when it runs past 100 characters, so the longest fits
+   in three lines under the film) and is never truncated. Test: grep the
    theme for any size under 24 and any `letterSpacing` above 1 on words.
 3. **Focus survives greyscale.** Focus changes at least three things at once:
    a 6 px frame, an inverted fill, and a lift of at most 1.04. Opacity alone
@@ -133,7 +134,7 @@ Scale, in px at 1920 by 1080 (multiply by `u()` in code):
 |---|---|---|---|
 | display | 80 / 84 | 800 | the focused film's title |
 | title | 52 / 60 | 800 | player title, card headlines |
-| cue | 46 / 60 | 600 | the description itself, max 42 characters a line |
+| cue | 46 / 60 | 600 | the description itself; 36 / 46 past 100 characters; never truncated |
 | lead | 34 / 44 | 600 | setting values, tile titles |
 | body | 28 / 40 | 400 | synopsis, help lines |
 | label | 24 / 32 | 600 | labels, sentence case, no tracking |
@@ -160,7 +161,7 @@ Scale, in px at 1920 by 1080 (multiply by `u()` in code):
 | Wordmark | `Home.tsx`, `Player.tsx` | 34 px bold system text | Atkinson 800 lowercase "aloud" plus the gap mark (two dialogue bars, a yellow block between) |
 | Feature (hero) | `Home.tsx` | bordered rounded card, model ID strings | no card: words on `ground`, picture bleeding right with a hard edge; provenance in words from the track's describer field, e.g. "Described ahead of time by Claude Haiku 4.5. Read by Kokoro." |
 | Film tile | `FilmTile.tsx` | rounded card, 0.72 opacity when unfocused | square 16:9 picture, title under it; focus = 6 px ink frame, title bar inverts to ink, lift 1.04; unfocused stays at full opacity |
-| Setting | `Toggle.tsx` | 400 px card with tracked caps label | compact block: label, value; help line shown only on focus; focus = inverted ink fill |
+| Setting | `Toggle.tsx` | 400 px card with tracked caps label | square block on `raised`: label, value, help line (always shown, so nothing is hidden from low vision); focus = inverted ink fill, a 6 px frame held off by a 6 px gutter, a 1.04 lift |
 | Voice panel | `Voice.tsx` | card with rail, 38 px cue | no card: the cue in 46 px ink on `ground`, a 6 px voice bar at its left only while speaking |
 | Gap strip | `Timeline.tsx` | 92 px track plus a full-width orange lens | 32 px strip under the film; the lens shrinks to one line of text under the strip ("5.0 s of description in 5.9 s of quiet") |
 | Caption (full screen) | `Player.tsx` | translucent box, orange edge | solid `#000000` at 85%, 6 px voice edge, 46 px, bottom-left inside the safe area |
