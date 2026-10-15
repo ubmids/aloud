@@ -1,0 +1,529 @@
+{
+ "note": "Claude Haiku 4.5, corrected cast list, before review. 13 cues were refused in review; the shipped track is tv/src/data/films/tears-of-steel.json.",
+ "describer": "claude-haiku-4-5-20251001 (hosted)",
+ "voice": "Kokoro 82M (af_heart)",
+ "cues": [
+  {
+   "start": 11.55,
+   "end": 16.393,
+   "gap": [
+    11.55,
+    18.417
+   ],
+   "text": "Bright industrial lights blaze intensely within a metal framework structure overhead."
+  },
+  {
+   "start": 18.417,
+   "end": 20.663,
+   "gap": [
+    18.417,
+    22.45
+   ],
+   "text": "Futuristic city skyline glows at dawn."
+  },
+  {
+   "start": 45.41,
+   "end": 47.231,
+   "gap": [
+    45.41,
+    49.45
+   ],
+   "text": "On screen: 40 YEARS LATER."
+  },
+  {
+   "start": 63.41,
+   "end": 68.686,
+   "gap": [
+    63.41,
+    69.917
+   ],
+   "text": "A human brain sits on a white platform surrounded by glowing pink circular light rings."
+  },
+  {
+   "start": 69.917,
+   "end": 72.932,
+   "gap": [
+    69.917,
+    74.083
+   ],
+   "text": "The flying ship hovers above the sprawling city below."
+  },
+  {
+   "start": 74.083,
+   "end": 78.021,
+   "gap": [
+    74.083,
+    79.375
+   ],
+   "text": "Inside the flying ship, silhouetted figures stand at control panels."
+  },
+  {
+   "start": 79.375,
+   "end": 81.327,
+   "gap": [
+    79.375,
+    83.93
+   ],
+   "text": "A hand holds an open newspaper."
+  },
+  {
+   "start": 84.93,
+   "end": 86.633,
+   "gap": [
+    84.93,
+    87.25
+   ],
+   "text": "Barley peers through rifle scope."
+  },
+  {
+   "start": 96.51,
+   "end": 98.042,
+   "gap": [
+    96.51,
+    98.45
+   ],
+   "text": "Flying ship descends lower."
+  },
+  {
+   "start": 102.417,
+   "end": 106.71,
+   "gap": [
+    102.417,
+    107.93
+   ],
+   "text": "The flying ship continues descending toward the residential buildings below."
+  },
+  {
+   "start": 121.27,
+   "end": 125.267,
+   "gap": [
+    121.27,
+    126.01
+   ],
+   "text": "The old man lies beneath metal framework as Barley aims downward."
+  },
+  {
+   "start": 138.41,
+   "end": 144.248,
+   "gap": [
+    138.41,
+    145.93
+   ],
+   "text": "The old man stands in a high rooftop shelter as the flying ship looms outside the windows beyond."
+  },
+  {
+   "start": 159.17,
+   "end": 160.311,
+   "gap": [
+    159.17,
+    160.63
+   ],
+   "text": "Rope lies coiled."
+  },
+  {
+   "start": 163.57,
+   "end": 169.611,
+   "gap": [
+    163.57,
+    172.43
+   ],
+   "text": "The old man stands alone in the industrial space, gripping the thick rope as he looks toward the machinery."
+  },
+  {
+   "start": 174.07,
+   "end": 175.529,
+   "gap": [
+    174.07,
+    176.03
+   ],
+   "text": "Old man walks indoors."
+  },
+  {
+   "start": 188.53,
+   "end": 190.004,
+   "gap": [
+    188.53,
+    190.45
+   ],
+   "text": "Old man enters lit room."
+  },
+  {
+   "start": 217.41,
+   "end": 220.319,
+   "gap": [
+    217.41,
+    222.45
+   ],
+   "text": "The old man stands with arms raised in the glowing light."
+  },
+  {
+   "start": 228.93,
+   "end": 229.748,
+   "gap": [
+    228.93,
+    230.45
+   ],
+   "text": "Others appear."
+  },
+  {
+   "start": 248.41,
+   "end": 249.904,
+   "gap": [
+    248.41,
+    250.45
+   ],
+   "text": "Man grabs old man's arm."
+  },
+  {
+   "start": 253.47,
+   "end": 256.625,
+   "gap": [
+    253.47,
+    257.917
+   ],
+   "text": "A soldier in brown pulls the old man toward the city."
+  },
+  {
+   "start": 264.75,
+   "end": 267.208,
+   "gap": [
+    264.75,
+    268.75
+   ],
+   "text": "Stone pillar stands in overgrown courtyard."
+  },
+  {
+   "start": 269.41,
+   "end": 270.731,
+   "gap": [
+    269.41,
+    271.83
+   ],
+   "text": "Young man walks forward."
+  },
+  {
+   "start": 274.27,
+   "end": 277.651,
+   "gap": [
+    274.27,
+    278.49
+   ],
+   "text": "Young man stops on urban street lined with metal railings."
+  },
+  {
+   "start": 281.53,
+   "end": 282.976,
+   "gap": [
+    281.53,
+    283.75
+   ],
+   "text": "Young man gazes at canal."
+  },
+  {
+   "start": 289.542,
+   "end": 291.015,
+   "gap": [
+    289.542,
+    291.45
+   ],
+   "text": "The Captain sits indoors."
+  },
+  {
+   "start": 305.41,
+   "end": 309.135,
+   "gap": [
+    305.41,
+    310.583
+   ],
+   "text": "The Captain manipulates glowing holographic controls with his hands."
+  },
+  {
+   "start": 310.583,
+   "end": 314.159,
+   "gap": [
+    310.583,
+    315.45
+   ],
+   "text": "Thom stands facing a woman with light brown hair in a city square."
+  },
+  {
+   "start": 328.41,
+   "end": 330.826,
+   "gap": [
+    328.41,
+    333.31
+   ],
+   "text": "Thom looks away from the woman in the city square."
+  },
+  {
+   "start": 335.53,
+   "end": 337.643,
+   "gap": [
+    335.53,
+    338.45
+   ],
+   "text": "Soldiers in tactical gear descend."
+  },
+  {
+   "start": 350.41,
+   "end": 352.718,
+   "gap": [
+    350.41,
+    354.17
+   ],
+   "text": "Flying ship fires pink energy beams."
+  },
+  {
+   "start": 368.91,
+   "end": 370.416,
+   "gap": [
+    368.91,
+    370.95
+   ],
+   "text": "Blackboard displays writing."
+  },
+  {
+   "start": 375.41,
+   "end": 376.683,
+   "gap": [
+    375.41,
+    377.23
+   ],
+   "text": "Man reacts in shock."
+  },
+  {
+   "start": 393.41,
+   "end": 395.077,
+   "gap": [
+    393.41,
+    395.45
+   ],
+   "text": "Young man holds gun to mouth."
+  },
+  {
+   "start": 399.0,
+   "end": 404.713,
+   "gap": [
+    399.0,
+    406.45
+   ],
+   "text": "A man with curly hair and glasses stares ahead in a control room lit by blue and purple light."
+  },
+  {
+   "start": 411.41,
+   "end": 416.082,
+   "gap": [
+    411.41,
+    418.45
+   ],
+   "text": "The Captain's mechanical eyepiece glows red as a woman watches from behind him."
+  },
+  {
+   "start": 423.41,
+   "end": 426.24,
+   "gap": [
+    423.41,
+    427.45
+   ],
+   "text": "Curly-haired technician operates glowing device."
+  },
+  {
+   "start": 431.77,
+   "end": 435.829,
+   "gap": [
+    431.77,
+    436.67
+   ],
+   "text": "Barley aims his scoped rifle across a sunlit rooftop toward the city."
+  },
+  {
+   "start": 439.01,
+   "end": 440.41,
+   "gap": [
+    439.01,
+    441.11
+   ],
+   "text": "Flying ship descends."
+  },
+  {
+   "start": 444.79,
+   "end": 453.637,
+   "gap": [
+    444.79,
+    461.792
+   ],
+   "text": "Hands in dark sleeves lower the flying ship onto a detailed miniature model of city buildings, positioning it carefully over the scaled structures below."
+  },
+  {
+   "start": 461.792,
+   "end": 466.841,
+   "gap": [
+    461.792,
+    468.333
+   ],
+   "text": "Inside the flying ship, soldiers in tactical gear crouch among equipment and machinery."
+  },
+  {
+   "start": 468.333,
+   "end": 477.345,
+   "gap": [
+    468.333,
+    478.958
+   ],
+   "text": "Thom, a young man with light brown hair in a cream shirt, sits at controls beside another man, both focused on operating machinery in front of them."
+  },
+  {
+   "start": 478.958,
+   "end": 482.642,
+   "gap": [
+    478.958,
+    485.43
+   ],
+   "text": "A man in a blue and yellow jacket lies on the ground in shadow."
+  },
+  {
+   "start": 487.85,
+   "end": 491.069,
+   "gap": [
+    487.85,
+    492.45
+   ],
+   "text": "The flying ship descends toward a narrow city street below."
+  },
+  {
+   "start": 495.39,
+   "end": 497.365,
+   "gap": [
+    495.39,
+    498.69
+   ],
+   "text": "The giant robot raises its arm."
+  },
+  {
+   "start": 499.417,
+   "end": 500.871,
+   "gap": [
+    499.417,
+    501.45
+   ],
+   "text": "Robot's fist descends."
+  },
+  {
+   "start": 508.51,
+   "end": 510.18,
+   "gap": [
+    508.51,
+    511.19
+   ],
+   "text": "Man's face bleeds from impact."
+  },
+  {
+   "start": 512.91,
+   "end": 516.136,
+   "gap": [
+    512.91,
+    517.45
+   ],
+   "text": "The old man stands on a bridge facing the giant robot."
+  },
+  {
+   "start": 522.41,
+   "end": 523.946,
+   "gap": [
+    522.41,
+    524.81
+   ],
+   "text": "Robot's arm pulls back."
+  },
+  {
+   "start": 527.69,
+   "end": 532.378,
+   "gap": [
+    527.69,
+    533.45
+   ],
+   "text": "The giant robot's massive fist swings forward toward the old man on the bridge."
+  },
+  {
+   "start": 539.47,
+   "end": 541.597,
+   "gap": [
+    539.47,
+    542.07
+   ],
+   "text": "Technician watches monitors intently."
+  },
+  {
+   "start": 543.167,
+   "end": 550.827,
+   "gap": [
+    543.167,
+    554.59
+   ],
+   "text": "The old man stands before the giant robot's massive torso, reaching toward its metal chest as the fist descends toward him."
+  },
+  {
+   "start": 567.41,
+   "end": 571.653,
+   "gap": [
+    567.41,
+    573.13
+   ],
+   "text": "The old man sits in a cluttered room while a young man stands nearby watching."
+  },
+  {
+   "start": 574.83,
+   "end": 577.162,
+   "gap": [
+    574.83,
+    579.17
+   ],
+   "text": "The old man gestures toward soldiers."
+  },
+  {
+   "start": 589.0,
+   "end": 590.252,
+   "gap": [
+    589.0,
+    590.61
+   ],
+   "text": "Robot's hands close."
+  },
+  {
+   "start": 596.03,
+   "end": 598.438,
+   "gap": [
+    596.03,
+    599.87
+   ],
+   "text": "Giant robot's glowing hands grip a weapon."
+  },
+  {
+   "start": 601.083,
+   "end": 603.912,
+   "gap": [
+    601.083,
+    605.73
+   ],
+   "text": "Giant robot raises the weapon toward the sky."
+  },
+  {
+   "start": 621.45,
+   "end": 623.762,
+   "gap": [
+    621.45,
+    624.27
+   ],
+   "text": "Giant robot explodes into fragments."
+  },
+  {
+   "start": 711.59,
+   "end": 712.835,
+   "gap": [
+    711.59,
+    713.69
+   ],
+   "text": "Debris falls through air."
+  }
+ ]
+}

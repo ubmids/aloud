@@ -1,0 +1,322 @@
+{
+ "note": "Qwen2.5-VL 7B on this Mac through Ollama, first cast list, 15 Oct 2026. Not shipped.",
+ "describer": "qwen2.5vl:7b (local, Ollama)",
+ "voice": "Kokoro 82M (af_heart)",
+ "cues": [
+  {
+   "start": 11.55,
+   "end": 15.247,
+   "gap": [
+    11.55,
+    18.417
+   ],
+   "text": "The rocket engines ignite, emitting bright flames and intense light."
+  },
+  {
+   "start": 63.41,
+   "end": 67.344,
+   "gap": [
+    63.41,
+    69.917
+   ],
+   "text": "A brain is placed on a circular platform with electrodes attached."
+  },
+  {
+   "start": 69.917,
+   "end": 72.4,
+   "gap": [
+    69.917,
+    74.083
+   ],
+   "text": "A cityscape with smoke and a flying structure."
+  },
+  {
+   "start": 79.375,
+   "end": 81.168,
+   "gap": [
+    79.375,
+    83.93
+   ],
+   "text": "The old man reads a newspaper."
+  },
+  {
+   "start": 84.93,
+   "end": 86.568,
+   "gap": [
+    84.93,
+    87.25
+   ],
+   "text": "The old man looks out the window."
+  },
+  {
+   "start": 93.97,
+   "end": 95.302,
+   "gap": [
+    93.97,
+    95.71
+   ],
+   "text": "The man aims the rifle."
+  },
+  {
+   "start": 101.53,
+   "end": 104.205,
+   "gap": [
+    101.53,
+    107.93
+   ],
+   "text": "The man aims the rifle, focusing on the target."
+  },
+  {
+   "start": 108.53,
+   "end": 111.278,
+   "gap": [
+    108.53,
+    114.43
+   ],
+   "text": "The giant robot moves slowly, emitting smoke."
+  },
+  {
+   "start": 121.27,
+   "end": 125.055,
+   "gap": [
+    121.27,
+    126.01
+   ],
+   "text": "The old man lies on a bed, looking up, while the man aims the rifle."
+  },
+  {
+   "start": 138.41,
+   "end": 141.504,
+   "gap": [
+    138.41,
+    145.93
+   ],
+   "text": "The old man stands in a dimly lit room, looking around."
+  },
+  {
+   "start": 159.17,
+   "end": 160.262,
+   "gap": [
+    159.17,
+    160.63
+   ],
+   "text": "The old man stands."
+  },
+  {
+   "start": 174.07,
+   "end": 175.34,
+   "gap": [
+    174.07,
+    176.03
+   ],
+   "text": "The room is dimly lit."
+  },
+  {
+   "start": 217.41,
+   "end": 220.722,
+   "gap": [
+    217.41,
+    222.45
+   ],
+   "text": "The old man stands in a bright, glowing room with arms raised."
+  },
+  {
+   "start": 264.75,
+   "end": 268.084,
+   "gap": [
+    264.75,
+    268.75
+   ],
+   "text": "The old man stands on a bridge, with a railing in the foreground."
+  },
+  {
+   "start": 269.41,
+   "end": 270.811,
+   "gap": [
+    269.41,
+    271.83
+   ],
+   "text": "Thom walks along a bridge."
+  },
+  {
+   "start": 305.41,
+   "end": 308.557,
+   "gap": [
+    305.41,
+    310.583
+   ],
+   "text": "The old man adjusts his earpiece in a brightly lit room."
+  },
+  {
+   "start": 310.583,
+   "end": 313.428,
+   "gap": [
+    310.583,
+    315.45
+   ],
+   "text": "Thom and Celia stand on a bridge, facing each other."
+  },
+  {
+   "start": 328.41,
+   "end": 331.72,
+   "gap": [
+    328.41,
+    333.31
+   ],
+   "text": "Thom looks to the side, trees and buildings in the background."
+  },
+  {
+   "start": 335.53,
+   "end": 337.776,
+   "gap": [
+    335.53,
+    338.45
+   ],
+   "text": "The giant robot moves its head slightly."
+  },
+  {
+   "start": 397.75,
+   "end": 400.841,
+   "gap": [
+    397.75,
+    406.45
+   ],
+   "text": "The giant robot's arm moves closer to Thom's face."
+  },
+  {
+   "start": 411.41,
+   "end": 416.271,
+   "gap": [
+    411.41,
+    418.45
+   ],
+   "text": "The giant robot points forward with its right hand, while the other person stands behind."
+  },
+  {
+   "start": 431.77,
+   "end": 435.004,
+   "gap": [
+    431.77,
+    436.67
+   ],
+   "text": "The giant robot's arm adjusts its position slightly."
+  },
+  {
+   "start": 468.333,
+   "end": 474.149,
+   "gap": [
+    468.333,
+    478.958
+   ],
+   "text": "The giant robot's arm moves closer to Thom's face, while Barley stands behind with a scoped rifle."
+  },
+  {
+   "start": 478.958,
+   "end": 483.551,
+   "gap": [
+    478.958,
+    485.43
+   ],
+   "text": "The Black man in dark tactical gear lies prone, aiming a scoped rifle."
+  },
+  {
+   "start": 487.85,
+   "end": 489.634,
+   "gap": [
+    487.85,
+    492.45
+   ],
+   "text": "The giant robot fires a beam."
+  },
+  {
+   "start": 495.39,
+   "end": 497.453,
+   "gap": [
+    495.39,
+    498.69
+   ],
+   "text": "The giant robot's arm swings forward."
+  },
+  {
+   "start": 512.91,
+   "end": 516.485,
+   "gap": [
+    512.91,
+    517.45
+   ],
+   "text": "The young man stands on a bridge, looking up at the giant robot."
+  },
+  {
+   "start": 527.69,
+   "end": 531.777,
+   "gap": [
+    527.69,
+    533.45
+   ],
+   "text": "The giant robot's arm swings forward, illuminating the dark structure."
+  },
+  {
+   "start": 539.47,
+   "end": 541.565,
+   "gap": [
+    539.47,
+    542.07
+   ],
+   "text": "The young man looks at the computer screen."
+  },
+  {
+   "start": 543.167,
+   "end": 547.458,
+   "gap": [
+    543.167,
+    554.59
+   ],
+   "text": "The old man stands beside the giant robot, adjusting a control panel."
+  },
+  {
+   "start": 567.41,
+   "end": 570.678,
+   "gap": [
+    567.41,
+    573.13
+   ],
+   "text": "The old man sits in a chair, looking at the giant robot."
+  },
+  {
+   "start": 596.03,
+   "end": 598.602,
+   "gap": [
+    596.03,
+    599.87
+   ],
+   "text": "The giant robot holds a glowing object."
+  },
+  {
+   "start": 601.083,
+   "end": 603.179,
+   "gap": [
+    601.083,
+    605.73
+   ],
+   "text": "The giant robot is glowing brightly."
+  },
+  {
+   "start": 621.45,
+   "end": 623.306,
+   "gap": [
+    621.45,
+    624.27
+   ],
+   "text": "The giant robot rotates slowly."
+  },
+  {
+   "start": 726.47,
+   "end": 731.419,
+   "gap": [
+    726.47,
+    733.93
+   ],
+   "text": "The giant robot rotates slowly, revealing more of its intricate mechanical parts."
+  }
+ ]
+}

@@ -1,0 +1,385 @@
+{
+ "note": "The track shipped until 15 Oct 2026: Qwen3-VL 4B on CPU, no cast list.",
+ "describer": "qwen3-vl-4b (local, llama.cpp on CPU)",
+ "voice": "Kokoro 82M (af_heart)",
+ "cues": [
+  {
+   "start": 11.55,
+   "end": 16.677,
+   "gap": [
+    11.55,
+    18.417
+   ],
+   "text": "Rocket engines ignite, blasting bright white flames and pinkish plumes from their nozzles."
+  },
+  {
+   "start": 18.417,
+   "end": 21.485,
+   "gap": [
+    18.417,
+    22.45
+   ],
+   "text": "A rocket launches from a sprawling industrial complex."
+  },
+  {
+   "start": 45.41,
+   "end": 47.231,
+   "gap": [
+    45.41,
+    49.45
+   ],
+   "text": "On screen: 40 YEARS LATER."
+  },
+  {
+   "start": 53.91,
+   "end": 58.401,
+   "gap": [
+    53.91,
+    60.45
+   ],
+   "text": "Two figures work at a cluttered console, surrounded by glowing digital overlays."
+  },
+  {
+   "start": 74.083,
+   "end": 77.495,
+   "gap": [
+    74.083,
+    79.375
+   ],
+   "text": "Through a shadowed doorway, two figures work at a cluttered console."
+  },
+  {
+   "start": 79.375,
+   "end": 82.752,
+   "gap": [
+    79.375,
+    83.93
+   ],
+   "text": "An elderly person reads a newspaper with bold headlines."
+  },
+  {
+   "start": 101.53,
+   "end": 105.985,
+   "gap": [
+    101.53,
+    107.93
+   ],
+   "text": "A grey-haired person reads a newspaper while a soldier aims a rifle nearby."
+  },
+  {
+   "start": 108.53,
+   "end": 113.523,
+   "gap": [
+    108.53,
+    114.43
+   ],
+   "text": "Through a circular viewport, a large, steampunk-style airship hovers above a cityscape."
+  },
+  {
+   "start": 128.43,
+   "end": 130.095,
+   "gap": [
+    128.43,
+    130.45
+   ],
+   "text": "An elderly man lies asleep."
+  },
+  {
+   "start": 138.41,
+   "end": 143.166,
+   "gap": [
+    138.41,
+    145.93
+   ],
+   "text": "The grey-haired man sits upright on a wooden platform, hands resting on his knees."
+  },
+  {
+   "start": 163.57,
+   "end": 168.684,
+   "gap": [
+    163.57,
+    172.43
+   ],
+   "text": "The grey-haired man\u2019s weathered boots stand on a rough, dark surface beside a coiled rope."
+  },
+  {
+   "start": 217.41,
+   "end": 221.37,
+   "gap": [
+    217.41,
+    222.45
+   ],
+   "text": "The grey-haired man stands with arms raised as light bursts around him."
+  },
+  {
+   "start": 253.47,
+   "end": 256.776,
+   "gap": [
+    253.47,
+    257.917
+   ],
+   "text": "Three figures stand before a towering mechanical structure."
+  },
+  {
+   "start": 264.75,
+   "end": 268.135,
+   "gap": [
+    264.75,
+    268.75
+   ],
+   "text": "A young man walks down a cobblestone street, looking at his phone."
+  },
+  {
+   "start": 274.27,
+   "end": 277.735,
+   "gap": [
+    274.27,
+    278.49
+   ],
+   "text": "A young man in a patterned jacket stands by a canal bridge."
+  },
+  {
+   "start": 305.41,
+   "end": 308.752,
+   "gap": [
+    305.41,
+    310.583
+   ],
+   "text": "A man with glasses adjusts his collar near a glowing screen."
+  },
+  {
+   "start": 335.53,
+   "end": 337.796,
+   "gap": [
+    335.53,
+    338.45
+   ],
+   "text": "A broken robot lies amidst rubble."
+  },
+  {
+   "start": 350.41,
+   "end": 353.472,
+   "gap": [
+    350.41,
+    354.17
+   ],
+   "text": "A woman with dreadlocks stands beside a glowing console."
+  },
+  {
+   "start": 368.91,
+   "end": 370.581,
+   "gap": [
+    368.91,
+    370.95
+   ],
+   "text": "A chalkboard filled with scribbles."
+  },
+  {
+   "start": 393.41,
+   "end": 394.879,
+   "gap": [
+    393.41,
+    395.45
+   ],
+   "text": "A man kisses a robot."
+  },
+  {
+   "start": 399.0,
+   "end": 404.161,
+   "gap": [
+    399.0,
+    406.45
+   ],
+   "text": "A man with curly hair and glasses stares forward, illuminated by a glowing desk lamp."
+  },
+  {
+   "start": 411.41,
+   "end": 417.006,
+   "gap": [
+    411.41,
+    418.45
+   ],
+   "text": "A man with a mechanical eye points forward, while a woman stands behind him in a dimly lit room."
+  },
+  {
+   "start": 431.77,
+   "end": 435.683,
+   "gap": [
+    431.77,
+    436.67
+   ],
+   "text": "A soldier in heavy gear aims a rifle from behind a stone structure."
+  },
+  {
+   "start": 439.01,
+   "end": 440.311,
+   "gap": [
+    439.01,
+    441.11
+   ],
+   "text": "A clock tower shatters."
+  },
+  {
+   "start": 444.79,
+   "end": 450.996,
+   "gap": [
+    444.79,
+    461.792
+   ],
+   "text": "A hand in a translucent glove pulls a glowing, mechanical component from a complex, circular machine."
+  },
+  {
+   "start": 461.792,
+   "end": 467.131,
+   "gap": [
+    461.792,
+    468.333
+   ],
+   "text": "Four figures in white suits kneel inside a vast, sunlit, ruin-filled industrial hall."
+  },
+  {
+   "start": 468.333,
+   "end": 476.992,
+   "gap": [
+    468.333,
+    478.958
+   ],
+   "text": "A young man in a white suit grips a complex mechanical device, his gaze fixed forward, while a bearded man in glasses observes behind him."
+  },
+  {
+   "start": 478.958,
+   "end": 484.251,
+   "gap": [
+    478.958,
+    485.43
+   ],
+   "text": "A young man in a patterned jacket lies prone, gripping a rifle, eyes wide and focused."
+  },
+  {
+   "start": 487.85,
+   "end": 490.5,
+   "gap": [
+    487.85,
+    492.45
+   ],
+   "text": "A figure in a patterned jacket leaps through the air."
+  },
+  {
+   "start": 495.39,
+   "end": 497.96,
+   "gap": [
+    495.39,
+    498.69
+   ],
+   "text": "A figure in a patterned jacket grips a rifle."
+  },
+  {
+   "start": 499.417,
+   "end": 500.95,
+   "gap": [
+    499.417,
+    501.45
+   ],
+   "text": "Metal pipes and a brick wall."
+  },
+  {
+   "start": 512.91,
+   "end": 515.941,
+   "gap": [
+    512.91,
+    517.45
+   ],
+   "text": "Young man stands before giant mechanical construct."
+  },
+  {
+   "start": 522.41,
+   "end": 524.367,
+   "gap": [
+    522.41,
+    524.81
+   ],
+   "text": "A giant robot moves through smoke."
+  },
+  {
+   "start": 527.69,
+   "end": 532.558,
+   "gap": [
+    527.69,
+    533.45
+   ],
+   "text": "Giant robot's metallic limbs move through smoke, illuminated by glowing lights."
+  },
+  {
+   "start": 542.57,
+   "end": 551.204,
+   "gap": [
+    542.57,
+    554.59
+   ],
+   "text": "Young man with curly hair and glasses sits at a cluttered console, surrounded by glowing digital overlays and equipment, his expression focused."
+  },
+  {
+   "start": 567.41,
+   "end": 571.495,
+   "gap": [
+    567.41,
+    573.13
+   ],
+   "text": "A man with a prosthetic eye sits at a desk, a woman stands beside him."
+  },
+  {
+   "start": 574.83,
+   "end": 577.576,
+   "gap": [
+    574.83,
+    579.17
+   ],
+   "text": "Grey-haired man gestures toward giant robot."
+  },
+  {
+   "start": 589.0,
+   "end": 590.296,
+   "gap": [
+    589.0,
+    590.61
+   ],
+   "text": "Two robots face off."
+  },
+  {
+   "start": 601.083,
+   "end": 604.777,
+   "gap": [
+    601.083,
+    605.73
+   ],
+   "text": "White robot with blue energy lines faces orange robot."
+  },
+  {
+   "start": 608.43,
+   "end": 609.873,
+   "gap": [
+    608.43,
+    610.35
+   ],
+   "text": "Blue robot arm extends."
+  },
+  {
+   "start": 629.27,
+   "end": 637.266,
+   "gap": [
+    629.27,
+    643.29
+   ],
+   "text": "A blue robot with glowing energy lines stands against a black background, its arm extended toward orange mechanical fragments."
+  },
+  {
+   "start": 711.59,
+   "end": 713.046,
+   "gap": [
+    711.59,
+    713.69
+   ],
+   "text": "Scattered robot wreckage."
+  }
+ ]
+}
