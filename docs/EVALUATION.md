@@ -59,7 +59,19 @@ matters.
 
 ## The shipped track
 
-42 descriptions, 157.6 seconds of speech. Until 14 October 2026 it was 46 and 171.9 s; the sentence gate then took off four cues for talking about the photography or reading the crew list ("a woman with her back to the camera", "a blurred foreground post", "looks off-camera", "On screen: Produced by ..."), leaving those gaps silent. None of the four was one of the five touches below. Measured against the stems, 5 of them touch dialogue, for **0.9 seconds** in total: 0.02 s at 54 s, 0.22 s at 432 s, 0.37 s at 479 s, 0.07 s at 499 s and 0.22 s at 567 s. Three are the tail of a line, a few tenths of a second past where the caption file says it ends. The other two, at 479 s and 499 s in the battle, have no caption near them: either uncaptioned shouts, or effects the two masters mix differently. Nothing in the track lands on a captioned line.
+Since 15 October 2026 the shipped Tears of Steel track is the one Claude Haiku
+4.5 wrote with the film's cast list, after review: 45 descriptions, 134.8
+seconds of speech (docs/generation/TEARS_OF_STEEL.md). Measured against the
+stems, 6 of them touch dialogue, for **0.98 seconds** in total: 0.09 s at
+63 s, 0.06 s at 248 s, 0.22 s at 432 s, 0.37 s at 479 s, 0.02 s at 539 s and
+0.22 s at 567 s. Five are the tail of a line, a few tenths of a second past
+where the caption file says it ends. The one at 479 s, in the battle, has no
+caption near it: an uncaptioned shout, or effects the two masters mix
+differently. Nothing in the track lands on a captioned line.
+
+The track it replaced (Qwen3-VL 4B, no cast list; 42 descriptions, 157.6 s of
+speech after the sentence gate) measured 0.9 s in five touches, and an
+independent re-run from fresh downloads reproduced that figure.
 
 ## Reproducing
 

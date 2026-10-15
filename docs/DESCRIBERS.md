@@ -10,7 +10,7 @@ the model changes the writing and nothing else.
 | provider | set | notes |
 |---|---|---|
 | Google Gemini | `GEMINI_API_KEY` (optional `ALOUD_GEMINI_MODEL`, default `gemini-2.5-flash`) | REST `generateContent`; key in a header, never the URL |
-| Any OpenAI-compatible endpoint | `ALOUD_LLM_BASE_URL`, `ALOUD_LLM_API_KEY`, `ALOUD_LLM_MODEL` | OpenAI, OpenRouter, Together, vLLM, LM Studio... |
+| Any OpenAI-compatible endpoint | `ALOUD_LLM_BASE_URL`, `ALOUD_LLM_API_KEY`, `ALOUD_LLM_MODEL` (optional `ALOUD_LLM_PROVIDER`, `ALOUD_LLM_TIMEOUT`, `ALOUD_FRAME_MAX`) | Claude (wrote Tears of Steel), Ollama, OpenAI, OpenRouter, vLLM, LM Studio... |
 | Local open model on the CPU | `ALOUD_LOCAL_VLM_URL` (optional `ALOUD_LOCAL_VLM_MODEL`) | llama.cpp `llama-server`; no key, no GPU |
 | Stub | `ALOUD_VISION=stub` | obviously not looking, for testing the plumbing |
 
@@ -20,8 +20,16 @@ swapped for something else.
 
 ## What shipped in the app, and how it was made
 
-The tracks in `tv/src/data/films/` were written by **Qwen3-VL 4B Instruct**
-(Q4_K_M GGUF, about 3 GB with its vision projector) running on a CPU through
+**Tears of Steel** was described on 15 October 2026 by **Claude Haiku 4.5**
+through the OpenAI-compatible describer, with its cast list and frames sent at
+512 pixels (`ALOUD_FRAME_MAX=512`): 58 descriptions, 13 refused in review
+against the picture, 45 shipped, $0.14. **Qwen2.5-VL 7B** through Ollama on an
+M2 Pro laptop was tried first, with no key, and not shipped: it put "the giant
+robot" in shots with no robot in them. Both runs, the commands and the review
+are in [generation/TEARS_OF_STEEL.md](generation/TEARS_OF_STEEL.md).
+
+**Sintel, Big Buck Bunny and the trailer** were written by **Qwen3-VL 4B
+Instruct** (Q4_K_M GGUF, about 3 GB with its vision projector) running on a CPU through
 llama.cpp, on a shared 24-core Linux box with no GPU. Sintel and Big Buck
 Bunny were re-described on 14 October 2026 with the sentence gate and each
 title's cast list (`cast` in `aloud/films.py`): 33 and 14 minutes wall clock
@@ -31,9 +39,26 @@ dialogue, and naming its three bullies from the credits led the model to put
 the wrong name on the wrong animal. One Big Buck Bunny cue was refused in
 review ("The grey-haired man holds the red squirrel...", in a film with no
 people; `python3 -m aloud.publish --regate --id big-buck-bunny --drop 458.292`).
-Tears of Steel and the trailer keep their earlier tracks; Tears of Steel had
-one cue taken off by the gate (`python3 -m aloud.publish --regate`). Every track file names its describer
-and its voice, and the app shows both on the title's panel.
+Every track file names its describer and its voice.
+
+### An OpenAI-compatible model: hosted, or Ollama on this machine
+
+```bash
+export ALOUD_VISION=openai
+export ALOUD_LLM_BASE_URL=http://localhost:11434/v1   # Ollama; or a hosted endpoint
+export ALOUD_LLM_API_KEY=unused                       # any value for Ollama
+export ALOUD_LLM_MODEL=qwen2.5vl:7b                   # or claude-haiku-4-5-20251001, ...
+export ALOUD_LLM_PROVIDER="local, Ollama"             # how the track names where it ran
+export ALOUD_LLM_TIMEOUT=600                          # a local model's first image can be slow
+export ALOUD_FRAME_MAX=512                            # send frames at most this wide
+python3 -m aloud film.mp4 --captions film.srt --out out/ --cast-of tears-of-steel
+python3 -m aloud.publish out --id tears-of-steel
+```
+
+Switching between a local and a paid model is those variables and nothing
+else; every answer is cached beside the track, so a re-run never pays twice.
+
+### The CPU model through llama.cpp
 
 ```bash
 # the model (about 2.5GB) and its vision projector (about 0.45GB)
@@ -77,26 +102,13 @@ into `tv/`. Answers are cached per frame, word budget, brief and model under
 `$TMPDIR/aloud-films/<id>/out/described.cache.json`, so a rerun after a rate
 limit resumes rather than restarts, and a different model is asked afresh.
 
-## Tears of Steel with its cast, and the continuity pass
+## The continuity pass
 
-Tears of Steel's shipped track was written before it had a cast list. To
-re-describe it with the names its dialogue uses (Thom, Celia, Barley, the
-Captain) and then run the continuity pass over the result, on a Mac with the
-films fetched:
+To run the continuity pass over a film as it is described:
 
 ```bash
-pip install -r requirements.txt kokoro-onnx soundfile
-mkdir -p ~/.cache/aloud/kokoro && cd ~/.cache/aloud/kokoro && \
-  curl -LO https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx && \
-  curl -LO https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin && cd -
-export ALOUD_TTS=kokoro            # the shelf's voice (the default once its model files are in place)
-export GEMINI_API_KEY=...          # or ALOUD_LLM_BASE_URL / _API_KEY / _MODEL
 export ALOUD_CONTINUITY=1          # the continuity pass, with the same model
 python3 -m aloud.films build --only tears-of-steel
-python3 -m aloud.evaluate "$TMPDIR/aloud-films/tears-of-steel/tears_of_steel_720p.mov" \
-  --stems TOS_DVDSTEREOMIX.aif "TOS_MUSIC+FX_NO_DIALOGUE.aif" \
-  --captions "$TMPDIR/aloud-films/tears-of-steel/TOS-en.srt" \
-  --track "$TMPDIR/aloud-films/tears-of-steel/out/description.json"
 ```
 
 The track then records `describer` (the vision model) and `revised_by` (the
