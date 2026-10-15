@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>aloud cards</title>
+<!-- Video cards, lower thirds and thumbnails for aloud, in the Signal tokens
+     (design/DESIGN.md). Rendered to PNG by design/assets/src/render.sh; pick a
+     card with ?c=<name>. Fonts are the app's own, from tv/assets/fonts. -->
+<style>
+@font-face{font-family:AHN;src:url(../../../tv/assets/fonts/AtkinsonHyperlegibleNext-Regular.ttf);font-weight:400}
+@font-face{font-family:AHN;src:url(../../../tv/assets/fonts/AtkinsonHyperlegibleNext-SemiBold.ttf);font-weight:600}
+@font-face{font-family:AHN;src:url(../../../tv/assets/fonts/AtkinsonHyperlegibleNext-ExtraBold.ttf);font-weight:800}
+@font-face{font-family:AHM;src:url(../../../tv/assets/fonts/AtkinsonHyperlegibleMono-Regular.ttf);font-weight:400}
+:root{
+  --ground:#0B0B0A; --raised:#171716; --recess:#000000; --line:#3A3A37;
+  --ink:#F4F3EE; --soft:#C8C7C0; --muted:#A3A29B; --voice:#FFD23F; --dialogue:#63635F;
+  --scrim:rgba(11,11,10,.92);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:transparent}
+body{font-family:AHN,sans-serif;color:var(--ink)}
+.card{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--ground);display:none}
+.card.on{display:block}
+.card.clear{background:transparent}
+.t3x2{width:1500px;height:1000px}
+.t16x9{width:1280px;height:720px}
+.ab{position:absolute}
+.mark{display:flex;align-items:center}
+.mark i{display:block;background:var(--dialogue)}
+.mark b{display:block;background:var(--voice)}
+.wm{display:flex;align-items:center;font-weight:800;line-height:1}
+h1{font-weight:800;font-size:72px;line-height:84px}
+.sup{font-size:40px;line-height:56px;color:var(--soft);font-weight:400}
+.big{font-size:64px;line-height:80px;font-weight:600}
+.mono{font-family:AHM,monospace}
+.words{display:flex;align-items:center;gap:10px}
+.words i{display:block;background:var(--dialogue)}
+</style>
+</head>
+<body>
+
+<!-- 01: the cold open label, over black -->
+<section class="card" id="card-01-picture-off">
+  <div class="ab" style="left:96px;bottom:96px;font-size:40px;line-height:52px;font-weight:600">Tears of Steel, with the picture off.</div>
+</section>
+
+<!-- 02: title, laid over the device picture (transparent) -->
+<section class="card clear" id="card-02-title">
+  <div class="ab" style="left:96px;bottom:96px;background:var(--scrim);padding:44px 56px 48px;border-left:8px solid var(--voice)">
+    <div class="wm" style="font-size:132px;gap:28px">
+      <span class="mark" style="gap:10px"><i style="width:56px;height:38px"></i><b style="width:56px;height:66px"></b><i style="width:34px;height:38px"></i></span>aloud
+    </div>
+    <div style="font-size:50px;line-height:64px;font-weight:600;margin-top:28px;max-width:1240px">A Fire TV that tells you what is on screen, in the gaps between the dialogue.</div>
+    <div class="sup" style="margin-top:20px">Fire TV · Vega OS · React Native for Vega</div>
+  </div>
+</section>
+
+<!-- 03: who it is for -->
+<section class="card" id="card-03-who">
+  <div class="ab" style="left:96px;top:300px">
+    <div class="big">Cooking. Ironing. A toddler on your lap.</div>
+    <div class="big" style="margin-top:12px">A film in your second language.</div>
+    <div class="big" style="margin-top:12px">Eyes that are not what they were.</div>
+    <div class="big" style="margin-top:48px;font-weight:800">Or no sight at all.</div>
+  </div>
+</section>
+
+<!-- 04: how -->
+<section class="card" id="card-04-how">
+  <div class="ab" style="left:96px;top:250px;width:1500px">
+    <h1>Ahead of time, not live.</h1>
+    <div class="sup" style="margin-top:36px">A vision model writes one sentence for each silence.</div>
+    <div class="sup" style="margin-top:12px">Each sentence is spoken, measured, and placed inside its gap.</div>
+    <div class="sup" style="margin-top:12px">The TV does no AI work at all. A person can review every line.</div>
+    <div class="words" style="margin-top:72px;height:64px">
+      <i style="width:120px;height:40px"></i><i style="width:60px;height:56px"></i><i style="width:180px;height:64px"></i><i style="width:80px;height:44px"></i>
+      <span style="display:flex;align-items:center;width:420px;height:64px;padding:0 28px;background:var(--recess)"><b style="display:block;width:100%;height:64px;background:var(--voice)"></b></span>
+      <i style="width:90px;height:52px"></i><i style="width:150px;height:64px"></i>
+    </div>
+    <div class="sup mono" style="margin-top:16px;font-size:28px;line-height:36px;color:var(--muted)">talking · quiet, with aloud inside it · talking</div>
+  </div>
+</section>
+
+<!-- 05: the library -->
+<section class="card" id="card-05-library">
+  <div class="ab" style="left:96px;top:390px">
+    <h1>Any Vega app can play a described track.</h1>
+    <div class="sup mono" style="margin-top:28px;color:var(--ink)">github.com/ubmids/vega-described-track</div>
+  </div>
+</section>
+
+<!-- 06: end card -->
+<section class="card" id="card-06-end">
+  <div class="ab" style="left:96px;top:200px">
+    <div class="wm" style="font-size:180px;gap:36px">
+      <span class="mark" style="gap:12px"><i style="width:76px;height:52px"></i><b style="width:76px;height:90px"></b><i style="width:46px;height:52px"></i></span>aloud
+    </div>
+    <div style="font-size:48px;line-height:60px;font-weight:600;margin-top:36px">Films that describe themselves. Fire TV · Vega OS</div>
+    <div class="sup mono" style="margin-top:44px;color:var(--ink)">github.com/ubmids/aloud</div>
+    <div class="sup" style="margin-top:28px;font-size:34px;line-height:46px">Any Vega app can play a described track:</div>
+    <div class="sup mono" style="font-size:34px;line-height:46px">github.com/ubmids/vega-described-track</div>
+  </div>
+  <div class="ab" style="left:96px;right:96px;bottom:64px;font-size:28px;line-height:38px;color:var(--muted)">Tears of Steel (CC) Blender Foundation | mango.blender.org. Sintel and Big Buck Bunny (c) Blender Foundation. All CC BY 3.0.</div>
+</section>
+
+<!-- lower third (transparent): ?c=lower-third&name=...&role=... -->
+<section class="card clear" id="lower-third">
+  <div class="ab" style="left:96px;bottom:96px;display:flex;background:var(--scrim)">
+    <div style="width:8px;background:var(--voice)"></div>
+    <div style="padding:20px 36px 24px 28px">
+      <div id="lt-name" style="font-size:48px;line-height:58px;font-weight:800">A viewer</div>
+      <div id="lt-role" style="font-size:32px;line-height:42px;color:var(--soft)">Watching with aloud</div>
+    </div>
+  </div>
+</section>
+
+<!-- caption (transparent): words said on screen, large; ?c=caption&text=... -->
+<section class="card clear" id="caption">
+  <div class="ab" style="left:96px;bottom:160px;max-width:1300px;background:var(--scrim);padding:18px 30px">
+    <div id="cap-text" style="font-size:48px;line-height:62px;font-weight:600">I can see. This is the same scene with the picture taken away.</div>
+  </div>
+</section>
+
+<!-- thumbnails -->
+<section class="card t3x2" id="thumbnail-3x2">
+  <div class="ab wm" style="left:96px;top:96px;font-size:200px;letter-spacing:-2px">aloud</div>
+  <div class="ab" style="left:96px;top:356px;font-size:84px;line-height:92px;font-weight:800;width:1300px">Films that describe themselves.</div>
+  <div class="ab words" style="left:96px;top:620px;height:140px;width:1308px">
+    <i style="width:70px;height:72px"></i><i style="width:40px;height:104px"></i><i style="width:110px;height:140px"></i><i style="width:30px;height:80px"></i><i style="width:72px;height:116px"></i><i style="width:50px;height:64px"></i><i style="width:96px;height:120px"></i>
+    <span style="display:flex;align-items:center;flex:none;width:520px;height:140px;padding:0 34px;background:var(--recess)"><b style="display:block;width:100%;height:140px;background:var(--voice)"></b></span>
+    <i style="width:60px;height:100px"></i><i style="width:36px;height:70px"></i><i style="width:96px;height:128px"></i>
+  </div>
+  <div class="ab" style="left:96px;top:830px;font-size:48px;font-weight:600;color:var(--soft)">Fire TV · Vega OS</div>
+</section>
+
+<section class="card t16x9" id="thumbnail-16x9">
+  <div class="ab wm" style="left:72px;top:64px;font-size:150px;letter-spacing:-2px">aloud</div>
+  <div class="ab" style="left:72px;top:250px;font-size:64px;line-height:72px;font-weight:800;width:1100px">Films that describe themselves.</div>
+  <div class="ab words" style="left:72px;top:430px;height:110px;width:1136px">
+    <i style="width:60px;height:56px"></i><i style="width:34px;height:82px"></i><i style="width:96px;height:110px"></i><i style="width:26px;height:64px"></i><i style="width:62px;height:92px"></i><i style="width:84px;height:100px"></i>
+    <span style="display:flex;align-items:center;flex:none;width:430px;height:110px;padding:0 28px;background:var(--recess)"><b style="display:block;width:100%;height:110px;background:var(--voice)"></b></span>
+    <i style="width:52px;height:80px"></i><i style="width:30px;height:56px"></i><i style="width:84px;height:100px"></i>
+  </div>
+  <div class="ab" style="left:72px;top:590px;font-size:40px;font-weight:600;color:var(--soft)">Fire TV · Vega OS</div>
+</section>
+
+<script>
+  var q=new URLSearchParams(location.search), c=q.get('c')||'card-06-end';
+  var el=document.getElementById(c); if(el) el.classList.add('on');
+  if(q.get('name')) document.getElementById('lt-name').textContent=q.get('name');
+  if(q.get('role')) document.getElementById('lt-role').textContent=q.get('role');
+  if(q.get('text')) document.getElementById('cap-text').textContent=q.get('text');
+</script>
+</body>
+</html>
