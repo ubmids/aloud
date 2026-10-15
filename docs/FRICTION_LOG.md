@@ -3,7 +3,8 @@
 Recorded while building aloud, a Fire TV app that speaks audio description into
 the gaps between dialogue, between 14 September and submission. Entries 1 to 13
 are from the first build (14 to 17 September); 14 to 18 are from adding the
-remote-driven shelf and player in October. Every entry is
+remote-driven shelf and player in October; 19 to 23 are from verifying that
+build on the Vega Virtual Device and recording it for the demo (15 October). Every entry is
 something that actually cost time on this build, in the format the hackathon
 rules ask for: task attempted, steps taken, expected versus actual, severity,
 workaround, suggestion.
@@ -701,6 +702,146 @@ Remote handling is the core of a TV app and the hardest part to test today.
 
 ---
 
+## 19. There is no documented way to screenshot or record the Virtual Device
+
+**Severity: medium.** The rules require the demo video to show the app on a
+Fire TV or the Vega simulator, so every entrant without hardware needs this.
+
+**Task attempted.** Take screenshots of the app and record the player for the
+demo video, on a Mac with the Virtual Device started `--no-gui` (with the GUI,
+the device takes over the Mac's audio output; see entry 22).
+
+**Steps taken.** `vega --help`, `vega device --help`, `vega virtual-device
+--help`, the Vega CLI and Virtual Device documentation pages. None mention a
+screenshot or a recording. Then read the `qemu` command line in `ps`: the
+device is an Android-emulator build listening on `-ports 5554,5555`.
+
+**Expected.** `vega device screenshot` and `vega device screenrecord`, or a
+page that says how.
+
+**Actual.** The emulator console on port 5554 has both, undocumented for
+Vega: authenticate with the token in `~/.emulator_console_auth_token`, then
+`screenrecord screenshot <dir>` writes a 1920x1080 PNG and `screenrecord
+start <file>.webm` records up to 180 seconds. The recording has no audio
+track, so a player app's own sound cannot be captured this way.
+
+**Workaround.** The console, scripted with `nc`. The demo's sound is the
+pipeline's own mix of the same track, laid under the device recording at the
+same timecode.
+
+**Suggestion.** Add `vega device screenshot` and `vega device record` (with
+an audio option) to the CLI, and one paragraph on capturing demo footage to
+the Virtual Device page. Every hackathon entrant and every Appstore listing
+needs screenshots.
+
+---
+
+## 20. Pressing remote buttons from a script is possible but undocumented
+
+**Severity: low** for building, **medium** for anyone automating a demo or a
+test on the Virtual Device.
+
+**Task attempted.** Drive the shelf and the player from a script (right,
+right, select, Menu) so a recording can be repeated exactly.
+
+**Steps taken.** The emulator console's `event send EV_KEY:KEY_RIGHT:1` (the
+Android-emulator way). The console accepted it and the app never saw it.
+Then searched the device: `vega device run-cmd -c 'ls /usr/bin'`.
+
+**Expected.** A documented key-injection command, as `adb shell input
+keyevent` is on Fire OS.
+
+**Actual.** `inputd-cli button_press KEY_RIGHT` on the device works, run
+through `vega device run-cmd`. Its own usage text calls it a "dev-mode
+inputd cli"; it is not mentioned in the CLI help or the docs.
+
+**Workaround.** `vega device run-cmd -c 'inputd-cli button_press KEY_ENTER'`
+and friends, in a shell loop.
+
+**Suggestion.** Document `inputd-cli` (or wrap it as `vega device press
+<key>`) with the key names the remote sends, including Menu, Back and
+play/pause. It would also make UI tests on the Virtual Device possible in CI.
+
+---
+
+## 21. After the host disk filled during a build, the CLI hung with no output
+
+**Severity: medium.**
+
+**Task attempted.** Rebuild and reinstall after a small UI change, with the
+Virtual Device running.
+
+**Steps taken.** `npm run build` failed with `ENOSPC: no space left on
+device` partway through packaging (the Mac's disk had filled from another
+download). After freeing space, `vega run-app build/aarch64-release/
+aloud_aarch64.vpkg`, then `vega device list`.
+
+**Expected.** Either success, or an error naming the device or the transport.
+
+**Actual.** Both commands sat silent for over three minutes with no output,
+and `vega run-app` has no timeout. Nothing in the CLI's log directory said
+why.
+
+**Workaround.** `vega virtual-device stop`, start it again, reinstall. It
+worked first time after the restart.
+
+**Suggestion.** Give `run-app` and `device list` a connection timeout and an
+error that names the transport ("device not responding on 127.0.0.1:5555"),
+and check free disk before packaging, since a `.vpkg` with bundled media is
+hundreds of megabytes.
+
+---
+
+## 22. `virtual-device stop` leaves a crash handler running, and the GUI takes the Mac's audio
+
+**Severity: low.**
+
+**Task attempted.** Start and stop the Virtual Device repeatedly through a
+build-and-check loop, with other audio work running on the same Mac.
+
+**Steps taken.** `vega virtual-device start`, `vega virtual-device stop`,
+about fifteen times over two sessions.
+
+**Expected.** Nothing of the device left running after `stop`, and a device
+that shares the audio output with other apps.
+
+**Actual.** Each `stop` left a `crashpad_handler` process behind; fourteen
+had piled up by the time it was noticed. With the GUI on, the device took
+over the Mac's audio output, and other apps' sound broke until it stopped.
+
+**Workaround.** `pkill -f "vega-sdk.*crashpad_handler"` after each `stop`,
+and `--no-gui` unless filming.
+
+**Suggestion.** Stop the crash handler with the device, and open the audio
+device in shared mode.
+
+---
+
+## 23. Every build packages three architectures, with no flag to choose one
+
+**Severity: low**, but it costs real disk on a media app.
+
+**Task attempted.** Rebuild after one-line UI changes, to reinstall on the
+Virtual Device (aarch64 on Apple silicon).
+
+**Steps taken.** `npm run build` (`react-native build-vega --build-type
+Release`), then `npx react-native build-vega --help` for an architecture
+option.
+
+**Expected.** A way to build only the architecture of the device in use.
+
+**Actual.** Each build writes armv7, x86_64 and aarch64 packages, about
+200 MB each here because the films are bundled, roughly 600 MB per build
+and three times the packaging time. `--target` selects build targets, not
+architectures, and the list comes from `package.json`.
+
+**Workaround.** Delete the two unused `.vpkg` files after each build.
+
+**Suggestion.** `--arch aarch64` on `build-vega`, and a note that a debug
+loop needs only the Virtual Device's architecture.
+
+---
+
 ## What went well, since a friction log that only complains is not useful
 
 - The device log is genuinely excellent. Every single failure in this document
@@ -718,10 +859,10 @@ Remote handling is the core of a TV app and the hardest part to test today.
   one a determined developer cannot be permanently blocked by.
 
 - `vega virtual-device` is fast and reliable. It boots in well under a minute,
-  `vega run-app` installs and launches in one command, and across roughly fifteen
-  build-install-run cycles it never once needed restarting or wedged. The
-  iteration loop was never the bottleneck, which is the thing that usually goes
-  wrong with device emulators.
+  `vega run-app` installs and launches in one command, and across roughly
+  twenty build-install-run cycles it needed restarting once, after the host
+  disk had filled (entry 21). The iteration loop was never the bottleneck,
+  which is the thing that usually goes wrong with device emulators.
 
 - The manifest validator is strict in the right way. Adding ten service
   declarations by hand to a TOML file is exactly the kind of edit that produces a
