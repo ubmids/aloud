@@ -4,7 +4,8 @@ Recorded while building aloud, a Fire TV app that speaks audio description into
 the gaps between dialogue, between 14 September and submission. Entries 1 to 13
 are from the first build (14 to 17 September); 14 to 18 are from adding the
 remote-driven shelf and player in October; 19 to 23 are from verifying that
-build on the Vega Virtual Device and recording it for the demo (15 October). Every entry is
+build on the Vega Virtual Device and recording it for the demo, and 24 from
+the full-screen picture (15 October). Every entry is
 something that actually cost time on this build, in the format the hackathon
 rules ask for: task attempted, steps taken, expected versus actual, severity,
 workaround, suggestion.
@@ -723,11 +724,16 @@ page that says how.
 Vega: authenticate with the token in `~/.emulator_console_auth_token`, then
 `screenrecord screenshot <dir>` writes a 1920x1080 PNG and `screenrecord
 start <file>.webm` records up to 180 seconds. The recording has no audio
-track, so a player app's own sound cannot be captured this way.
+track, so a player app's own sound cannot be captured this way. And under a
+moving picture its timestamps run slow: matching recorded frames to the film
+showed 0.816 seconds of film per recorded second over a 40-second take,
+while the device log shows the film playing in real time (0.249 s of film
+per 0.254 s of clock). A static screen records at about real speed.
 
-**Workaround.** The console, scripted with `nc`. The demo's sound is the
-pipeline's own mix of the same track, laid under the device recording at the
-same timecode.
+**Workaround.** The console, scripted (`docs/video/record.py`). The film
+moment on screen is found by matching recorded frames to the film, the
+recording is retimed by the measured rate, and the app's own sound (the film,
+the description cues, the menu clips) is laid under it at the same timecode.
 
 **Suggestion.** Add `vega device screenshot` and `vega device record` (with
 an audio option) to the CLI, and one paragraph on capturing demo footage to
@@ -839,6 +845,37 @@ architectures, and the list comes from `package.json`.
 
 **Suggestion.** `--arch aarch64` on `build-vega`, and a note that a debug
 loop needs only the Virtual Device's architecture.
+
+---
+
+## 24. `Video` takes its size once; resizing the stage leaves the film small
+
+**Severity: high** for any player with a full-screen mode, and silent.
+
+**Task attempted.** A "Picture: Full screen" setting: the same film, already
+playing beside a panel, fills the screen when chosen.
+
+**Steps taken.** The stage `View` grows to the whole screen; its `onLayout`
+size is passed to `Video` as `width` and `height`, the only sizing `Video`
+takes (entry 3). Jest showed the new props arriving.
+
+**Expected.** The picture grows with the props, as a React Native component
+does.
+
+**Actual.** On the Vega Virtual Device the film kept playing at its panel
+size in the middle of a black screen. `Video` reads `width` and `height`
+when its native surface is created and ignores later changes; nothing in the
+log or the types says so.
+
+**Workaround.** Key `Video` on the size, so a new size is a new surface;
+attach the source again only after the new player reports ready (entry 4),
+and seek to where the film was on `loadedmetadata`
+(`tv/src/screens/Player.tsx`, pinned by `tv/test/picture.test.tsx`). The
+cost is a second of black while the new surface starts.
+
+**Suggestion.** Resize the surface when `width` or `height` change, or
+document on the `Video` page that the size is fixed at creation and show the
+keyed-remount pattern for full-screen toggles.
 
 ---
 
