@@ -25,6 +25,16 @@ here instead. The binding spec is `design/DESIGN.md` (direction: Signal).
    Please point `docs/video/SHOTS.md` and the cut at these, and retire the
    Avenir cards in `render.py` (or make `render.py cards` copy from
    `design/assets/`).
-4. **Gallery and README hero** land in `design/assets/gallery/` (Virtual Device
-   screenshots of the restyled build). The README hero should be
-   `design/assets/gallery/02-player.png`, above the one-line pitch.
+4. **Gallery and README hero** are in `design/assets/gallery/`:
+   `01-shelf.png`, `02-player.png` (a description being spoken at 1:12),
+   `03-fullscreen.png` (the caption for the rest of the sofa) and
+   `04-strip.png` (the schedule strip, close up). The README hero is
+   `design/assets/readme-hero.png` (same as `02-player.png`); put it above the
+   one-line pitch. These are pixel-faithful HTML renders of the committed
+   Signal styles, using the real posters and real Tears of Steel frames inside
+   the matching cue windows, because the Mac was too loaded to keep the VVD up.
+   When `docs/video/record.py` re-records on the Signal build, take device
+   stills at the same moments (shelf with Tears of Steel focused; player at
+   1:12; full screen at 7:14) and drop them in under the same names. The
+   gallery captions in Devpost should not say "screenshot" until then.
+   Before: `design/assets/before/shelf-vvd.png` (the old look, from the VVD).
