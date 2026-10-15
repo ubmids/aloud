@@ -50,3 +50,6 @@ tv/generated/
 # fetch`; only the trailer is small enough to live in the repository.
 tv/assets/films/*/film.mp4
 !tv/assets/films/sintel-trailer/film.mp4
+
+# demo video renders: large, rebuilt by docs/video/render.py
+docs/video/assets/

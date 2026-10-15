@@ -67,17 +67,23 @@ SINTEL_CAST = ("Sintel: a young woman with short red hair, who carries a "
 # as Barley, Rogier Schippers as the Captain; Wikipedia, "Tears of Steel"),
 # checked against frames at 0:26, 1:00, 1:41, 2:20, 4:35 and 6:33. An
 # earlier list had Barley as the curly-haired technician at the console;
-# he is never named in the film.
+# he is never named in the film. Saying that Celia "is the giant robot"
+# forty years later made both Qwen2.5-VL and Claude Haiku call the flying
+# ship, and rooms with no robot in them, "the giant robot"; the machines
+# are now named by what they look like, with a rule for when to use which.
 TOS_CAST = ("Thom: a young man with dark hair, on a bridge with Celia in the "
             "opening and again in the restaged scene; forty years later, a "
             "grey-haired old man with a beard. Celia: a young woman with "
-            "light brown hair, a blue jacket and a robotic hand; forty years "
-            "later she is the giant robot. Barley: a Black man in dark "
-            "tactical gear who watches over the old man with a scoped "
-            "rifle. The Captain: a heavy-set man with a mechanical eyepiece "
-            "over one eye, who leads the team. Anyone else, including the "
-            "curly-haired technician with glasses and the soldiers, is "
-            "described by what can be seen.")
+            "light brown hair, a blue jacket and a robotic hand. Barley: a "
+            "Black man in dark tactical gear who watches over the old man "
+            "with a scoped rifle. The Captain: a heavy-set man with a "
+            "mechanical eyepiece over one eye, who leads the team. Anyone "
+            "else, including the curly-haired technician with glasses and "
+            "the soldiers, is described by what can be seen. Machines: a "
+            "flying ship with lights and engines hangs over the city; call "
+            "it a flying ship. Say 'the giant robot' only for a huge "
+            "humanoid robot plainly in the frame, never for the ship, a "
+            "building or a glowing room.")
 
 TITLES = [
     Title(

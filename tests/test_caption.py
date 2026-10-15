@@ -520,6 +520,12 @@ def test_frames_can_be_sent_smaller():
         clear_provider_env()
     print("PASS frames go at most ALOUD_FRAME_MAX wide")
 
+
+def test_an_unpaired_quote_is_dropped():
+    assert clean('On screen: "40 YEARS LATER.') == "On screen: 40 YEARS LATER."
+    assert clean('On screen: "HELLO".') == 'On screen: "HELLO".'
+    print("PASS an unpaired quote mark is dropped")
+
 if __name__ == "__main__":
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     try:

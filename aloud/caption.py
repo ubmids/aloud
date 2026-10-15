@@ -148,6 +148,11 @@ def clean(text: str) -> str:
         t = re.sub(r"\b(?:animated|cartoon|cgi|computer-generated)\s+(?=[A-Za-z])",
                    "", t, flags=re.IGNORECASE)
         t = re.sub(r",\s*,", ",", t)
+    # 'On screen: "40 YEARS LATER.' came back with its closing quote eaten
+    # by the full stop. An odd quote is read aloud as nothing but looks
+    # broken on the caption, so an unpaired one goes.
+    if t.count('"') % 2:
+        t = t.replace('"', "")
     if t and not t.endswith((".", "!", "?")):
         t += "."
     return (t[:1].upper() + t[1:]) if t else ""
