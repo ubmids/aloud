@@ -89,7 +89,7 @@ pip install -r requirements.txt kokoro-onnx soundfile
 mkdir -p ~/.cache/aloud/kokoro && cd ~/.cache/aloud/kokoro && \
   curl -LO https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx && \
   curl -LO https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin && cd -
-export ALOUD_TTS=kokoro            # the shelf's voice; without it a Mac uses `say`
+export ALOUD_TTS=kokoro            # the shelf's voice (the default once its model files are in place)
 export GEMINI_API_KEY=...          # or ALOUD_LLM_BASE_URL / _API_KEY / _MODEL
 export ALOUD_CONTINUITY=1          # the continuity pass, with the same model
 python3 -m aloud.films build --only tears-of-steel
@@ -116,9 +116,9 @@ through it.
 
 ## The voice
 
-`aloud/synth.py` speaks with macOS `say` where it exists and otherwise with
-**Kokoro 82M** (`kokoro-onnx`, Apache 2.0), a neural voice that runs on a CPU
-faster than real time. The shipped cues are Kokoro's `af_heart`. Model files go
+`aloud/synth.py` speaks with **Kokoro 82M** (`kokoro-onnx`, Apache 2.0) when
+its model files are in place, and otherwise with macOS `say`. Kokoro is a
+neural voice that runs on a CPU faster than real time. The shipped cues are Kokoro's `af_heart`. Model files go
 in `~/.cache/aloud/kokoro/` (`kokoro-v1.0.onnx`, `voices-v1.0.bin`, from
 github.com/thewh1teagle/kokoro-onnx releases). `ALOUD_TTS=say|kokoro` forces
 one; `ALOUD_VOICE` picks a Kokoro voice.

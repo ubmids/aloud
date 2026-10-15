@@ -15,9 +15,9 @@ GPU and the cues that ship in the app sound like a person rather than a 2005
 screen reader. Either way the contract is one method that returns audio and its
 true length, and the schedule is built on that length whichever voice spoke.
 
-`ALOUD_TTS=say|kokoro` picks one; otherwise `say` if it exists, then Kokoro if
-its model files are where `ALOUD_KOKORO_DIR` (default `~/.cache/aloud/kokoro`)
-says they are.
+`ALOUD_TTS=say|kokoro` picks one; otherwise Kokoro if its model files are where
+`ALOUD_KOKORO_DIR` (default `~/.cache/aloud/kokoro`) says they are, since that
+is the voice the shelf ships with, and `say` if not.
 """
 import os
 import shutil
@@ -76,8 +76,8 @@ def default_backend() -> str:
     chosen = (os.getenv("ALOUD_TTS") or "").strip().lower()
     if chosen in ("say", "kokoro"):
         return chosen
-    if shutil.which("say"):
-        return "say"
+    # The shelf's voice first: every shipped cue is Kokoro, so a Mac that has
+    # the model should not quietly build a track in a second voice.
     if kokoro_ready():
         return "kokoro"
     return "say"
@@ -159,7 +159,10 @@ class Synth:
             cmd += ["-v", self.voice]
         if self.rate:
             cmd += ["-r", str(self.rate)]
-        subprocess.run(cmd + [text], check=True, capture_output=True)
+        # `say` hands the work to a system speech service, and when that
+        # service wedges, `say` waits for ever. A minute is far more than any
+        # one sentence needs; past it, fail loudly rather than hang a film.
+        subprocess.run(cmd + [text], check=True, capture_output=True, timeout=60)
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", aiff,
                         "-ac", "1", "-ar", "16000", wav],
                        check=True, capture_output=True)

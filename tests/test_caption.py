@@ -394,6 +394,10 @@ def test_the_cast_reaches_the_model_and_names_are_allowed_only_from_it():
     sysmsg = STATE["req"]["messages"][0]["content"]
     assert cast in sysmsg, sysmsg
     assert "only the names in this cast list" in sysmsg, sysmsg
+    # A 7B model given names put them on whoever was nearest ("the Captain
+    # ... while Barley stands behind him" over a woman); it is told that a
+    # wrong name is worse than none, and never to name someone off screen.
+    assert "if you are unsure" in sysmsg and "cannot be seen" in sysmsg, sysmsg
     cap()(FRAME, 8)
     sysmsg = STATE["req"]["messages"][0]["content"]
     assert "cast list" not in sysmsg and "Do not name characters" in sysmsg, sysmsg

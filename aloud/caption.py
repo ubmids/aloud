@@ -83,9 +83,12 @@ CONTEXT = (
 # model is never invited to guess one.
 NO_NAMES = "Do not name characters. "
 CAST = (
-    " This film's characters, as the film itself names them: {cast} When "
-    "you recognise one of them, call them by that name. Use only the names in "
-    "this cast list; describe anyone else by what can be seen of them."
+    " This film's characters, as the film itself names them: {cast} Use a "
+    "name only when the person in the frame plainly matches that "
+    "description; a wrong name misleads the listener more than none, so if "
+    "you are unsure, describe them by what can be seen. Use only the names "
+    "in this cast list. Name only what is in the frame: never mention a character who "
+    "cannot be seen."
 )
 
 

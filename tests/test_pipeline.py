@@ -105,6 +105,14 @@ def test_generated_description_never_overruns():
 
     for gap in (6.0, 3.0, 1.6, 1.4):
         f = fit_generated(describe, gap, s)
+        if gap < 2.0 and not f.text:
+            # Whether "A man crosses." fits a second and a half depends on
+            # the voice: Kokoro says it in 1.2s, the system voice on some
+            # macOS releases does not. Silence is the contract's answer when
+            # nothing fits; what must never happen is an overrun.
+            assert not f.fits and f.seconds == 0.0, f
+            print(f"PASS gap {gap}s -> silent, nothing fits with {s.name}")
+            continue
         assert f.fits and f.text, f
         real = s.duration(f.text)
         assert real <= f.budget, f"{real}s in a {f.budget}s budget: {f.text!r}"

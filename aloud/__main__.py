@@ -18,11 +18,21 @@ def main(argv=None):
     ap.add_argument("--captions", help="the title's SRT or WebVTT caption file; "
                     "every caption is treated as dialogue")
     ap.add_argument("--quiet", action="store_true", help="no progress lines")
+    ap.add_argument("--cast-of", metavar="ID",
+                    help="name characters from this shelf title's cast list "
+                    "(see aloud/films.py), e.g. tears-of-steel")
     a = ap.parse_args(argv)
+
+    cast = None
+    if a.cast_of:
+        from .films import BY_ID
+        if a.cast_of not in BY_ID:
+            ap.error(f"--cast-of: no title {a.cast_of!r}; one of {', '.join(BY_ID)}")
+        cast = BY_ID[a.cast_of].cast or None
 
     os.makedirs(a.out, exist_ok=True)
     r = describe_film(a.video, out_dir=a.out, captions=a.captions,
-                      quiet=a.quiet)
+                      quiet=a.quiet, cast=cast)
     print(f"described by {r.track.describer}, spoken by {r.track.voice}")
 
     print(f"{len(r.gaps)} gap(s) in the dialogue, {len(r.shots)} shot change(s)")
