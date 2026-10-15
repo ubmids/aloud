@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="358" viewBox="0 0 1200 358" font-family="Atkinson Hyperlegible Next, Helvetica, Arial, sans-serif" role="img" aria-labelledby="t d">
 <title id="t">Tears of Steel: dialogue and descriptions</title>
-<desc id="d">46 descriptions, 172 seconds of narration, each placed between lines of dialogue.</desc>
+<desc id="d">45 descriptions, 135 seconds of narration, each placed between lines of dialogue.</desc>
 <rect width="1200" height="358" fill="#0B0B0A"/>
 <text x="120" y="36" fill="#F4F3EE" font-size="22" font-weight="700">Tears of Steel: where aloud speaks</text>
-<text x="120" y="62" fill="#A3A29B" font-size="14">46 descriptions, 2.9 minutes of narration. Dialogue as the film&#x27;s own production stems hear it.</text>
+<text x="120" y="62" fill="#A3A29B" font-size="14">45 descriptions, 2.2 minutes of narration. Dialogue as the film&#x27;s own production stems hear it.</text>
 <rect x="846" y="27" width="14" height="14" rx="3" fill="#63635F"/>
 <text x="866" y="39" fill="#F4F3EE" font-size="14">Dialogue (production stems)</text>
 <rect x="846" y="51" width="14" height="14" rx="3" fill="#FFD23F"/>
@@ -55,18 +55,24 @@
 <rect x="1154.7" y="96" width="3.4" height="14" rx="2" fill="#63635F"><title>dialogue 3:59 to 4:00</title></rect>
 <rect x="1162.4" y="96" width="3.6" height="14" rx="2" fill="#63635F"><title>dialogue 4:01 to 4:02</title></rect>
 <rect x="1171.8" y="96" width="2.2" height="14" rx="2" fill="#63635F"><title>dialogue 4:03 to 4:04</title></rect>
-<rect x="169.9" y="114" width="22.1" height="14" rx="2" fill="#FFD23F"><title>0:11 Rocket engines ignite, blasting bright white flames and pinkish plumes from their nozzles.</title></rect>
-<rect x="199.5" y="114" width="13.2" height="14" rx="2" fill="#FFD23F"><title>0:18 A rocket launches from a sprawling industrial complex.</title></rect>
+<rect x="169.9" y="114" width="20.9" height="14" rx="2" fill="#FFD23F"><title>0:11 Bright industrial lights blaze intensely within a metal framework structure overhead.</title></rect>
+<rect x="199.5" y="114" width="9.7" height="14" rx="2" fill="#FFD23F"><title>0:18 Futuristic city skyline glows at dawn.</title></rect>
 <rect x="316.0" y="114" width="7.9" height="14" rx="2" fill="#FFD23F"><title>0:45 On screen: 40 YEARS LATER.</title></rect>
-<rect x="352.7" y="114" width="19.4" height="14" rx="2" fill="#FFD23F"><title>0:53 Two figures work at a cluttered console, surrounded by glowing digital overlays.</title></rect>
-<rect x="439.8" y="114" width="14.7" height="14" rx="2" fill="#FFD23F"><title>1:14 Through a shadowed doorway, two figures work at a cluttered console.</title></rect>
-<rect x="462.6" y="114" width="14.6" height="14" rx="2" fill="#FFD23F"><title>1:19 An elderly person reads a newspaper with bold headlines.</title></rect>
-<rect x="558.2" y="114" width="19.2" height="14" rx="2" fill="#FFD23F"><title>1:41 A grey-haired person reads a newspaper while a soldier aims a rifle nearby.</title></rect>
-<rect x="588.4" y="114" width="21.6" height="14" rx="2" fill="#FFD23F"><title>1:48 Through a circular viewport, a large, steampunk-style airship hovers above a cityscape.</title></rect>
-<rect x="674.3" y="114" width="7.2" height="14" rx="2" fill="#FFD23F"><title>2:08 An elderly man lies asleep.</title></rect>
-<rect x="717.4" y="114" width="20.5" height="14" rx="2" fill="#FFD23F"><title>2:18 The grey-haired man sits upright on a wooden platform, hands resting on his knees.</title></rect>
-<rect x="826.0" y="114" width="22.1" height="14" rx="2" fill="#FFD23F"><title>2:43 The grey-haired man’s weathered boots stand on a rough, dark surface beside a coiled rope.</title></rect>
-<rect x="1058.4" y="114" width="17.1" height="14" rx="2" fill="#FFD23F"><title>3:37 The grey-haired man stands with arms raised as light bursts around him.</title></rect>
+<rect x="393.7" y="114" width="22.8" height="14" rx="2" fill="#FFD23F"><title>1:03 A human brain sits on a white platform surrounded by glowing pink circular light rings.</title></rect>
+<rect x="421.8" y="114" width="13.0" height="14" rx="2" fill="#FFD23F"><title>1:09 The flying ship hovers above the sprawling city below.</title></rect>
+<rect x="439.8" y="114" width="17.0" height="14" rx="2" fill="#FFD23F"><title>1:14 Inside the flying ship, silhouetted figures stand at control panels.</title></rect>
+<rect x="462.6" y="114" width="8.4" height="14" rx="2" fill="#FFD23F"><title>1:19 A hand holds an open newspaper.</title></rect>
+<rect x="486.6" y="114" width="7.4" height="14" rx="2" fill="#FFD23F"><title>1:24 Barley peers through rifle scope.</title></rect>
+<rect x="536.6" y="114" width="6.6" height="14" rx="2" fill="#FFD23F"><title>1:36 Flying ship descends lower.</title></rect>
+<rect x="562.1" y="114" width="18.5" height="14" rx="2" fill="#FFD23F"><title>1:42 The flying ship continues descending toward the residential buildings below.</title></rect>
+<rect x="643.4" y="114" width="17.3" height="14" rx="2" fill="#FFD23F"><title>2:01 The old man lies beneath metal framework as Barley aims downward.</title></rect>
+<rect x="717.4" y="114" width="25.2" height="14" rx="2" fill="#FFD23F"><title>2:18 The old man stands in a high rooftop shelter as the flying ship looms outside the windows beyond.</title></rect>
+<rect x="807.0" y="114" width="4.9" height="14" rx="2" fill="#FFD23F"><title>2:39 Rope lies coiled.</title></rect>
+<rect x="826.0" y="114" width="26.1" height="14" rx="2" fill="#FFD23F"><title>2:43 The old man stands alone in the industrial space, gripping the thick rope as he looks toward the machinery.</title></rect>
+<rect x="871.3" y="114" width="6.3" height="14" rx="2" fill="#FFD23F"><title>2:54 Old man walks indoors.</title></rect>
+<rect x="933.8" y="114" width="6.4" height="14" rx="2" fill="#FFD23F"><title>3:08 Old man enters lit room.</title></rect>
+<rect x="1058.4" y="114" width="12.6" height="14" rx="2" fill="#FFD23F"><title>3:37 The old man stands with arms raised in the glowing light.</title></rect>
+<rect x="1108.1" y="114" width="3.5" height="14" rx="2" fill="#FFD23F"><title>3:48 Others appear.</title></rect>
 <text x="120.0" y="146" fill="#A3A29B" font-size="11" text-anchor="middle">0:00</text>
 <text x="249.5" y="146" fill="#A3A29B" font-size="11" text-anchor="middle">0:30</text>
 <text x="379.0" y="146" fill="#A3A29B" font-size="11" text-anchor="middle">1:00</text>
@@ -128,26 +134,24 @@
 <rect x="949.8" y="170" width="2.0" height="14" rx="2" fill="#63635F"><title>dialogue 7:16 to 7:17</title></rect>
 <rect x="1133.5" y="170" width="1.6" height="14" rx="2" fill="#63635F"><title>dialogue 7:59 to 7:59</title></rect>
 <rect x="1137.2" y="170" width="1.0" height="14" rx="2" fill="#63635F"><title>dialogue 8:00 to 8:00</title></rect>
-<rect x="158.1" y="188" width="14.3" height="14" rx="2" fill="#FFD23F"><title>4:13 Three figures stand before a towering mechanical structure.</title></rect>
-<rect x="177.3" y="188" width="17.3" height="14" rx="2" fill="#FFD23F"><title>4:17 A blurred foreground post frames a street with buildings and green trees.</title></rect>
-<rect x="206.7" y="188" width="14.6" height="14" rx="2" fill="#FFD23F"><title>4:24 A young man walks down a cobblestone street, looking at his phone.</title></rect>
-<rect x="247.8" y="188" width="15.0" height="14" rx="2" fill="#FFD23F"><title>4:34 A young man in a patterned jacket stands by a canal bridge.</title></rect>
-<rect x="382.2" y="188" width="14.4" height="14" rx="2" fill="#FFD23F"><title>5:05 A man with glasses adjusts his collar near a glowing screen.</title></rect>
-<rect x="404.6" y="188" width="17.4" height="14" rx="2" fill="#FFD23F"><title>5:10 A young man in a patterned jacket looks at a woman with her back to the camera.</title></rect>
-<rect x="481.5" y="188" width="16.6" height="14" rx="2" fill="#FFD23F"><title>5:28 A young man with dark hair looks off-camera, his expression neutral.</title></rect>
-<rect x="512.3" y="188" width="9.8" height="14" rx="2" fill="#FFD23F"><title>5:35 A broken robot lies amidst rubble.</title></rect>
-<rect x="576.5" y="188" width="13.2" height="14" rx="2" fill="#FFD23F"><title>5:50 A woman with dreadlocks stands beside a glowing console.</title></rect>
-<rect x="656.3" y="188" width="7.2" height="14" rx="2" fill="#FFD23F"><title>6:08 A chalkboard filled with scribbles.</title></rect>
-<rect x="762.1" y="188" width="6.3" height="14" rx="2" fill="#FFD23F"><title>6:33 A man kisses a robot.</title></rect>
-<rect x="786.2" y="188" width="22.3" height="14" rx="2" fill="#FFD23F"><title>6:39 A man with curly hair and glasses stares forward, illuminated by a glowing desk lamp.</title></rect>
-<rect x="839.8" y="188" width="24.2" height="14" rx="2" fill="#FFD23F"><title>6:51 A man with a mechanical eye points forward, while a woman stands behind him in a dimly lit room.</title></rect>
-<rect x="927.7" y="188" width="16.9" height="14" rx="2" fill="#FFD23F"><title>7:11 A soldier in heavy gear aims a rifle from behind a stone structure.</title></rect>
-<rect x="958.9" y="188" width="5.6" height="14" rx="2" fill="#FFD23F"><title>7:19 A clock tower shatters.</title></rect>
-<rect x="983.9" y="188" width="26.8" height="14" rx="2" fill="#FFD23F"><title>7:24 A hand in a translucent glove pulls a glowing, mechanical component from a complex, circular machine.</title></rect>
-<rect x="1057.2" y="188" width="23.0" height="14" rx="2" fill="#FFD23F"><title>7:41 Four figures in white suits kneel inside a vast, sunlit, ruin-filled industrial hall.</title></rect>
-<rect x="1085.5" y="188" width="37.4" height="14" rx="2" fill="#FFD23F"><title>7:48 A young man in a white suit grips a complex mechanical device, his gaze fixed forward, while a bearded man in glasses observes behind him.</title></rect>
-<rect x="1131.3" y="188" width="22.8" height="14" rx="2" fill="#FFD23F"><title>7:58 A young man in a patterned jacket lies prone, gripping a rifle, eyes wide and focused.</title></rect>
-<rect x="1169.7" y="188" width="6.3" height="14" rx="2" fill="#FFD23F"><title>8:07 A figure in a patterned jacket leaps through the air.</title></rect>
+<rect x="136.2" y="188" width="6.4" height="14" rx="2" fill="#FFD23F"><title>4:08 Man grabs old man&#x27;s arm.</title></rect>
+<rect x="158.1" y="188" width="13.6" height="14" rx="2" fill="#FFD23F"><title>4:13 A soldier in brown pulls the old man toward the city.</title></rect>
+<rect x="226.9" y="188" width="5.7" height="14" rx="2" fill="#FFD23F"><title>4:29 Young man walks forward.</title></rect>
+<rect x="247.8" y="188" width="14.6" height="14" rx="2" fill="#FFD23F"><title>4:34 Young man stops on urban street lined with metal railings.</title></rect>
+<rect x="279.2" y="188" width="6.2" height="14" rx="2" fill="#FFD23F"><title>4:41 Young man gazes at canal.</title></rect>
+<rect x="313.8" y="188" width="6.4" height="14" rx="2" fill="#FFD23F"><title>4:49 The Captain sits indoors.</title></rect>
+<rect x="404.6" y="188" width="15.4" height="14" rx="2" fill="#FFD23F"><title>5:10 Thom stands facing a woman with light brown hair in a city square.</title></rect>
+<rect x="481.5" y="188" width="10.4" height="14" rx="2" fill="#FFD23F"><title>5:28 Thom looks away from the woman in the city square.</title></rect>
+<rect x="512.3" y="188" width="9.1" height="14" rx="2" fill="#FFD23F"><title>5:35 Soldiers in tactical gear descend.</title></rect>
+<rect x="656.3" y="188" width="6.5" height="14" rx="2" fill="#FFD23F"><title>6:08 Blackboard displays writing.</title></rect>
+<rect x="684.4" y="188" width="5.5" height="14" rx="2" fill="#FFD23F"><title>6:15 Man reacts in shock.</title></rect>
+<rect x="786.2" y="188" width="24.7" height="14" rx="2" fill="#FFD23F"><title>6:39 A man with curly hair and glasses stares ahead in a control room lit by blue and purple light.</title></rect>
+<rect x="839.8" y="188" width="20.2" height="14" rx="2" fill="#FFD23F"><title>6:51 The Captain&#x27;s mechanical eyepiece glows red as a woman watches from behind him.</title></rect>
+<rect x="891.6" y="188" width="12.2" height="14" rx="2" fill="#FFD23F"><title>7:03 Curly-haired technician operates glowing device.</title></rect>
+<rect x="927.7" y="188" width="17.5" height="14" rx="2" fill="#FFD23F"><title>7:11 Barley aims his scoped rifle across a sunlit rooftop toward the city.</title></rect>
+<rect x="1057.2" y="188" width="21.8" height="14" rx="2" fill="#FFD23F"><title>7:41 Inside the flying ship, soldiers in tactical gear crouch among equipment and machinery.</title></rect>
+<rect x="1131.3" y="188" width="15.9" height="14" rx="2" fill="#FFD23F"><title>7:58 A man in a blue and yellow jacket lies on the ground in shadow.</title></rect>
+<rect x="1169.7" y="188" width="6.3" height="14" rx="2" fill="#FFD23F"><title>8:07 The flying ship descends toward a narrow city street below.</title></rect>
 <text x="229.4" y="220" fill="#A3A29B" font-size="11" text-anchor="middle">4:30</text>
 <text x="358.9" y="220" fill="#A3A29B" font-size="11" text-anchor="middle">5:00</text>
 <text x="488.4" y="220" fill="#A3A29B" font-size="11" text-anchor="middle">5:30</text>
@@ -171,21 +175,16 @@
 <rect x="433.7" y="244" width="5.9" height="14" rx="2" fill="#63635F"><title>dialogue 9:21 to 9:23</title></rect>
 <rect x="451.1" y="244" width="2.5" height="14" rx="2" fill="#63635F"><title>dialogue 9:26 to 9:26</title></rect>
 <rect x="471.4" y="244" width="1.0" height="14" rx="2" fill="#63635F"><title>dialogue 9:30 to 9:30</title></rect>
-<rect x="120.0" y="262" width="5.2" height="14" rx="2" fill="#FFD23F"><title>8:07 A figure in a patterned jacket leaps through the air.</title></rect>
-<rect x="146.3" y="262" width="11.1" height="14" rx="2" fill="#FFD23F"><title>8:15 A figure in a patterned jacket grips a rifle.</title></rect>
-<rect x="163.6" y="262" width="6.6" height="14" rx="2" fill="#FFD23F"><title>8:19 Metal pipes and a brick wall.</title></rect>
-<rect x="221.9" y="262" width="13.1" height="14" rx="2" fill="#FFD23F"><title>8:32 Young man stands before giant mechanical construct.</title></rect>
-<rect x="262.9" y="262" width="8.4" height="14" rx="2" fill="#FFD23F"><title>8:42 A giant robot moves through smoke.</title></rect>
-<rect x="285.7" y="262" width="21.0" height="14" rx="2" fill="#FFD23F"><title>8:47 Giant robot&#x27;s metallic limbs move through smoke, illuminated by glowing lights.</title></rect>
-<rect x="349.9" y="262" width="37.3" height="14" rx="2" fill="#FFD23F"><title>9:02 Young man with curly hair and glasses sits at a cluttered console, surrounded by glowing digital overlays and equipment, his expression focused.</title></rect>
-<rect x="457.1" y="262" width="17.6" height="14" rx="2" fill="#FFD23F"><title>9:27 A man with a prosthetic eye sits at a desk, a woman stands beside him.</title></rect>
-<rect x="489.1" y="262" width="11.9" height="14" rx="2" fill="#FFD23F"><title>9:34 Grey-haired man gestures toward giant robot.</title></rect>
-<rect x="550.3" y="262" width="5.6" height="14" rx="2" fill="#FFD23F"><title>9:49 Two robots face off.</title></rect>
-<rect x="580.7" y="262" width="10.4" height="14" rx="2" fill="#FFD23F"><title>9:56 On screen: Produced by TON ROOSENDAAL.</title></rect>
-<rect x="602.5" y="262" width="15.9" height="14" rx="2" fill="#FFD23F"><title>10:01 White robot with blue energy lines faces orange robot.</title></rect>
-<rect x="634.2" y="262" width="6.2" height="14" rx="2" fill="#FFD23F"><title>10:08 Blue robot arm extends.</title></rect>
-<rect x="724.1" y="262" width="34.5" height="14" rx="2" fill="#FFD23F"><title>10:29 A blue robot with glowing energy lines stands against a black background, its arm extended toward orange mechanical fragments.</title></rect>
-<rect x="1079.4" y="262" width="6.3" height="14" rx="2" fill="#FFD23F"><title>11:51 Scattered robot wreckage.</title></rect>
+<rect x="120.0" y="262" width="7.6" height="14" rx="2" fill="#FFD23F"><title>8:07 The flying ship descends toward a narrow city street below.</title></rect>
+<rect x="146.3" y="262" width="8.5" height="14" rx="2" fill="#FFD23F"><title>8:15 The giant robot raises its arm.</title></rect>
+<rect x="163.6" y="262" width="6.3" height="14" rx="2" fill="#FFD23F"><title>8:19 Robot&#x27;s fist descends.</title></rect>
+<rect x="221.9" y="262" width="13.9" height="14" rx="2" fill="#FFD23F"><title>8:32 The old man stands on a bridge facing the giant robot.</title></rect>
+<rect x="262.9" y="262" width="6.6" height="14" rx="2" fill="#FFD23F"><title>8:42 Robot&#x27;s arm pulls back.</title></rect>
+<rect x="285.7" y="262" width="20.2" height="14" rx="2" fill="#FFD23F"><title>8:47 The giant robot&#x27;s massive fist swings forward toward the old man on the bridge.</title></rect>
+<rect x="336.5" y="262" width="9.2" height="14" rx="2" fill="#FFD23F"><title>8:59 Technician watches monitors intently.</title></rect>
+<rect x="352.5" y="262" width="33.1" height="14" rx="2" fill="#FFD23F"><title>9:03 The old man stands before the giant robot&#x27;s massive torso, reaching toward its metal chest as the fist descends toward him.</title></rect>
+<rect x="457.1" y="262" width="18.3" height="14" rx="2" fill="#FFD23F"><title>9:27 The old man sits in a cluttered room while a young man stands nearby watching.</title></rect>
+<rect x="1079.4" y="262" width="5.4" height="14" rx="2" fill="#FFD23F"><title>11:51 Debris falls through air.</title></rect>
 <text x="209.3" y="294" fill="#A3A29B" font-size="11" text-anchor="middle">8:30</text>
 <text x="338.8" y="294" fill="#A3A29B" font-size="11" text-anchor="middle">9:00</text>
 <text x="468.3" y="294" fill="#A3A29B" font-size="11" text-anchor="middle">9:30</text>
