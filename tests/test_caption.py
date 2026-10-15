@@ -23,7 +23,8 @@ STATE = {"reply": "A man crosses the empty street.", "status": 200, "req": None,
 PROVIDER_ENV = ("ALOUD_LLM_BASE_URL", "ALOUD_LLM_API_KEY", "ALOUD_LLM_MODEL",
                 "GEMINI_API_KEY", "ALOUD_GEMINI_API_KEY", "ALOUD_GEMINI_MODEL",
                 "ALOUD_GEMINI_BASE_URL", "ALOUD_LOCAL_VLM_URL",
-                "ALOUD_LOCAL_VLM_MODEL", "ALOUD_VISION")
+                "ALOUD_LOCAL_VLM_MODEL", "ALOUD_VISION", "ALOUD_LLM_PROVIDER",
+                "ALOUD_LLM_TIMEOUT", "ALOUD_FRAME_MAX")
 
 
 def clear_provider_env():
@@ -468,6 +469,52 @@ def test_a_short_gap_asks_for_at_most_its_words_with_an_example():
     assert ask_version(SHORT_WORDS) != ask_version(SHORT_WORDS + 1)
     print("PASS a short gap is asked for a short sentence, and shown one")
 
+
+
+def test_a_local_endpoint_can_say_where_it_ran():
+    """The provider name lands on the title's panel, so a model on this
+    machine says so rather than "openai-compatible"."""
+    clear_provider_env()
+    os.environ["ALOUD_LLM_PROVIDER"] = "local, Ollama"
+    os.environ["ALOUD_LLM_TIMEOUT"] = "240"
+    try:
+        c = VisionCaptioner(base_url=BASE, api_key="k", model="qwen2.5vl:7b")
+        assert c.label == "qwen2.5vl:7b (local, Ollama)", c.label
+        assert c.timeout == 240.0
+        assert LocalCaptioner(base_url=BASE).provider == "local, llama.cpp on CPU"
+    finally:
+        clear_provider_env()
+    assert VisionCaptioner(base_url=BASE, api_key="k").label.endswith(
+        "(openai-compatible)")
+    print("PASS a local endpoint names where it ran")
+
+
+def test_frames_can_be_sent_smaller():
+    """A paid model is charged by the image token; ALOUD_FRAME_MAX sends a
+    narrower copy and leaves the extracted frame alone."""
+    import shutil
+    import subprocess
+    if not shutil.which("ffmpeg"):
+        print("SKIP no ffmpeg")
+        return
+    from aloud.caption import _smaller
+    big = os.path.join(tempfile.gettempdir(), f"aloud_big_{os.getpid()}.jpg")
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i",
+                    "color=c=gray:s=768x432", "-frames:v", "1", big], check=True)
+    clear_provider_env()
+    try:
+        assert _smaller(big) == big
+        os.environ["ALOUD_FRAME_MAX"] = "512"
+        small = _smaller(big)
+        assert small != big and os.path.exists(small)
+        probe = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0",
+                                "-show_entries", "stream=width", "-of", "csv=p=0",
+                                small], capture_output=True, text=True)
+        assert probe.stdout.strip() == "512", probe.stdout
+        assert os.path.getsize(big) > 0
+    finally:
+        clear_provider_env()
+    print("PASS frames go at most ALOUD_FRAME_MAX wide")
 
 if __name__ == "__main__":
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]

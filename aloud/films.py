@@ -62,15 +62,22 @@ SINTEL_CAST = ("Sintel: a young woman with short red hair, who carries a "
 
 # Every name here is said in the film's own English subtitles ("You're a
 # jerk, Thom.", "Look Celia", "How's it looking, Barley?", "Captain!"). Who
-# looks like whom is from the film and its published cast; check it against
-# the picture before regenerating (docs/OWNER_TODO.md lists the moments).
-TOS_CAST = ("Thom: as a young man, on a bridge with Celia in the opening; "
-            "forty years later, a grey-haired old man. Celia: as a young "
-            "woman, she has a robotic hand; forty years later she is the "
-            "giant robot. Barley: the team's technician at the console, a "
-            "young man with curly hair and glasses. The Captain: the team's "
-            "leader, a man with a mechanical eye. Anyone else, including the "
-            "soldiers, is described by what can be seen.")
+# plays whom is from the film's published cast (Derek de Lint as Thom,
+# Vanja Rukavina as young Thom, Denise Rebergen as Celia, Sergio Hasselbaink
+# as Barley, Rogier Schippers as the Captain; Wikipedia, "Tears of Steel"),
+# checked against frames at 0:26, 1:00, 1:41, 2:20, 4:35 and 6:33. An
+# earlier list had Barley as the curly-haired technician at the console;
+# he is never named in the film.
+TOS_CAST = ("Thom: a young man with dark hair, on a bridge with Celia in the "
+            "opening and again in the restaged scene; forty years later, a "
+            "grey-haired old man with a beard. Celia: a young woman with "
+            "light brown hair, a blue jacket and a robotic hand; forty years "
+            "later she is the giant robot. Barley: a Black man in dark "
+            "tactical gear who watches over the old man with a scoped "
+            "rifle. The Captain: a heavy-set man with a mechanical eyepiece "
+            "over one eye, who leads the team. Anyone else, including the "
+            "curly-haired technician with glasses and the soldiers, is "
+            "described by what can be seen.")
 
 TITLES = [
     Title(

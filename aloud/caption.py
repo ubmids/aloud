@@ -89,7 +89,36 @@ CAST = (
 )
 
 
+def _smaller(path: str) -> str:
+    """The frame at no more than `ALOUD_FRAME_MAX` pixels wide, if that is set.
+
+    A hosted model is paid by the image token, and a 768-pixel frame costs
+    more than twice a 512-pixel one while telling an audio describer nothing
+    more: who is where, doing what, survives the smaller picture. Unset, the
+    frame goes as it was extracted.
+    """
+    try:
+        most = int(os.getenv("ALOUD_FRAME_MAX") or 0)
+    except ValueError:
+        most = 0
+    if most <= 0:
+        return path
+    import shutil
+    import subprocess
+    if not shutil.which("ffmpeg"):
+        return path
+    root, ext = os.path.splitext(path)
+    out = f"{root}.max{most}{ext or '.jpg'}"
+    if not os.path.exists(out):
+        r = subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", path, "-vf",
+                            f"scale='min({most},iw)':-2", "-q:v", "3", out])
+        if r.returncode != 0 or not os.path.exists(out):
+            return path
+    return out
+
+
 def _data_url(path: str) -> str:
+    path = _smaller(path)
     mime = mimetypes.guess_type(path)[0] or "image/jpeg"
     with open(path, "rb") as f:
         return f"data:{mime};base64," + base64.b64encode(f.read()).decode()
@@ -297,11 +326,17 @@ class VisionCaptioner:
     provider = "openai-compatible"
     takes_context = True
 
-    def __init__(self, base_url=None, api_key=None, model=None, timeout=30.0):
+    def __init__(self, base_url=None, api_key=None, model=None, timeout=None):
         self.base_url = base_url or os.getenv("ALOUD_LLM_BASE_URL")
         self.api_key = api_key or os.getenv("ALOUD_LLM_API_KEY")
         self.model = model or os.getenv("ALOUD_LLM_MODEL", "gpt-4o-mini")
-        self.timeout = timeout
+        # A model on this machine (Ollama, LM Studio) can take a minute on
+        # its first image while it loads; a hosted one should not.
+        self.timeout = timeout or float(os.getenv("ALOUD_LLM_TIMEOUT") or 30.0)
+        # Where the model ran, for the track's provenance: "local, Ollama"
+        # reads better on the title's panel than "openai-compatible".
+        if type(self) is VisionCaptioner and os.getenv("ALOUD_LLM_PROVIDER"):
+            self.provider = os.getenv("ALOUD_LLM_PROVIDER")
 
     @property
     def available(self) -> bool:
