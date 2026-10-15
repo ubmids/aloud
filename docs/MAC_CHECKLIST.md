@@ -10,6 +10,27 @@ the SDK: the TypeScript compiles, the Jest suites pass, and
 that needs the SDK. So the code is known to compile; what is listed here is
 what can only be seen on the device.
 
+## Seen on the Vega Virtual Device, 15 October 2026 (macOS, M2 Pro, SDK 0.24.9914)
+
+- The current build packages and installs with `vega run-app`, and opens on
+  the shelf with Tears of Steel focused.
+- Right and left move along the shelf; down reaches the settings row
+  (Narration, Voice level, How much is said, Read the menu aloud); the panel
+  follows focus. Screenshots and a recording through the emulator console.
+- Select plays Tears of Steel; the film plays through `w3cmedia` (device log:
+  `TIME_UPDATE` at real speed), the voice panel shows the description being
+  spoken, and the device log shows the description `AudioPlayer` with
+  `content-type: speech, usage: accessibility`.
+- Fast-forward and rewind move 10 seconds; descriptions skipped over do not
+  fire late.
+- **Picture: Full screen** fills the screen and the film carries on from
+  where it was (after a fix: `Video` takes its size once, FRICTION_LOG 24).
+- The Virtual Device ran `--no-gui`, so sound was not heard live; every
+  audio claim above is from the device log. Listen once with the GUI on
+  before filming.
+- Not yet seen on the device: the Menu key's event name, VoiceView, and
+  Alexa transport.
+
 Work through it in order. Each step says what to look for and what to do if it
 is not there.
 
