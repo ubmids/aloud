@@ -27,3 +27,14 @@ the backend in `aloud/synth.py` from macOS `say` and converted to AAC. They are
 generated artefacts, committed because the app needs them at runtime and the
 device has no synthesiser of its own. Regenerate them by running the backend
 over `sintel-trailer.mp4`; the filenames are assigned in cue order.
+
+## fonts/
+
+**Atkinson Hyperlegible Next** and **Atkinson Hyperlegible Mono**, by the
+Braille Institute of America and Applied Design Works, from
+<https://github.com/google/fonts>. SIL Open Font License 1.1, copied in
+`fonts/OFL.txt`; the fonts declare no Reserved Font Name.
+
+The variable fonts were instanced to static weights (Next 400, 600, 800; Mono
+400, 600) with fontTools, and each instance was given a family name matching
+its file name, because Vega finds a bundled font by its file name.
