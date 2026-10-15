@@ -2,16 +2,16 @@
   "id": "tears-of-steel",
   "title": "Tears of Steel",
   "source": "tears_of_steel_720p.mov",
-  "describer": "qwen3-vl-4b (local, llama.cpp on CPU)",
+  "describer": "claude-haiku-4-5-20251001 (hosted)",
   "voice": "Kokoro 82M (af_heart)",
-  "announcement": "Tears of Steel. Science fiction, 2012, 12 minutes. 42 descriptions.",
+  "announcement": "Tears of Steel. Science fiction, 2012, 12 minutes. 45 descriptions.",
   "credit": "(CC) Blender Foundation | mango.blender.org",
   "licence": "Creative Commons Attribution 3.0",
   "cues": [
     {
       "start": 11.55,
-      "end": 16.677,
-      "text": "Rocket engines ignite, blasting bright white flames and pinkish plumes from their nozzles.",
+      "end": 16.393,
+      "text": "Bright industrial lights blaze intensely within a metal framework structure overhead.",
       "audio": "cue-001.m4a",
       "gap": [
         11.55,
@@ -20,8 +20,8 @@
     },
     {
       "start": 18.417,
-      "end": 21.485,
-      "text": "A rocket launches from a sprawling industrial complex.",
+      "end": 20.663,
+      "text": "Futuristic city skyline glows at dawn.",
       "audio": "cue-002.m4a",
       "gap": [
         18.417,
@@ -39,20 +39,30 @@
       ]
     },
     {
-      "start": 53.91,
-      "end": 58.401,
-      "text": "Two figures work at a cluttered console, surrounded by glowing digital overlays.",
+      "start": 63.41,
+      "end": 68.686,
+      "text": "A human brain sits on a white platform surrounded by glowing pink circular light rings.",
       "audio": "cue-004.m4a",
       "gap": [
-        53.91,
-        60.45
+        63.41,
+        69.917
+      ]
+    },
+    {
+      "start": 69.917,
+      "end": 72.932,
+      "text": "The flying ship hovers above the sprawling city below.",
+      "audio": "cue-005.m4a",
+      "gap": [
+        69.917,
+        74.083
       ]
     },
     {
       "start": 74.083,
-      "end": 77.495,
-      "text": "Through a shadowed doorway, two figures work at a cluttered console.",
-      "audio": "cue-005.m4a",
+      "end": 78.021,
+      "text": "Inside the flying ship, silhouetted figures stand at control panels.",
+      "audio": "cue-006.m4a",
       "gap": [
         74.083,
         79.375
@@ -60,159 +70,239 @@
     },
     {
       "start": 79.375,
-      "end": 82.752,
-      "text": "An elderly person reads a newspaper with bold headlines.",
-      "audio": "cue-006.m4a",
+      "end": 81.327,
+      "text": "A hand holds an open newspaper.",
+      "audio": "cue-007.m4a",
       "gap": [
         79.375,
         83.93
       ]
     },
     {
-      "start": 101.53,
-      "end": 105.985,
-      "text": "A grey-haired person reads a newspaper while a soldier aims a rifle nearby.",
-      "audio": "cue-007.m4a",
+      "start": 84.93,
+      "end": 86.633,
+      "text": "Barley peers through rifle scope.",
+      "audio": "cue-008.m4a",
       "gap": [
-        101.53,
+        84.93,
+        87.25
+      ]
+    },
+    {
+      "start": 96.51,
+      "end": 98.042,
+      "text": "Flying ship descends lower.",
+      "audio": "cue-009.m4a",
+      "gap": [
+        96.51,
+        98.45
+      ]
+    },
+    {
+      "start": 102.417,
+      "end": 106.71,
+      "text": "The flying ship continues descending toward the residential buildings below.",
+      "audio": "cue-010.m4a",
+      "gap": [
+        102.417,
         107.93
       ]
     },
     {
-      "start": 108.53,
-      "end": 113.523,
-      "text": "Through a circular viewport, a large, steampunk-style airship hovers above a cityscape.",
-      "audio": "cue-008.m4a",
+      "start": 121.27,
+      "end": 125.267,
+      "text": "The old man lies beneath metal framework as Barley aims downward.",
+      "audio": "cue-011.m4a",
       "gap": [
-        108.53,
-        114.43
-      ]
-    },
-    {
-      "start": 128.43,
-      "end": 130.095,
-      "text": "An elderly man lies asleep.",
-      "audio": "cue-009.m4a",
-      "gap": [
-        128.43,
-        130.45
+        121.27,
+        126.01
       ]
     },
     {
       "start": 138.41,
-      "end": 143.166,
-      "text": "The grey-haired man sits upright on a wooden platform, hands resting on his knees.",
-      "audio": "cue-010.m4a",
+      "end": 144.248,
+      "text": "The old man stands in a high rooftop shelter as the flying ship looms outside the windows beyond.",
+      "audio": "cue-012.m4a",
       "gap": [
         138.41,
         145.93
       ]
     },
     {
+      "start": 159.17,
+      "end": 160.311,
+      "text": "Rope lies coiled.",
+      "audio": "cue-013.m4a",
+      "gap": [
+        159.17,
+        160.63
+      ]
+    },
+    {
       "start": 163.57,
-      "end": 168.684,
-      "text": "The grey-haired man\u2019s weathered boots stand on a rough, dark surface beside a coiled rope.",
-      "audio": "cue-011.m4a",
+      "end": 169.611,
+      "text": "The old man stands alone in the industrial space, gripping the thick rope as he looks toward the machinery.",
+      "audio": "cue-014.m4a",
       "gap": [
         163.57,
         172.43
       ]
     },
     {
+      "start": 174.07,
+      "end": 175.529,
+      "text": "Old man walks indoors.",
+      "audio": "cue-015.m4a",
+      "gap": [
+        174.07,
+        176.03
+      ]
+    },
+    {
+      "start": 188.53,
+      "end": 190.004,
+      "text": "Old man enters lit room.",
+      "audio": "cue-016.m4a",
+      "gap": [
+        188.53,
+        190.45
+      ]
+    },
+    {
       "start": 217.41,
-      "end": 221.37,
-      "text": "The grey-haired man stands with arms raised as light bursts around him.",
-      "audio": "cue-012.m4a",
+      "end": 220.319,
+      "text": "The old man stands with arms raised in the glowing light.",
+      "audio": "cue-017.m4a",
       "gap": [
         217.41,
         222.45
       ]
     },
     {
+      "start": 228.93,
+      "end": 229.748,
+      "text": "Others appear.",
+      "audio": "cue-018.m4a",
+      "gap": [
+        228.93,
+        230.45
+      ]
+    },
+    {
+      "start": 248.41,
+      "end": 249.904,
+      "text": "Man grabs old man's arm.",
+      "audio": "cue-019.m4a",
+      "gap": [
+        248.41,
+        250.45
+      ]
+    },
+    {
       "start": 253.47,
-      "end": 256.776,
-      "text": "Three figures stand before a towering mechanical structure.",
-      "audio": "cue-013.m4a",
+      "end": 256.625,
+      "text": "A soldier in brown pulls the old man toward the city.",
+      "audio": "cue-020.m4a",
       "gap": [
         253.47,
         257.917
       ]
     },
     {
-      "start": 264.75,
-      "end": 268.135,
-      "text": "A young man walks down a cobblestone street, looking at his phone.",
-      "audio": "cue-015.m4a",
+      "start": 269.41,
+      "end": 270.731,
+      "text": "Young man walks forward.",
+      "audio": "cue-022.m4a",
       "gap": [
-        264.75,
-        268.75
+        269.41,
+        271.83
       ]
     },
     {
       "start": 274.27,
-      "end": 277.735,
-      "text": "A young man in a patterned jacket stands by a canal bridge.",
-      "audio": "cue-016.m4a",
+      "end": 277.651,
+      "text": "Young man stops on urban street lined with metal railings.",
+      "audio": "cue-023.m4a",
       "gap": [
         274.27,
         278.49
       ]
     },
     {
-      "start": 305.41,
-      "end": 308.752,
-      "text": "A man with glasses adjusts his collar near a glowing screen.",
-      "audio": "cue-017.m4a",
+      "start": 281.53,
+      "end": 282.976,
+      "text": "Young man gazes at canal.",
+      "audio": "cue-024.m4a",
       "gap": [
-        305.41,
-        310.583
+        281.53,
+        283.75
+      ]
+    },
+    {
+      "start": 289.542,
+      "end": 291.015,
+      "text": "The Captain sits indoors.",
+      "audio": "cue-025.m4a",
+      "gap": [
+        289.542,
+        291.45
+      ]
+    },
+    {
+      "start": 310.583,
+      "end": 314.159,
+      "text": "Thom stands facing a woman with light brown hair in a city square.",
+      "audio": "cue-027.m4a",
+      "gap": [
+        310.583,
+        315.45
+      ]
+    },
+    {
+      "start": 328.41,
+      "end": 330.826,
+      "text": "Thom looks away from the woman in the city square.",
+      "audio": "cue-028.m4a",
+      "gap": [
+        328.41,
+        333.31
       ]
     },
     {
       "start": 335.53,
-      "end": 337.796,
-      "text": "A broken robot lies amidst rubble.",
-      "audio": "cue-020.m4a",
+      "end": 337.643,
+      "text": "Soldiers in tactical gear descend.",
+      "audio": "cue-029.m4a",
       "gap": [
         335.53,
         338.45
       ]
     },
     {
-      "start": 350.41,
-      "end": 353.472,
-      "text": "A woman with dreadlocks stands beside a glowing console.",
-      "audio": "cue-021.m4a",
-      "gap": [
-        350.41,
-        354.17
-      ]
-    },
-    {
       "start": 368.91,
-      "end": 370.581,
-      "text": "A chalkboard filled with scribbles.",
-      "audio": "cue-022.m4a",
+      "end": 370.416,
+      "text": "Blackboard displays writing.",
+      "audio": "cue-031.m4a",
       "gap": [
         368.91,
         370.95
       ]
     },
     {
-      "start": 393.41,
-      "end": 394.879,
-      "text": "A man kisses a robot.",
-      "audio": "cue-023.m4a",
+      "start": 375.41,
+      "end": 376.683,
+      "text": "Man reacts in shock.",
+      "audio": "cue-032.m4a",
       "gap": [
-        393.41,
-        395.45
+        375.41,
+        377.23
       ]
     },
     {
       "start": 399.0,
-      "end": 404.161,
-      "text": "A man with curly hair and glasses stares forward, illuminated by a glowing desk lamp.",
-      "audio": "cue-024.m4a",
+      "end": 404.713,
+      "text": "A man with curly hair and glasses stares ahead in a control room lit by blue and purple light.",
+      "audio": "cue-034.m4a",
       "gap": [
         399.0,
         406.45
@@ -220,69 +310,49 @@
     },
     {
       "start": 411.41,
-      "end": 417.006,
-      "text": "A man with a mechanical eye points forward, while a woman stands behind him in a dimly lit room.",
-      "audio": "cue-025.m4a",
+      "end": 416.082,
+      "text": "The Captain's mechanical eyepiece glows red as a woman watches from behind him.",
+      "audio": "cue-035.m4a",
       "gap": [
         411.41,
         418.45
       ]
     },
     {
+      "start": 423.41,
+      "end": 426.24,
+      "text": "Curly-haired technician operates glowing device.",
+      "audio": "cue-036.m4a",
+      "gap": [
+        423.41,
+        427.45
+      ]
+    },
+    {
       "start": 431.77,
-      "end": 435.683,
-      "text": "A soldier in heavy gear aims a rifle from behind a stone structure.",
-      "audio": "cue-026.m4a",
+      "end": 435.829,
+      "text": "Barley aims his scoped rifle across a sunlit rooftop toward the city.",
+      "audio": "cue-037.m4a",
       "gap": [
         431.77,
         436.67
       ]
     },
     {
-      "start": 439.01,
-      "end": 440.311,
-      "text": "A clock tower shatters.",
-      "audio": "cue-027.m4a",
-      "gap": [
-        439.01,
-        441.11
-      ]
-    },
-    {
-      "start": 444.79,
-      "end": 450.996,
-      "text": "A hand in a translucent glove pulls a glowing, mechanical component from a complex, circular machine.",
-      "audio": "cue-028.m4a",
-      "gap": [
-        444.79,
-        461.792
-      ]
-    },
-    {
       "start": 461.792,
-      "end": 467.131,
-      "text": "Four figures in white suits kneel inside a vast, sunlit, ruin-filled industrial hall.",
-      "audio": "cue-029.m4a",
+      "end": 466.841,
+      "text": "Inside the flying ship, soldiers in tactical gear crouch among equipment and machinery.",
+      "audio": "cue-040.m4a",
       "gap": [
         461.792,
         468.333
       ]
     },
     {
-      "start": 468.333,
-      "end": 476.992,
-      "text": "A young man in a white suit grips a complex mechanical device, his gaze fixed forward, while a bearded man in glasses observes behind him.",
-      "audio": "cue-030.m4a",
-      "gap": [
-        468.333,
-        478.958
-      ]
-    },
-    {
       "start": 478.958,
-      "end": 484.251,
-      "text": "A young man in a patterned jacket lies prone, gripping a rifle, eyes wide and focused.",
-      "audio": "cue-031.m4a",
+      "end": 482.642,
+      "text": "A man in a blue and yellow jacket lies on the ground in shadow.",
+      "audio": "cue-042.m4a",
       "gap": [
         478.958,
         485.43
@@ -290,9 +360,9 @@
     },
     {
       "start": 487.85,
-      "end": 490.5,
-      "text": "A figure in a patterned jacket leaps through the air.",
-      "audio": "cue-032.m4a",
+      "end": 491.069,
+      "text": "The flying ship descends toward a narrow city street below.",
+      "audio": "cue-043.m4a",
       "gap": [
         487.85,
         492.45
@@ -300,9 +370,9 @@
     },
     {
       "start": 495.39,
-      "end": 497.96,
-      "text": "A figure in a patterned jacket grips a rifle.",
-      "audio": "cue-033.m4a",
+      "end": 497.365,
+      "text": "The giant robot raises its arm.",
+      "audio": "cue-044.m4a",
       "gap": [
         495.39,
         498.69
@@ -310,9 +380,9 @@
     },
     {
       "start": 499.417,
-      "end": 500.95,
-      "text": "Metal pipes and a brick wall.",
-      "audio": "cue-034.m4a",
+      "end": 500.871,
+      "text": "Robot's fist descends.",
+      "audio": "cue-045.m4a",
       "gap": [
         499.417,
         501.45
@@ -320,9 +390,9 @@
     },
     {
       "start": 512.91,
-      "end": 515.941,
-      "text": "Young man stands before giant mechanical construct.",
-      "audio": "cue-035.m4a",
+      "end": 516.136,
+      "text": "The old man stands on a bridge facing the giant robot.",
+      "audio": "cue-047.m4a",
       "gap": [
         512.91,
         517.45
@@ -330,9 +400,9 @@
     },
     {
       "start": 522.41,
-      "end": 524.367,
-      "text": "A giant robot moves through smoke.",
-      "audio": "cue-036.m4a",
+      "end": 523.946,
+      "text": "Robot's arm pulls back.",
+      "audio": "cue-048.m4a",
       "gap": [
         522.41,
         524.81
@@ -340,89 +410,49 @@
     },
     {
       "start": 527.69,
-      "end": 532.558,
-      "text": "Giant robot's metallic limbs move through smoke, illuminated by glowing lights.",
-      "audio": "cue-037.m4a",
+      "end": 532.378,
+      "text": "The giant robot's massive fist swings forward toward the old man on the bridge.",
+      "audio": "cue-049.m4a",
       "gap": [
         527.69,
         533.45
       ]
     },
     {
-      "start": 542.57,
-      "end": 551.204,
-      "text": "Young man with curly hair and glasses sits at a cluttered console, surrounded by glowing digital overlays and equipment, his expression focused.",
-      "audio": "cue-038.m4a",
+      "start": 539.47,
+      "end": 541.597,
+      "text": "Technician watches monitors intently.",
+      "audio": "cue-050.m4a",
       "gap": [
-        542.57,
+        539.47,
+        542.07
+      ]
+    },
+    {
+      "start": 543.167,
+      "end": 550.827,
+      "text": "The old man stands before the giant robot's massive torso, reaching toward its metal chest as the fist descends toward him.",
+      "audio": "cue-051.m4a",
+      "gap": [
+        543.167,
         554.59
       ]
     },
     {
       "start": 567.41,
-      "end": 571.495,
-      "text": "A man with a prosthetic eye sits at a desk, a woman stands beside him.",
-      "audio": "cue-039.m4a",
+      "end": 571.653,
+      "text": "The old man sits in a cluttered room while a young man stands nearby watching.",
+      "audio": "cue-052.m4a",
       "gap": [
         567.41,
         573.13
       ]
     },
     {
-      "start": 574.83,
-      "end": 577.576,
-      "text": "Grey-haired man gestures toward giant robot.",
-      "audio": "cue-040.m4a",
-      "gap": [
-        574.83,
-        579.17
-      ]
-    },
-    {
-      "start": 589.0,
-      "end": 590.296,
-      "text": "Two robots face off.",
-      "audio": "cue-041.m4a",
-      "gap": [
-        589.0,
-        590.61
-      ]
-    },
-    {
-      "start": 601.083,
-      "end": 604.777,
-      "text": "White robot with blue energy lines faces orange robot.",
-      "audio": "cue-043.m4a",
-      "gap": [
-        601.083,
-        605.73
-      ]
-    },
-    {
-      "start": 608.43,
-      "end": 609.873,
-      "text": "Blue robot arm extends.",
-      "audio": "cue-044.m4a",
-      "gap": [
-        608.43,
-        610.35
-      ]
-    },
-    {
-      "start": 629.27,
-      "end": 637.266,
-      "text": "A blue robot with glowing energy lines stands against a black background, its arm extended toward orange mechanical fragments.",
-      "audio": "cue-045.m4a",
-      "gap": [
-        629.27,
-        643.29
-      ]
-    },
-    {
       "start": 711.59,
-      "end": 713.046,
-      "text": "Scattered robot wreckage.",
-      "audio": "cue-046.m4a",
+      "end": 712.835,
+      "text": "Debris falls through air.",
+      "audio": "cue-058.m4a",
       "gap": [
         711.59,
         713.69
