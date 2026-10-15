@@ -1,14 +1,14 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Animated, Easing, Pressable, StyleSheet, Text} from 'react-native';
 
-import {palette, size, u} from '../theme';
+import {focus, font, line, palette, size, u} from '../theme';
 
 /**
  * A setting, operated from a sofa with five buttons.
  *
  * Two rules, both of them about distance. Focus has to be unmistakable from
- * three metres, so the focused control lifts: it scales up, grows an accent
- * edge, and reveals the one instruction a remote user needs. A control that
+ * three metres and in greyscale, so the focused control changes three things
+ * at once: it inverts to ink, takes a frame, and lifts. A control that
  * announced focus with a slightly lighter border would be a control nobody
  * could find.
  *
@@ -20,6 +20,7 @@ import {palette, size, u} from '../theme';
  */
 export const Toggle = ({
   label, value, help, onPress, checked, hasTVPreferredFocus, testID, spoken, speak,
+  width = u(400),
 }: {
   label: string;
   value: string;
@@ -35,6 +36,7 @@ export const Toggle = ({
   spoken?: string;
   /** Plays a clip, or decides not to (VoiceView on, menu voice off). */
   speak?: (uri: string) => void;
+  width?: number;
 }) => {
   const [focused, setFocused] = useState(false);
   const rise = useRef(new Animated.Value(0)).current;
@@ -54,13 +56,12 @@ export const Toggle = ({
   useEffect(() => {
     Animated.timing(rise, {
       toValue: focused ? 1 : 0,
-      duration: 160,
+      duration: focus.ms,
       easing: Easing.out(Easing.quad),
       // Every style this value drives is opacity or transform, which is what
-      // lets it run on the UI thread. That is also why the accent edge fades
-      // in at a fixed width rather than growing: animating a width would drag
-      // the whole control back onto the JavaScript thread for no more signal
-      // than the lift already gives.
+      // lets it run on the UI thread. That is also why the frame fades in at a
+      // fixed width rather than growing: animating a width would drag the
+      // whole control back onto the JavaScript thread.
       useNativeDriver: true,
     }).start();
   }, [focused, rise]);
@@ -86,40 +87,40 @@ export const Toggle = ({
       <Animated.View
         style={[
           styles.box,
+          {width},
           focused && styles.boxFocused,
           {
             transform: [
-              {scale: rise.interpolate({inputRange: [0, 1], outputRange: [1, 1.05]})},
+              {scale: rise.interpolate({inputRange: [0, 1], outputRange: [1, focus.lift]})},
             ],
           },
         ]}>
-        <Animated.View style={[styles.edge, {opacity: rise}]} />
-        <Text style={styles.label}>{label.toUpperCase()}</Text>
-        <Text style={[styles.value, focused && styles.valueFocused]}>{value}</Text>
-        <Text style={styles.help}>{help}</Text>
-        <Animated.Text style={[styles.hint, {opacity: rise}]}>
-          PRESS SELECT TO CHANGE
-        </Animated.Text>
+        <Text style={[styles.label, focused && styles.onInk]}>{label}</Text>
+        <Text style={[styles.value, focused && styles.onInk]}>{value}</Text>
+        <Text style={[styles.help, focused && styles.onInk]}>{help}</Text>
+        {/* Over the control, not around it, so focus moves nothing else. */}
+        <Animated.View pointerEvents="none" style={[styles.frame, {opacity: rise}]} />
       </Animated.View>
     </Pressable>
   );
 };
 
 const styles = StyleSheet.create({
-  box: {borderRadius: u(14), borderWidth: u(2), borderColor: palette.edge,
-        backgroundColor: palette.panel, paddingLeft: u(28), paddingRight: u(24),
-        paddingVertical: u(18), marginRight: u(28), width: u(400), overflow: 'hidden'},
-  boxFocused: {borderColor: palette.voice, backgroundColor: palette.voiceWash},
-  edge: {position: 'absolute', left: u(0), top: u(0), bottom: u(0), width: u(10),
-         backgroundColor: palette.voice},
-  label: {color: palette.inkMuted, fontSize: size.eyebrow, letterSpacing: u(3)},
-  value: {color: palette.ink, fontSize: u(30), marginTop: u(6), fontWeight: '600'},
-  valueFocused: {color: palette.voice},
-  help: {color: palette.inkSoft, fontSize: size.eyebrow, lineHeight: u(24),
-         marginTop: u(8)},
-  // Always laid out, only ever faded in, so nothing below it moves when focus
-  // arrives. The control lifting is the signal; the row underneath it jumping
-  // would be noise.
-  hint: {color: palette.voice, fontSize: size.eyebrow, letterSpacing: u(3),
-         marginTop: u(10), height: u(22)},
+  // Square and separated by tone, not outlined: a setting is a surface, not a
+  // card.
+  box: {backgroundColor: palette.raised, paddingHorizontal: u(22),
+        paddingTop: u(12), paddingBottom: u(14), marginRight: u(24)},
+  boxFocused: {backgroundColor: palette.ink},
+  label: {...font.semibold, color: palette.inkMuted, fontSize: size.label,
+          lineHeight: line.label},
+  value: {...font.semibold, color: palette.ink, fontSize: size.lead,
+          lineHeight: line.lead},
+  help: {...font.regular, color: palette.inkSoft, fontSize: size.label,
+         lineHeight: line.label, marginTop: u(2)},
+  onInk: {color: palette.ground},
+  // Held off the fill by a dark gutter, so the frame reads as a frame and not
+  // as a slightly bigger box.
+  frame: {position: 'absolute', top: -(focus.frame + u(6)), left: -(focus.frame + u(6)),
+          right: -(focus.frame + u(6)), bottom: -(focus.frame + u(6)),
+          borderWidth: focus.frame, borderColor: palette.ink},
 });

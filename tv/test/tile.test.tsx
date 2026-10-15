@@ -18,11 +18,11 @@ test('a focused tile says what select does, and reports its focus', () => {
     <FilmTile film={film} label="Tears of Steel. 1 descriptions." onFocus={onFocus}
               onPress={onPress} testID="tile" />,
   );
-  expect(getByText('1 DESCRIPTIONS')).toBeTruthy();
+  expect(getByText('1 description')).toBeTruthy();
   fireEvent(getByTestId('tile'), 'focus');
   expect(onFocus).toHaveBeenCalledTimes(1);
-  expect(getByText('PRESS SELECT TO PLAY')).toBeTruthy();
-  expect(queryByText('1 DESCRIPTIONS')).toBeNull();
+  expect(getByText('Select to play')).toBeTruthy();
+  expect(queryByText('1 description')).toBeNull();
   fireEvent.press(getByTestId('tile'));
   expect(onPress).toHaveBeenCalledTimes(1);
   expect(getByTestId('tile').props.accessibilityLabel).toBe('Tears of Steel. 1 descriptions.');

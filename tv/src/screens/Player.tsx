@@ -11,10 +11,11 @@ import {Video} from '@amazon-devices/react-native-w3cmedia';
 import type {HTMLVideoElement} from '@amazon-devices/react-native-w3cmedia';
 
 import type {Film} from '../film';
+import {GapMark} from '../components/GapMark';
 import {Timeline} from '../components/Timeline';
 import {Toggle} from '../components/Toggle';
 import {Voice} from '../components/Voice';
-import {secs} from '../format';
+import {clock, secs} from '../format';
 import {uiUri, useScreenReader} from '../menuVoice';
 import {remember, SAID_MORE, shouldSayMore} from '../player/adapt';
 import {cueAudioUri, filmUri} from '../player/assets';
@@ -23,7 +24,7 @@ import {Speaker} from '../player/speech';
 import {totalSpokenSeconds, type Cue} from '../player/track';
 import {useDescriptions} from '../player/useDescriptions';
 import {filmVolume, LEVELS, nextLevel, type Settings} from '../settings';
-import {palette, size, u} from '../theme';
+import {font, line, palette, safe, size, u} from '../theme';
 
 /** How far the remote's skip buttons move the film. */
 const SKIP_S = 10;
@@ -44,12 +45,12 @@ export const CHROME_MS = 5000;
  * inside a gap rather than over a line, which is the claim the whole system
  * rests on, and check it against their own ears.
  *
- * The layout follows from that. The film and the voice sit side by side at the
- * top, the same size relationship they have in the experience: the picture is
- * the thing, the voice is beside it and never over it. Underneath, at full
- * width, is the evidence. The controls are last because they are used once.
- * Read top to bottom it is: here is the film, here is what was said, here is
- * where it was said, here is how to change it.
+ * The layout follows from that. The film is the largest thing on the screen
+ * (40% of it). What is being said sits under the picture like a caption, on
+ * solid ground, and under that the evidence: where every description sits.
+ * The right-hand column says what is playing and holds the controls. Read
+ * down the left it is: here is the film, here is what was said, here is where
+ * it was said.
  *
  * That layout is for showing what description is. For watching a film it is
  * a dashboard, so "Picture: Full screen" turns it into a television player:
@@ -408,35 +409,6 @@ export const Player = ({
 
   return (
     <View style={full ? styles.screenFull : styles.screen}>
-      {full ? null : <View style={styles.header}>
-        <Text style={styles.title} accessibilityRole="header">
-          aloud
-        </Text>
-        <View style={styles.rule} />
-        <Text style={styles.strap} numberOfLines={1}>
-          {title.title}
-          <Text style={styles.strapSoft}>
-            {'  '}Menu says the last description again.
-          </Text>
-        </Text>
-        <Text
-          style={styles.tally}
-          numberOfLines={1}
-          accessibilityLabel={
-            `This film: ${cues.length} descriptions, ${secs(spoken)} of speech ` +
-            `in total. ${spokenCount} spoken so far, each inside a measured gap ` +
-            'in the dialogue.'
-          }>
-          {cues.length} descriptions  ·  {spokenCount} spoken so far, each inside a measured gap
-        </Text>
-        {/* The state is in the word as well as the dot. A viewer who cannot
-            separate a lit dot from an unlit one still reads "PAUSED". */}
-        <View style={styles.status}>
-          <View style={[styles.statusDot, playing && styles.statusDotLive]} />
-          <Text style={styles.statusText}>{playing ? 'PLAYING' : 'PAUSED'}</Text>
-        </View>
-      </View>}
-
       <View style={full ? styles.mainFull : styles.main}>
         <View
           style={full ? styles.stageFull : styles.stage}
@@ -472,20 +444,52 @@ export const Player = ({
         </View>
 
         {full ? null : (
-          <Voice speaking={caption} next={next} enabled={enabled || again !== null}
-                 time={time} />
+          <View style={styles.below}>
+            <Voice speaking={caption} next={next} enabled={enabled || again !== null}
+                   time={time} hint="Menu says it again." />
+            <Timeline
+              duration={timelineLength}
+              cues={cues}
+              current={time}
+              speaking={speaking}
+            />
+          </View>
         )}
       </View>
 
       {full ? null : (
-        <Timeline
-          duration={timelineLength}
-          cues={cues}
-          current={time}
-          speaking={speaking}
-        />
+        <View style={styles.side}>
+          <View style={styles.brand}>
+            <GapMark height={u(24)} />
+            <Text style={styles.wordmark}>aloud</Text>
+          </View>
+          <Text style={styles.title} accessibilityRole="header" numberOfLines={2}>
+            {title.title}
+          </Text>
+          {/* The state is in the word as well as the glyph. */}
+          <View style={styles.status}>
+            <View style={playing ? styles.glyphPlay : styles.glyphPause}>
+              {playing ? null : <><View style={styles.bar} /><View style={styles.bar} /></>}
+            </View>
+            <Text style={styles.statusText}>
+              {playing ? 'Playing' : 'Paused'}{'  ·  '}
+              <Text style={styles.mono}>{clock(time)}</Text>
+            </Text>
+          </View>
+          <Text
+            style={styles.tally}
+            accessibilityLabel={
+              `This film: ${cues.length} descriptions, ${secs(spoken)} of speech ` +
+              `in total. ${spokenCount} spoken so far, each inside a measured gap ` +
+              'in the dialogue.'
+            }>
+            {spokenCount} of {cues.length} spoken so far, each inside a measured gap
+          </Text>
+        </View>
       )}
 
+      {/* One element in both pictures, only restyled, so changing the picture
+          does not remount the controls and lose the viewer's place. */}
       <TVFocusGuideView
         style={full ? [styles.controlsFull, {opacity: chrome ? 1 : 0}] : styles.controls}
         testID="controls">
@@ -506,6 +510,7 @@ export const Player = ({
           testID="toggle-enabled"
           spoken={uiUri(enabled ? 'narration-on' : 'narration-off')}
           speak={say}
+          width={full ? u(408) : SIDE}
         />
         <Toggle
           label="Voice level"
@@ -515,6 +520,7 @@ export const Player = ({
           testID="toggle-level"
           spoken={uiUri(`level-${settings.level}`)}
           speak={say}
+          width={full ? u(408) : SIDE}
         />
         <Toggle
           label="How much is said"
@@ -532,6 +538,7 @@ export const Player = ({
           testID="toggle-density"
           spoken={uiUri(density === 'full' ? 'density-full' : 'density-sparse')}
           speak={say}
+          width={full ? u(408) : SIDE}
         />
         <Toggle
           label="Picture"
@@ -543,55 +550,73 @@ export const Player = ({
           testID="toggle-picture"
           spoken={uiUri(full ? 'picture-full' : 'picture-panel')}
           speak={say}
+          width={full ? u(408) : SIDE}
         />
       </TVFocusGuideView>
     </View>
   );
 };
 
+/** The film, at 1216 by 684: 40% of a 1920 by 1080 screen. */
+const FILM_W = u(1216);
+const FILM_H = u(684);
+/** The right-hand column: what is playing, and the controls. */
+const SIDE = u(1920 - 96 * 2 - 1216 - 32);
+const SIDE_X = u(96 + 1216 + 32);
+
 const styles = StyleSheet.create({
-  // Padding is the television safe area, not taste. Anything nearer the edge
-  // than this is cropped by some sets before anyone sees it.
-  screen: {flex: 1, backgroundColor: palette.ground, paddingHorizontal: u(64),
-           paddingVertical: u(44)},
+  // Padding is the television safe area, 5% of the screen on each side, not
+  // taste. Anything nearer the edge than this is cropped by some sets.
+  screen: {flex: 1, backgroundColor: palette.ground, paddingHorizontal: safe.x,
+           paddingVertical: safe.y},
 
-  header: {flexDirection: 'row', alignItems: 'center', marginBottom: u(18)},
-  title: {color: palette.ink, fontSize: size.wordmark, fontWeight: '700',
-          letterSpacing: u(-1)},
-  rule: {width: u(2), height: u(26), backgroundColor: palette.edge,
-         marginHorizontal: u(20)},
-  strap: {color: palette.ink, fontSize: size.strap, flexShrink: 1, fontWeight: '600'},
-  strapSoft: {color: palette.inkMuted, fontWeight: '400'},
-  tally: {color: palette.inkSoft, fontSize: size.eyebrow, marginLeft: 'auto',
-          paddingLeft: u(24)},
-  status: {flexDirection: 'row', alignItems: 'center', paddingLeft: u(28)},
-  statusDot: {width: u(14), height: u(14), borderRadius: u(7), marginRight: u(12),
-              borderWidth: u(2), borderColor: palette.inkMuted},
-  statusDotLive: {backgroundColor: palette.voice, borderColor: palette.voice},
-  statusText: {color: palette.inkSoft, fontSize: size.eyebrow,
-               letterSpacing: u(4), fontWeight: '700'},
+  main: {width: FILM_W, flex: 1},
+  stage: {width: FILM_W, height: FILM_H, backgroundColor: palette.recess,
+          alignItems: 'center', justifyContent: 'center', overflow: 'hidden'},
+  stageNote: {...font.semibold, position: 'absolute', color: palette.alert,
+              fontSize: size.lead, lineHeight: line.lead, textAlign: 'center',
+              paddingHorizontal: u(48)},
+  below: {flex: 1, justifyContent: 'space-between', paddingTop: u(18)},
 
-  main: {flex: 1, flexDirection: 'row', marginBottom: u(24)},
-  stage: {flex: 3, borderRadius: u(14), backgroundColor: palette.recess,
-          borderWidth: u(2), borderColor: palette.edge, alignItems: 'center',
-          justifyContent: 'center', overflow: 'hidden'},
-  stageNote: {color: palette.inkMuted, fontSize: size.lead},
+  side: {position: 'absolute', left: SIDE_X, top: safe.y, width: SIDE},
+  brand: {flexDirection: 'row', alignItems: 'center'},
+  wordmark: {...font.heavy, color: palette.ink, fontSize: u(32), lineHeight: u(40),
+             marginLeft: u(12)},
+  title: {...font.heavy, color: palette.ink, fontSize: u(44), lineHeight: u(52),
+          marginTop: u(16)},
+  status: {flexDirection: 'row', alignItems: 'center', marginTop: u(6)},
+  glyphPlay: {width: 0, height: 0, borderLeftWidth: u(16), borderLeftColor: palette.inkSoft,
+              borderTopWidth: u(10), borderTopColor: 'transparent',
+              borderBottomWidth: u(10), borderBottomColor: 'transparent',
+              marginRight: u(12)},
+  glyphPause: {flexDirection: 'row', width: u(16), height: u(20),
+               justifyContent: 'space-between', marginRight: u(12)},
+  bar: {width: u(5), height: u(20), backgroundColor: palette.inkSoft},
+  statusText: {...font.semibold, color: palette.inkSoft, fontSize: size.label,
+               lineHeight: line.label},
+  mono: {...font.mono},
+  tally: {...font.regular, color: palette.inkMuted, fontSize: size.label,
+          lineHeight: line.label, marginTop: u(2)},
 
   // Full screen: no safe-area padding on the picture itself (a set crops the
   // film's edges the same way it crops any film), but the caption and the
   // controls keep to the safe area.
-  screenFull: {flex: 1, backgroundColor: '#000000'},
+  screenFull: {flex: 1, backgroundColor: palette.recess},
   mainFull: {position: 'absolute', top: 0, left: 0, right: 0, bottom: 0},
   stageFull: {position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-              backgroundColor: '#000000',
+              backgroundColor: palette.recess,
               alignItems: 'center', justifyContent: 'center', overflow: 'hidden'},
-  caption: {position: 'absolute', left: u(64), bottom: u(190), maxWidth: '62%',
-            backgroundColor: 'rgba(0,0,0,0.78)', borderLeftWidth: u(8),
-            borderLeftColor: palette.voice, paddingHorizontal: u(24),
-            paddingVertical: u(14), borderRadius: u(6)},
-  captionText: {color: '#FFFFFF', fontSize: u(34), lineHeight: u(44)},
-  controlsFull: {position: 'absolute', left: u(64), right: u(64), bottom: u(44),
-                 flexDirection: 'row', alignItems: 'center'},
+  // Caption rules: a solid backing, the text never on the picture, the voice
+  // colour as an edge so a sighted viewer can tell aloud from a subtitle.
+  caption: {position: 'absolute', left: safe.x, bottom: u(260), maxWidth: u(1100),
+            backgroundColor: palette.scrim, borderLeftWidth: u(8),
+            borderLeftColor: palette.voice, paddingHorizontal: u(26),
+            paddingVertical: u(16)},
+  captionText: {...font.semibold, color: palette.ink, fontSize: size.cue,
+                lineHeight: line.cue},
+  controlsFull: {position: 'absolute', left: safe.x, right: safe.x, bottom: safe.y,
+                 flexDirection: 'row', alignItems: 'flex-end'},
 
-  controls: {flexDirection: 'row', alignItems: 'center', marginTop: u(22)},
+  controls: {position: 'absolute', left: SIDE_X, top: u(300), width: SIDE,
+             rowGap: u(22)},
 });

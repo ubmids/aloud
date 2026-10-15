@@ -44,11 +44,14 @@ test('moving onto a title reads it aloud, cutting off the last one', async () =>
   expect(speaker.play).toHaveBeenLastCalledWith('/pkg/assets/films/b/announce.m4a');
 });
 
-test('the panel follows focus and names who described the film', async () => {
-  const {getByTestId, getAllByText, getByText} = await screen();
+test('the panel follows focus and names who described the film, in words', async () => {
+  const {getByTestId, getAllByText, getByText, queryByText} = await screen();
   fireEvent(getByTestId('tile-b'), 'focus');
   expect(getAllByText('Sintel').length).toBeGreaterThan(0);
-  expect(getByText(/Described ahead of time by qwen3-vl-4b/)).toBeTruthy();
+  expect(getByText('Described ahead of time by Qwen3-VL, an open model. Read by Kokoro.'))
+    .toBeTruthy();
+  // No model IDs or voice codes in front of a viewer.
+  expect(queryByText(/qwen3-vl-4b|af_heart|llama\.cpp/)).toBeNull();
 });
 
 test('with VoiceView on, the app stays quiet and lets it read the label', async () => {

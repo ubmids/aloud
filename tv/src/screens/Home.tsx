@@ -4,12 +4,15 @@ import {TVFocusGuideView} from '@amazon-devices/react-native-kepler';
 
 import {announcement, describedSummary, type Film} from '../film';
 import {FilmTile} from '../components/FilmTile';
+import {GapMark} from '../components/GapMark';
 import {Toggle} from '../components/Toggle';
+import {clock} from '../format';
+import {provenance} from '../provenance';
 import {uiUri, useScreenReader} from '../menuVoice';
 import {announceUri} from '../player/assets';
 import type {Speaker} from '../player/speech';
 import {LEVELS, nextLevel, type Settings} from '../settings';
-import {palette, size, u} from '../theme';
+import {font, line, palette, safe, size, u} from '../theme';
 
 /**
  * The shelf.
@@ -27,9 +30,10 @@ import {palette, size, u} from '../theme';
  * either.
  *
  * Every title says what it is and how it was described before it is played.
- * The panel names the model that wrote the descriptions and the voice that
- * reads them. A viewer is owed that, and so is anyone deciding whether to
- * trust a track no human wrote.
+ * The shelf names the model that wrote the descriptions and the voice that
+ * reads them, in words rather than model IDs, and offers the film's first
+ * description as a taste of what it will sound like. A viewer is owed that,
+ * and so is anyone deciding whether to trust a track no human wrote.
  *
  * Nothing needs more than left, right, down and select. The row of films is
  * one focus group and the settings are another, and the settings chosen here
@@ -72,39 +76,48 @@ export const Home = ({
     announce(f);
   }, [announce]);
 
+  // A taste of the track: its first description that is about the picture
+  // rather than a title card.
+  const taste = focused.track.cues.find((c) => !/^On screen:/.test(c.text));
+
   return (
     <View style={styles.screen}>
+      {/* The picture bleeds off the top right with a hard edge; the words sit
+          on solid ground beside it, never on it, so their contrast does not
+          depend on which frame the poster happens to be. */}
+      <Image source={focused.poster} style={styles.backdrop} resizeMode="cover" />
+      <Text style={styles.credit} numberOfLines={1}>
+        {focused.credit}  ·  {focused.licence}
+      </Text>
+      {taste ? (
+        <View style={styles.taste}>
+          <Text style={styles.tasteLabel}>{`First description, at ${clock(taste.start)}`}</Text>
+          <Text style={styles.tasteText} numberOfLines={2}>{taste.text}</Text>
+        </View>
+      ) : null}
+
+      <View style={styles.content}>
       <View style={styles.header}>
+        <GapMark height={u(34)} />
         <Text style={styles.wordmark} accessibilityRole="header">aloud</Text>
-        <View style={styles.rule} />
-        <Text style={styles.strap}>
-          Films that describe themselves, in the gaps between dialogue.
+      </View>
+
+      <View style={styles.details}>
+        <Text style={styles.meta}>
+          {focused.genre}, {focused.year}, {focused.minutes} minute{focused.minutes === 1 ? '' : 's'}
+        </Text>
+        <Text style={styles.filmTitle} numberOfLines={1}>{focused.title}</Text>
+        <Text style={styles.synopsis} numberOfLines={3}>{focused.synopsis}</Text>
+        <View style={styles.describedRow}>
+          <GapMark height={u(24)} />
+          <Text style={styles.described}>{describedSummary(focused)}</Text>
+        </View>
+        <Text style={styles.provenance}>
+          {provenance(focused.describer, focused.voice)}
         </Text>
       </View>
 
-      <View style={styles.feature}>
-        <Image source={focused.poster} style={styles.backdrop} resizeMode="cover" />
-        <View style={styles.scrim} />
-        <View style={styles.details}>
-          <Text style={styles.eyebrow}>
-            {focused.genre.toUpperCase()}  ·  {focused.year}  ·  {focused.minutes} MIN
-          </Text>
-          <Text style={styles.filmTitle}>{focused.title}</Text>
-          <Text style={styles.synopsis}>{focused.synopsis}</Text>
-          <View style={styles.describedRow}>
-            <View style={styles.dot} />
-            <Text style={styles.described}>{describedSummary(focused)}</Text>
-          </View>
-          <Text style={styles.provenance}>
-            Described ahead of time by {focused.describer || 'the Aloud pipeline'}
-            {focused.voice ? `, read by ${focused.voice}` : ''}. Every
-            description sits in a measured silence.
-          </Text>
-          <Text style={styles.credit}>{focused.credit}  ·  {focused.licence}</Text>
-        </View>
-      </View>
-
-      <Text style={styles.rowLabel}>DESCRIBED FILMS</Text>
+      <Text style={styles.rowLabel}>Described films</Text>
       <TVFocusGuideView style={styles.row} autoFocus>
         {films.map((f, i) => (
           <FilmTile
@@ -131,6 +144,7 @@ export const Home = ({
           testID="home-narration"
           spoken={uiUri(settings.narration ? 'narration-on' : 'narration-off')}
           speak={say}
+          width={u(408)}
         />
         <Toggle
           label="Voice level"
@@ -140,6 +154,7 @@ export const Home = ({
           testID="home-level"
           spoken={uiUri(`level-${settings.level}`)}
           speak={say}
+          width={u(408)}
         />
         <Toggle
           label="How much is said"
@@ -152,6 +167,7 @@ export const Home = ({
           testID="home-density"
           spoken={uiUri(settings.density === 'full' ? 'density-full' : 'density-sparse')}
           speak={say}
+          width={u(408)}
         />
         <Toggle
           label="Read the menu aloud"
@@ -164,48 +180,46 @@ export const Home = ({
           testID="home-speak-menus"
           spoken={uiUri(settings.speakMenus ? 'menus-on' : 'menus-off')}
           speak={sayAlways}
+          width={u(408)}
         />
       </TVFocusGuideView>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  // Television safe area, as in the player.
-  screen: {flex: 1, backgroundColor: palette.ground, paddingHorizontal: u(64),
-           paddingVertical: u(44)},
-  header: {flexDirection: 'row', alignItems: 'center', marginBottom: u(22)},
-  wordmark: {color: palette.ink, fontSize: size.wordmark, fontWeight: '700',
-             letterSpacing: u(-1)},
-  rule: {width: u(2), height: u(26), backgroundColor: palette.edge,
-         marginHorizontal: u(20)},
-  strap: {color: palette.inkMuted, fontSize: size.strap, flexShrink: 1},
+  screen: {flex: 1, backgroundColor: palette.ground},
+  // The Fire TV safe area: 5% of the screen on every side.
+  content: {flex: 1, paddingHorizontal: safe.x, paddingVertical: safe.y},
+  backdrop: {position: 'absolute', right: 0, top: 0, width: u(920), height: u(380)},
+  credit: {...font.regular, position: 'absolute', right: safe.x, top: u(392),
+           width: u(920) - safe.x, color: palette.inkMuted, fontSize: size.label,
+           lineHeight: line.label},
+  taste: {position: 'absolute', right: safe.x, top: u(432), width: u(920) - safe.x},
+  tasteLabel: {...font.semibold, color: palette.inkMuted, fontSize: size.label,
+               lineHeight: line.label},
+  tasteText: {...font.regular, color: palette.inkSoft, fontSize: size.label,
+              lineHeight: line.label},
 
-  feature: {height: u(400), borderRadius: u(16), overflow: 'hidden',
-            backgroundColor: palette.recess, borderWidth: u(2),
-            borderColor: palette.edge, justifyContent: 'center'},
-  backdrop: {position: 'absolute', right: 0, top: 0, bottom: 0, width: '62%',
-             height: '100%'},
-  // The words sit on solid ground, never on the picture, so their contrast
-  // does not depend on which frame the poster happens to be.
-  scrim: {position: 'absolute', left: 0, top: 0, bottom: 0, width: '46%',
-          backgroundColor: palette.recess},
-  details: {width: '44%', paddingHorizontal: u(44)},
-  eyebrow: {color: palette.inkMuted, fontSize: size.eyebrow, letterSpacing: u(4)},
-  filmTitle: {color: palette.ink, fontSize: u(60), fontWeight: '700',
-              marginTop: u(10), letterSpacing: u(-1)},
-  synopsis: {color: palette.inkSoft, fontSize: size.body, lineHeight: u(30),
-             marginTop: u(12)},
-  describedRow: {flexDirection: 'row', alignItems: 'center', marginTop: u(20)},
-  dot: {width: u(14), height: u(14), borderRadius: u(7),
-        backgroundColor: palette.voice, marginRight: u(12)},
-  described: {color: palette.ink, fontSize: size.lead, fontWeight: '600'},
-  provenance: {color: palette.inkSoft, fontSize: size.eyebrow, lineHeight: u(25),
-               marginTop: u(10)},
-  credit: {color: palette.inkMuted, fontSize: size.eyebrow, marginTop: u(14)},
+  header: {flexDirection: 'row', alignItems: 'center', height: u(52)},
+  wordmark: {...font.heavy, color: palette.ink, fontSize: u(44), lineHeight: u(52),
+             marginLeft: u(16)},
 
-  rowLabel: {color: palette.inkMuted, fontSize: size.eyebrow, letterSpacing: u(4),
-             marginTop: u(26), marginBottom: u(12)},
+  details: {width: u(820), marginTop: u(20)},
+  meta: {...font.regular, color: palette.inkSoft, fontSize: size.body, lineHeight: line.body},
+  filmTitle: {...font.heavy, color: palette.ink, fontSize: size.display,
+              lineHeight: line.display},
+  synopsis: {...font.regular, color: palette.inkSoft, fontSize: size.body,
+             lineHeight: line.body, marginTop: u(6)},
+  describedRow: {flexDirection: 'row', alignItems: 'center', marginTop: u(14)},
+  described: {...font.semibold, color: palette.ink, fontSize: size.lead,
+              lineHeight: line.lead, marginLeft: u(14)},
+  provenance: {...font.regular, color: palette.inkMuted, fontSize: size.label,
+               lineHeight: line.label, marginTop: u(2)},
+
+  rowLabel: {...font.semibold, color: palette.inkSoft, fontSize: size.label,
+             lineHeight: line.label, marginTop: u(18), marginBottom: u(16)},
   row: {flexDirection: 'row'},
-  settings: {flexDirection: 'row', marginTop: u(26)},
+  settings: {flexDirection: 'row', marginTop: u(28)},
 });
