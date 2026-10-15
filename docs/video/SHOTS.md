@@ -11,13 +11,13 @@ entry 19).
 
 | # | asset | used at | what it shows | person? |
 |---|---|---|---|---|
-| 1 | `01-cold-open.mp4` | 0:00 | VVD, Tears of Steel from 1:41 in full-screen picture; black for 11 s with the film's sound, then the descriptions, then the picture fades up on the airship | no |
+| 1 | `01-cold-open.mp4` | 0:00 | VVD, Tears of Steel from 1:30.5 in full-screen picture; black for 12.5 s with the film's sound and the first two descriptions, then the picture fades up on the flying ship in the rifle scope | no |
 | 2 | `02-shelf.mp4` | 0:31 | VVD shelf: right, right, left, left (each title read out), down to the settings (each read out) | no |
 | 3 | `03-player.mp4` | 0:45 | VVD player, Tears of Steel with the voice panel and schedule strip: a description plays and the film dips; Narration off; Menu repeats the latest description; Picture: Full screen | no |
-| 4 | `04-strip.mp4` | 1:35 | VVD player, the schedule strip close up while a description fills its gap | no |
+| 4 | (from `03-player.mp4`) | 1:35 | the schedule strip under the film while a description fills its gap; crop it in the edit | no |
 | 5 | `card-01` to `card-06`, `lower-third.png`, `caption.png`, `thumbnail-*.png` | throughout, YouTube thumbnail | the Signal cards from `design/assets/` (designed and rendered by the design pass; `render.py cards` copies them here) | no |
 | 6 | `tos-without.mp4`, `tos-with.mp4` | viewer session | Tears of Steel 1:31 to 2:10 over black: the film's own sound, then with aloud | no (played to the viewer) |
-| 7 | `shelf.png`, `player.png`, `fullscreen.png` | Devpost gallery, README | VVD screenshots at 1920x1080 | no |
+| 7 | `design/assets/gallery/*.png` | Devpost gallery, README | VVD screenshots of the Signal build at 1920x1080 (design pass) | no |
 | 8 | Subomi to camera, A1 and A2 | 0:20, 2:33 | see PEOPLE.md | **Subomi** |
 | 9 | Voiceover | 0:27 to 2:33 | lines in SCRIPT.md | **Subomi** (voice) |
 | 10 | The viewer session | 1:05 | see PEOPLE.md | **blind or low-vision viewer** |
