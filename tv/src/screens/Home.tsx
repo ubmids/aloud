@@ -142,6 +142,18 @@ export const Home = ({
           speak={say}
         />
         <Toggle
+          label="How much is said"
+          value={settings.density === 'full' ? 'Everything' : 'Only what changed most'}
+          help={settings.density === 'full'
+            ? 'Every description there was room for.'
+            : 'Half as much talking, kept for the biggest changes.'}
+          onPress={() => onSettings({...settings,
+            density: settings.density === 'full' ? 'sparse' : 'full'})}
+          testID="home-density"
+          spoken={uiUri(settings.density === 'full' ? 'density-full' : 'density-sparse')}
+          speak={say}
+        />
+        <Toggle
           label="Read the menu aloud"
           value={settings.speakMenus ? 'On' : 'Off'}
           help={screenReader
@@ -169,7 +181,7 @@ const styles = StyleSheet.create({
          marginHorizontal: u(20)},
   strap: {color: palette.inkMuted, fontSize: size.strap, flexShrink: 1},
 
-  feature: {height: u(470), borderRadius: u(16), overflow: 'hidden',
+  feature: {height: u(400), borderRadius: u(16), overflow: 'hidden',
             backgroundColor: palette.recess, borderWidth: u(2),
             borderColor: palette.edge, justifyContent: 'center'},
   backdrop: {position: 'absolute', right: 0, top: 0, bottom: 0, width: '62%',

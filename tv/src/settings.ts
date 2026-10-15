@@ -6,6 +6,8 @@
  * than by both being careful.
  */
 
+import type {Density} from './player/track';
+
 /** How loud the describer is, as a viewer would say it. */
 export type VoiceLevel = 'quiet' | 'normal' | 'loud';
 
@@ -53,8 +55,16 @@ export type Settings = {
    * the same sofa who came to watch a film, not a dashboard.
    */
   picture: 'panel' | 'full';
+  /**
+   * How much is said: every description there was room for, or only the
+   * ones with the most room, which are usually the biggest changes. Chosen on
+   * the shelf before a film starts and changeable under the film; Menu twice
+   * in two minutes on the lighter setting turns it back up.
+   */
+  density: Density;
 };
 
 export const DEFAULTS: Settings = {
   narration: true, level: 'normal', speakMenus: true, picture: 'panel',
+  density: 'full',
 };

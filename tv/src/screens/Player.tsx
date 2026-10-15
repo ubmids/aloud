@@ -20,7 +20,7 @@ import {remember, SAID_MORE, shouldSayMore} from '../player/adapt';
 import {cueAudioUri, filmUri} from '../player/assets';
 import {lastDescribed, nextCueFrom} from '../player/schedule.js';
 import {Speaker} from '../player/speech';
-import {totalSpokenSeconds, type Cue, type Density} from '../player/track';
+import {totalSpokenSeconds, type Cue} from '../player/track';
 import {useDescriptions} from '../player/useDescriptions';
 import {filmVolume, LEVELS, nextLevel, type Settings} from '../settings';
 import {palette, size, u} from '../theme';
@@ -77,7 +77,7 @@ export const Player = ({
 
   const film = useMemo(() => filmUri(title.id), [title]);
 
-  const [density, setDensity] = useState<Density>('full');
+  const density = settings.density;
   const densityRef = useRef(density);
   densityRef.current = density;
   // Menu presses, by wall clock, and whether the last density change was the
@@ -101,6 +101,8 @@ export const Player = ({
   const screenReader = useScreenReader();
   const settingsRef = useRef(settings);
   settingsRef.current = settings;
+  const onSettingsRef = useRef(onSettings);
+  onSettingsRef.current = onSettings;
   const say = useCallback((uri: string) => {
     if (!settingsRef.current.speakMenus || screenReader) return;
     speaker.current.stop();
@@ -189,7 +191,7 @@ export const Player = ({
     asks.current = remember(asks.current, Date.now());
     if (shouldSayMore(asks.current, densityRef.current)) {
       asks.current = [];
-      setDensity('full');
+      onSettingsRef.current({...settingsRef.current, density: 'full'});
       setSaidMore(true);
     }
     againTimer.current = setTimeout(() => {
@@ -377,9 +379,18 @@ export const Player = ({
         <Text style={styles.strap} numberOfLines={1}>
           {title.title}
           <Text style={styles.strapSoft}>
-            {'  '}described in the gaps between dialogue. Menu says the last one
-            again; Back returns to the shelf.
+            {'  '}Menu says the last description again.
           </Text>
+        </Text>
+        <Text
+          style={styles.tally}
+          numberOfLines={1}
+          accessibilityLabel={
+            `This film: ${cues.length} descriptions, ${secs(spoken)} of speech ` +
+            `in total. ${spokenCount} spoken so far, each inside a measured gap ` +
+            'in the dialogue.'
+          }>
+          {cues.length} descriptions  ·  {spokenCount} spoken so far, each inside a measured gap
         </Text>
         {/* The state is in the word as well as the dot. A viewer who cannot
             separate a lit dot from an unlit one still reads "PAUSED". */}
@@ -478,7 +489,7 @@ export const Player = ({
           onPress={() => {
             asks.current = [];
             setSaidMore(false);
-            setDensity((d) => (d === 'full' ? 'sparse' : 'full'));
+            onSettings({...settings, density: density === 'full' ? 'sparse' : 'full'});
           }}
           testID="toggle-density"
           spoken={uiUri(density === 'full' ? 'density-full' : 'density-sparse')}
@@ -495,22 +506,6 @@ export const Player = ({
           spoken={uiUri(full ? 'picture-full' : 'picture-panel')}
           speak={say}
         />
-        {full ? null : <View
-          style={styles.evidence}
-          accessible
-          accessibilityLabel={
-            `This film: ${cues.length} descriptions, ${secs(spoken)} of speech ` +
-            `in total. ${spokenCount} spoken so far, each inside a measured gap ` +
-            'in the dialogue.'
-          }>
-          <Text style={styles.evidenceLabel}>THIS FILM</Text>
-          <Text style={styles.evidenceValue}>
-            {cues.length} descriptions, {secs(spoken)} of speech
-          </Text>
-          <Text style={styles.evidenceNote}>
-            {spokenCount} spoken so far, each inside a measured gap
-          </Text>
-        </View>}
       </TVFocusGuideView>
     </View>
   );
@@ -529,8 +524,9 @@ const styles = StyleSheet.create({
          marginHorizontal: u(20)},
   strap: {color: palette.ink, fontSize: size.strap, flexShrink: 1, fontWeight: '600'},
   strapSoft: {color: palette.inkMuted, fontWeight: '400'},
-  status: {flexDirection: 'row', alignItems: 'center', marginLeft: 'auto',
-           paddingLeft: u(24)},
+  tally: {color: palette.inkSoft, fontSize: size.eyebrow, marginLeft: 'auto',
+          paddingLeft: u(24)},
+  status: {flexDirection: 'row', alignItems: 'center', paddingLeft: u(28)},
   statusDot: {width: u(14), height: u(14), borderRadius: u(7), marginRight: u(12),
               borderWidth: u(2), borderColor: palette.inkMuted},
   statusDotLive: {backgroundColor: palette.voice, borderColor: palette.voice},
@@ -560,9 +556,4 @@ const styles = StyleSheet.create({
                  flexDirection: 'row', alignItems: 'center'},
 
   controls: {flexDirection: 'row', alignItems: 'center', marginTop: u(22)},
-  evidence: {marginLeft: 'auto', alignItems: 'flex-end'},
-  evidenceLabel: {color: palette.inkMuted, fontSize: size.eyebrow,
-                  letterSpacing: u(4)},
-  evidenceValue: {color: palette.ink, fontSize: size.lead, marginTop: u(8)},
-  evidenceNote: {color: palette.inkSoft, fontSize: size.body, marginTop: u(6)},
 });

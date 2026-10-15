@@ -67,4 +67,6 @@ test('select plays the title; the settings change what the player will do', asyn
   expect(onSettings).toHaveBeenLastCalledWith({...DEFAULTS, level: 'loud'});
   fireEvent.press(getByTestId('home-narration'));
   expect(onSettings).toHaveBeenLastCalledWith({...DEFAULTS, narration: false});
+  fireEvent.press(getByTestId('home-density'));
+  expect(onSettings).toHaveBeenLastCalledWith({...DEFAULTS, density: 'sparse'});
 });

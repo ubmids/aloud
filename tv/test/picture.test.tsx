@@ -79,7 +79,7 @@ test('the default is the panel: film, voice panel, schedule', () => {
   const {getByTestId, queryByTestId, getByText} = open();
   expect(getByTestId('cue-area')).toBeTruthy();
   expect(getByTestId('timeline')).toBeTruthy();
-  expect(getByText('THIS FILM')).toBeTruthy();
+  expect(getByText(/spoken so far, each inside a measured gap/)).toBeTruthy();
   expect(queryByTestId('caption')).toBeNull();
   expect(getByText('With the voice panel')).toBeTruthy();
 });
@@ -90,7 +90,7 @@ test('full screen hides the panel and the schedule and fills the screen', () => 
   expect(getByText('Full screen')).toBeTruthy();
   expect(queryByTestId('cue-area')).toBeNull();
   expect(queryByTestId('timeline')).toBeNull();
-  expect(queryByText('THIS FILM')).toBeNull();
+  expect(queryByText(/spoken so far/)).toBeNull();
   const stage = merged(getByTestId('stage').props.style);
   expect(stage).toMatchObject({position: 'absolute', top: 0, left: 0, right: 0, bottom: 0});
 });

@@ -1,9 +1,9 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {act, fireEvent, render} from '@testing-library/react-native';
 
 import type {Film} from '../src/film';
 import {Player} from '../src/screens/Player';
-import {DEFAULTS} from '../src/settings';
+import {DEFAULTS, type Settings} from '../src/settings';
 
 // The remote, captured: the test presses buttons by calling what the player
 // registered, the way the device's input manager would.
@@ -67,12 +67,16 @@ function speaker() {
           play: jest.fn(() => true)} as any;
 }
 
+/** The player with real settings state, the way App holds it. */
+function Stateful({start, s}: {start: Settings; s: any}) {
+  const [settings, setSettings] = useState(start);
+  return <Player film={title} settings={settings} onSettings={setSettings}
+                 speaker={s} />;
+}
+
 function open(narration: boolean) {
   const s = speaker();
-  const r = render(
-    <Player film={title} settings={{...DEFAULTS, narration}}
-            onSettings={jest.fn()} speaker={s} />,
-  );
+  const r = render(<Stateful start={{...DEFAULTS, narration}} s={s} />);
   // The player only mounts the film once it knows the size of its stage.
   fireEvent(r.getByTestId('stage'), 'layout',
             {nativeEvent: {layout: {width: 1280, height: 720}}});

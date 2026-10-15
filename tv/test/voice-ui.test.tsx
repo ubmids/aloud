@@ -80,6 +80,7 @@ describe('on the shelf', () => {
   test.each([
     ['home-narration', 'narration-on', 'narration-off'],
     ['home-level', 'level-normal', 'level-loud'],
+    ['home-density', 'density-full', 'density-sparse'],
     ['home-speak-menus', 'menus-on', 'menus-off'],
   ])('%s says its name and value on focus, and its new value on select',
      async (id, onFocus, afterPress) => {
