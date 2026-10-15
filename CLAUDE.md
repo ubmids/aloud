@@ -2,7 +2,8 @@
 
 `design/DESIGN.md` is binding for every surface: the Vega app in `tv/`, the
 README, gallery images, video cards and the thumbnail. Read it before changing
-anything a viewer or a judge sees. `design/directions.html` shows the three
+anything a viewer or a judge sees. The direction is **Signal**: near-black,
+caption yellow for the voice only, Atkinson Hyperlegible, square surfaces. `design/directions.html` shows the three
 directions considered; `design/contrast.py` computes every contrast ratio.
 
 The five rules most likely to be broken:

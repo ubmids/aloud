@@ -5,10 +5,9 @@ the Vega app under `tv/`, the README, the Devpost gallery, the video cards,
 the thumbnail, and any figure in `docs/`. If code and this file disagree, the
 code is wrong or this file gets changed first, on purpose.
 
-Status: Phase 1. The principles, inventory, asset rules and do/don't list are
-final. The tokens below are written for the recommended direction, **Signal**
-(see `design/directions.html`). If Subomi picks another direction, its token
-table in `directions.html` replaces the Tokens section and nothing else moves.
+Status: **Signal is the chosen direction** (picked by Subomi, 15 October
+2026). Its tokens below are binding; Liner notes and Meter in
+`design/directions.html` are a record of what was considered, not options.
 
 Judging context: Amazon "Build, Ship, Shape", Fire TV track, due Friday
 23 October 2026, 12:00 PDT. Design is one of four equal criteria, worded as
