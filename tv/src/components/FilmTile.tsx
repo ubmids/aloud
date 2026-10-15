@@ -73,7 +73,7 @@ export const FilmTile = ({
           <Text style={[styles.title, focused && styles.inverted]} numberOfLines={1}>
             {film.title}
           </Text>
-          <Text style={[styles.sub, focused && styles.inverted]}>
+          <Text style={[styles.sub, focused && styles.subFocused]}>
             {focused ? 'Select to play' : descriptions(cues.length)}
           </Text>
           <View style={styles.print}>
@@ -96,6 +96,7 @@ const styles = StyleSheet.create({
   title: {...font.semibold, color: palette.ink, fontSize: size.body, lineHeight: u(34)},
   sub: {...font.mono, color: palette.inkMuted, fontSize: size.label, lineHeight: line.label},
   inverted: {color: palette.ground},
+  subFocused: {...font.semibold, color: palette.ground},
   print: {marginTop: u(8)},
   frame: {position: 'absolute', top: -focus.frame, left: -focus.frame,
           right: -focus.frame, bottom: -focus.frame,

@@ -617,6 +617,7 @@ const styles = StyleSheet.create({
   controlsFull: {position: 'absolute', left: safe.x, right: safe.x, bottom: safe.y,
                  flexDirection: 'row', alignItems: 'flex-end'},
 
-  controls: {position: 'absolute', left: SIDE_X, top: u(300), width: SIDE,
-             rowGap: u(22)},
+  // Anchored to the bottom of the safe area, so a long title above can grow.
+  controls: {position: 'absolute', left: SIDE_X, bottom: safe.y + u(8), width: SIDE,
+             rowGap: u(16)},
 });

@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
                lineHeight: line.label, marginTop: u(2)},
 
   rowLabel: {...font.semibold, color: palette.inkSoft, fontSize: size.label,
-             lineHeight: line.label, marginTop: u(18), marginBottom: u(16)},
+             lineHeight: line.label, marginTop: u(12), marginBottom: u(16)},
   row: {flexDirection: 'row'},
-  settings: {flexDirection: 'row', marginTop: u(28)},
+  settings: {flexDirection: 'row', marginTop: u(22)},
 });
