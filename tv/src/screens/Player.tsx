@@ -460,7 +460,7 @@ export const Player = ({
       {full ? null : (
         <View style={styles.side}>
           <View style={styles.brand}>
-            <GapMark height={u(24)} />
+            <GapMark height={24} />
             <Text style={styles.wordmark}>aloud</Text>
           </View>
           <Text style={styles.title} accessibilityRole="header" numberOfLines={2}>

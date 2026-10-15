@@ -87,7 +87,7 @@ export const Home = ({
           depend on which frame the poster happens to be. */}
       <Image source={focused.poster} style={styles.backdrop} resizeMode="cover" />
       <Text style={styles.credit} numberOfLines={1}>
-        {focused.credit}  ·  {focused.licence}
+        {focused.credit}  ·  {focused.licence.split(',')[0]}
       </Text>
       {taste ? (
         <View style={styles.taste}>
@@ -98,7 +98,7 @@ export const Home = ({
 
       <View style={styles.content}>
       <View style={styles.header}>
-        <GapMark height={u(34)} />
+        <GapMark height={34} />
         <Text style={styles.wordmark} accessibilityRole="header">aloud</Text>
       </View>
 
@@ -109,7 +109,7 @@ export const Home = ({
         <Text style={styles.filmTitle} numberOfLines={1}>{focused.title}</Text>
         <Text style={styles.synopsis} numberOfLines={3}>{focused.synopsis}</Text>
         <View style={styles.describedRow}>
-          <GapMark height={u(24)} />
+          <GapMark height={24} />
           <Text style={styles.described}>{describedSummary(focused)}</Text>
         </View>
         <Text style={styles.provenance}>

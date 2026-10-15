@@ -9,6 +9,7 @@ import {palette, u} from '../theme';
  * it is the logo, and it is drawn rather than loaded so it scales with the
  * type beside it.
  */
+/** `height` is in design pixels (1080p), scaled here like every other size. */
 export const GapMark = ({height = 34}: {height?: number}) => {
   const k = height / 34;
   return (
