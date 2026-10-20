@@ -53,3 +53,6 @@ tv/assets/films/*/film.mp4
 
 # demo video renders: large, rebuilt by docs/video/render.py
 docs/video/assets/
+
+# tonight-recording stills (media stays out of git)
+video/shots/

@@ -1,0 +1,34 @@
+{
+ "film": "/Users/subomi/Desktop/hackathons/farm-outputs/023-hack-aloud-1st/out/films/tos/tears_of_steel_720p.mov",
+ "id": "tears-of-steel",
+ "level": "normal",
+ "speed": 1.06291325695581,
+ "events": [
+  {
+   "t": 0.0,
+   "film_at": 53.52015275504637,
+   "until": 22.257403600654662,
+   "narration": true
+  },
+  {
+   "t": 22.257403600654662,
+   "clip": "tv/assets/ui/narration-off.m4a"
+  },
+  {
+   "t": 22.257403600654662,
+   "film_at": 75.77755635570102,
+   "until": 31.026437970540094,
+   "narration": false
+  },
+  {
+   "t": 31.026437970540094,
+   "repeat_at": 84.54659072558647
+  },
+  {
+   "t": 35.543654955304206,
+   "film_at": 84.54659072558647,
+   "until": 40.390703764320776,
+   "narration": false
+  }
+ ]
+}
