@@ -66,12 +66,7 @@ Taken from today's captions-only cut. Stills in `video/shots/` (not in git).
 - [ ] Disk: about 7 GB free. The cut needs about 200 MB. Fine.
 
 No Virtual Device, no build and no test account needed tonight: the device
-footage is already recorded. The VVD is still running from today's
-recording. To stop it:
-
-```bash
-~/vega/bin/vega virtual-device stop && pkill -f "vega-sdk.*crashpad_handler"
-```
+footage is already recorded. The VVD was stopped after today's recording.
 
 ## Do this, in order (about 25 minutes)
 
