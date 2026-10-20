@@ -1,5 +1,11 @@
 # aloud: recording plan for tonight (Tue 20 Oct)
 
+> **Superseded 20 Oct: nothing to record.** The narrated video is built in
+> Subomi's ElevenLabs voice: `~/Desktop/hackathons/aloud-video/aloud-narrated.mp4`
+> (2:46) with `aloud-narrated.srt`, from `python3 docs/video/narrated.py`
+> (script in `video/NARRATION.md`; upload and form steps in
+> `~/Desktop/hackathons/aloud-video/SUBMIT.md`).
+
 ## What was broken or missing (checked 20 Oct, 11:00 to 13:00 WAT)
 
 | # | Problem | Status |
